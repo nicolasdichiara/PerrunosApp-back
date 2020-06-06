@@ -4,7 +4,7 @@ import javax.persistence.EntityManagerFactory
 import javax.persistence.Persistence
 
 class EntityManager {
-	static final EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("Aerolinea")
+	static final EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("PerrunosApp")
 	static EntityManager instance = null
 
 	private new() {

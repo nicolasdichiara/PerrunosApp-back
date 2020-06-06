@@ -14,12 +14,11 @@ import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException
 class PerrunosRestAPI {
 
 	extension JSONUtils = new JSONUtils
-	RepositorioUsuario repoUsuario
+	RepositorioUsuario repoUsuario = new RepositorioUsuario
 
 	static ParserStringToLong parserStringToLong = ParserStringToLong.instance
 
-	new(RepositorioUsuario repoU) {
-		repoUsuario = repoU
+	new() {
 	}
 
 	@Post("/login")
