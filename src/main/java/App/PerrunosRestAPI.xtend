@@ -28,7 +28,7 @@ class PerrunosRestAPI {
 			try {
 				val usuarioLogeado = this.repoUsuario.verificarLogin(usuarioLogeadoBody.usuario,
 					usuarioLogeadoBody.password)
-				return ok(usuarioLogeado.ID.toJson)
+				return ok(usuarioLogeado.idUsuario.toJson)
 			} catch (UserException exception) {
 				return badRequest()
 			}
