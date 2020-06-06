@@ -1,8 +1,10 @@
 package Clases
 
 import org.eclipse.xtend.lib.annotations.Accessors
+import javax.persistence.Entity
 
 @Accessors
-class Duenio {
+@Entity
+class Duenio extends Usuario{
 	
 }

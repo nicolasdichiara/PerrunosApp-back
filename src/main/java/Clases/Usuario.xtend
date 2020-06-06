@@ -46,7 +46,7 @@ class Usuario {
 	String direccion
 	
 	@Column
-	String activo
+	Boolean activo
 	
 	@Column(length=150)
 	String email

@@ -9,6 +9,8 @@ import org.uqbar.xtrest.api.annotation.Post
 import ParserStringToLong.ParserStringToLong
 import org.uqbar.commons.model.exceptions.UserException
 import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException
+import org.uqbar.xtrest.api.annotation.Get
+import Serializer.UsuarioSerializer
 
 @Controller
 class PerrunosRestAPI {
@@ -33,6 +35,17 @@ class PerrunosRestAPI {
 				return badRequest()
 			}
 		} catch (UnrecognizedPropertyException exception) {
+			return badRequest()
+		}
+	}
+	
+	@Get("/usuario/:id")
+	def dameUsuario() {
+		try {
+			val usuario = repoUsuario.searchByID(parserStringToLong.parsearDeStringALong(id))
+			return ok(UsuarioSerializer.toJson(usuario))
+
+		} catch (UserException exception) {
 			return badRequest()
 		}
 	}
