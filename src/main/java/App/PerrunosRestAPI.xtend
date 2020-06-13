@@ -11,6 +11,9 @@ import org.uqbar.commons.model.exceptions.UserException
 import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException
 import org.uqbar.xtrest.api.annotation.Get
 import Serializer.UsuarioSerializer
+import Clases.Duenio
+import java.time.LocalDate
+import Clases.Paseador
 
 @Controller
 class PerrunosRestAPI {
@@ -23,7 +26,10 @@ class PerrunosRestAPI {
 	new() {
 	}
 
-	@Post("/login")
+	///////////////////////////////////////////////////////////////////////////////////
+	//                            LOGIN                                              //
+	///////////////////////////////////////////////////////////////////////////////////
+	@Post("/usuario/login")
 	def login(@Body String body) {
 		try {
 			val usuarioLogeadoBody = body.fromJson(UsuarioLogeadoRequest)
@@ -38,13 +44,63 @@ class PerrunosRestAPI {
 			return badRequest()
 		}
 	}
-	
+
 	@Get("/usuario/:id")
 	def dameUsuario() {
 		try {
 			val usuario = repoUsuario.searchByID(parserStringToLong.parsearDeStringALong(id))
 			return ok(UsuarioSerializer.toJson(usuario))
 
+		} catch (UserException exception) {
+			return badRequest()
+		}
+	}
+	
+	///////////////////////////////////////////////////////////////////////////////////
+	//                            ABM USUARIO                                        //
+	///////////////////////////////////////////////////////////////////////////////////
+	
+	@Post("/usuario/createDuenio")
+	def crearDuenio(@Body String body) {
+		try {
+			val nuevoDuenio = new Duenio => [
+				username = body.getPropertyValue("username")
+				password = body.getPropertyValue("password")
+				fechaAlta = LocalDate.now
+				nombre = body.getPropertyValue("nombre")
+				apellido = body.getPropertyValue("apellido")
+				fechaNacimiento = body.getPropertyAsDate("fechaNacimiento","dd/MM/yyyy")
+				dni = Integer.parseInt(body.getPropertyValue("dni"))
+				telefono = body.getPropertyValue("telefono")
+				direccion = body.getPropertyValue("direccion")
+				activo = true
+				email = body.getPropertyValue("email")
+			]
+			repoUsuario.create(nuevoDuenio)
+			return ok()
+		} catch (UserException exception) {
+			return badRequest()
+		}
+	}
+	
+	@Post("/usuario/createPaseador")
+	def crearPaseador(@Body String body) {
+		try {
+			val nuevoPaseador = new Paseador => [
+				username = body.getPropertyValue("username")
+				password = body.getPropertyValue("password")
+				fechaAlta = LocalDate.now
+				nombre = body.getPropertyValue("nombre")
+				apellido = body.getPropertyValue("apellido")
+				fechaNacimiento = body.getPropertyAsDate("fechaNacimiento","dd/MM/yyyy")//LocalDate.of(1994, 11, 17)
+				dni = Integer.parseInt(body.getPropertyValue("dni"))
+				telefono = body.getPropertyValue("telefono")
+				direccion = body.getPropertyValue("direccion")
+				activo = true
+				email = body.getPropertyValue("email")
+			]
+			println("el usuario nuevo es: " + nuevoPaseador.toJson)
+			return ok()
 		} catch (UserException exception) {
 			return badRequest()
 		}
