@@ -4,7 +4,7 @@ import org.uqbar.xtrest.api.XTRest
 
 class PerrunosApplicationService {
 	def static void main(String[] args) {
-		PerrunosBootstrap.crearDatos 
+		PerrunosBootstrap.crearDatosSiNoHay 
 		XTRest.start(8082, PerrunosRestAPI)
 	}
 }

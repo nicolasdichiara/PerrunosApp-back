@@ -11,15 +11,18 @@ class RepositorioUsuario extends RepositorioAbstract<Usuario> {
 	}
 	
 	override getEntityType() {
-		throw new UnsupportedOperationException("TODO: auto-generated method stub")
+		return Usuario
 	}
 	
 	override fetch(Root<Usuario> from) {
 		throw new UnsupportedOperationException("TODO: auto-generated method stub")
 	}
 	
-	override generateWhereId(CriteriaBuilder builder, CriteriaQuery<Usuario> query, Root<Usuario> root, Long long1) {
-		throw new UnsupportedOperationException("TODO: auto-generated method stub")
+	override generateWhereId(CriteriaBuilder criteria, CriteriaQuery<Usuario> query, Root<Usuario> camposUsuario,
+		Long id) {
+		if (id !== null) {
+			query.where(criteria.equal(camposUsuario.get("idUsuario"), id))
+		}
 	}
 	
 }

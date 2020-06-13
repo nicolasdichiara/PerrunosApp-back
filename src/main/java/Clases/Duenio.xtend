@@ -13,4 +13,12 @@ class Duenio extends Usuario{
 	@OneToMany(fetch=FetchType.LAZY)
 	List<Perro> perros = newArrayList
 	
+	def agregarPerro(Perro unPerro){
+		perros.add(unPerro)
+	}
+	
+	def eliminarPerro(Perro unPerro){
+		perros.remove(unPerro)
+	}
+	
 }

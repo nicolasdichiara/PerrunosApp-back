@@ -23,7 +23,6 @@ abstract class RepositorioAbstract<T> {
 			val criteria = entityManager.criteriaBuilder
 			val query = criteria.createQuery(entityType)
 			val from = query.from(entityType)
-			fetch(from)
 			query.select(from)
 			entityManager.createQuery(query).resultList
 

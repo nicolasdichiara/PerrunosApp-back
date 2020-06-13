@@ -8,6 +8,8 @@ import java.io.IOException
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.module.SimpleModule
 import com.fasterxml.jackson.databind.ser.std.StdSerializer
+import java.time.format.DateTimeFormatter
+import java.time.LocalDate
 
 class UsuarioSerializer extends StdSerializer<Usuario>{
 	new(Class<Usuario> s){
@@ -16,12 +18,22 @@ class UsuarioSerializer extends StdSerializer<Usuario>{
 	
 	static ParserStringToLong parserStringToLong = ParserStringToLong.instance
 	
+	static val DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
+	
+	static def getStringDateFromLocalDate(LocalDate date) { 	date.format(formatter) 	}
+	
 	override serialize(Usuario value, JsonGenerator gen, SerializerProvider provider) throws IOException {
 		gen.writeStartObject();
-		gen.writeStringField("usuario", value.username);
 		gen.writeStringField("id", parserStringToLong.parsearDeLongAString(value.idUsuario));
+		gen.writeStringField("usuario", value.username);
+		gen.writeStringField("fechaAlta", getStringDateFromLocalDate(value.fechaAlta));
 		gen.writeStringField("nombre", value.nombre);
 		gen.writeStringField("apellido", value.apellido);
+		gen.writeStringField("fechaNacimiento", getStringDateFromLocalDate(value.fechaNacimiento));
+		gen.writeStringField("dni", value.dni.toString);
+		gen.writeStringField("telefono", value.telefono);
+		gen.writeStringField("direccion", value.direccion);
+		gen.writeStringField("email", value.email);
 		gen.writeEndObject();
 	}
 	

@@ -6,27 +6,42 @@ import javax.persistence.Entity
 import javax.persistence.Id
 import javax.persistence.GeneratedValue
 import javax.persistence.GenerationType
+import javax.persistence.Column
+import javax.persistence.ManyToOne
+import javax.persistence.FetchType
 
 @Entity
 @Accessors
 class Perro {
-	
+
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
 	Integer ID
-	
+	@Column(length=150)
 	String nombre
-	String raza
-	String imagen //hay que cargar la imagen del perro
+	@ManyToOne(fetch=FetchType.LAZY)
+	Raza raza
+	@Column(length=150)
+	String imagen // hay que cargar la imagen del perro
+	@Column
 	LocalDate fechaNacimiento
-	String poseeLibretaSanitaria //check
+	@Column
+	Boolean poseeLibretaSanitaria // check
+	@Column(length=150)
 	String imagenLibretaVacunacion
-	String vacunaDeLaRabia //check
-	String desparasitado //check
+	@Column
+	Boolean vacunaDeLaRabia // check
+	@Column
+	Boolean desparasitado // check
+	@Column(length=150)
 	String enfermedadesPrevias
-	String paseaFrecuente 
-	String paseoAlgunaVez
-	String paseoConUnPaseador
-	String paseoConOtrosPerros
-	
+	@Column
+	Boolean paseaFrecuente
+	@Column
+	Boolean paseoAlgunaVez
+	@Column
+	Boolean paseoConUnPaseador
+	@Column
+	Boolean paseoConOtrosPerros
+
 }
