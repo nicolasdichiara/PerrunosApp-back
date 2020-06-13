@@ -19,13 +19,7 @@ class Usuario {
 	Long idUsuario
 
 	@Column(length=150)
-	String username
-
-	@Column(length=150)
-	String password
-
-	@Column
-	LocalDate fechaAlta
+	String email
 
 	@Column(length=150)
 	String nombre
@@ -33,6 +27,12 @@ class Usuario {
 	@Column(length=150)
 	String apellido
 	
+	@Column(length=150)
+	String password
+
+	@Column
+	LocalDate fechaAlta
+
 	@Column
 	LocalDate fechaNacimiento
 	
@@ -47,12 +47,9 @@ class Usuario {
 	
 	@Column
 	Boolean activo
-	
-	@Column(length=150)
-	String email
 
 	def verificarUsuario(String usuarioLogin, String passwordLogin) {
-		return (username == usuarioLogin && password == passwordLogin)
+		return (email == usuarioLogin && password == passwordLogin)
 	}
 
 }

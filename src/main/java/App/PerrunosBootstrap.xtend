@@ -26,45 +26,42 @@ class PerrunosBootstrap {
 	def static crearDatos() {
 		// CREO LOS USUARIOS
 		val nico = new Duenio => [
-			username = "ndichiara"
-			password = "ndichiara"
-			fechaAlta = LocalDate.now
+			email = "nicolasdichiara@hotmail.com"
 			nombre = "Nicolás"
 			apellido = "Dichiara"
+			password = "ndichiara"
+			fechaAlta = LocalDate.now
 			fechaNacimiento = LocalDate.of(1994, 11, 17)
 			dni = 38683033
 			telefono = "1166899679"
 			direccion = "Calle Falsa 123"
 			activo = true
-			email = "nicolasdichiara@hotmail.com"
 		]
 
 		val brian = new Paseador => [
-			username = "bzerial"
-			password = "bzerial"
-			fechaAlta = LocalDate.now
+			email = "brian@hotmail.com"
 			nombre = "Brian"
 			apellido = "Zerial"
+			password = "bzerial"
+			fechaAlta = LocalDate.now
 			fechaNacimiento = LocalDate.of(1994, 11, 17)
 			dni = 37494994
 			telefono = "123456789"
 			direccion = "Calle Falsa 1234"
 			activo = true
-			email = "brian@hotmail.com"
 		]
 
 		val maxi = new Duenio => [
-			username = "mbianco"
-			password = "mbianco"
-			fechaAlta = LocalDate.now
+			email = "maxi@hotmail.com"
 			nombre = "Maximiliano"
 			apellido = "Bianco"
+			password = "mbianco"
+			fechaAlta = LocalDate.now
 			fechaNacimiento = LocalDate.of(1994, 11, 17)
 			dni = 38282882
 			telefono = "123456789"
 			direccion = "Calle Falsa 1234"
 			activo = true
-			email = "maxi@hotmail.com"
 		]
 
 		// CREO LAS RAZAS

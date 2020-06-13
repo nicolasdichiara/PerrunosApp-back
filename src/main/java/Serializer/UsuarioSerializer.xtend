@@ -25,15 +25,14 @@ class UsuarioSerializer extends StdSerializer<Usuario>{
 	override serialize(Usuario value, JsonGenerator gen, SerializerProvider provider) throws IOException {
 		gen.writeStartObject();
 		gen.writeStringField("id", parserStringToLong.parsearDeLongAString(value.idUsuario));
-		gen.writeStringField("usuario", value.username);
-		gen.writeStringField("fechaAlta", getStringDateFromLocalDate(value.fechaAlta));
+		gen.writeStringField("email", value.email);
 		gen.writeStringField("nombre", value.nombre);
 		gen.writeStringField("apellido", value.apellido);
+		gen.writeStringField("fechaAlta", getStringDateFromLocalDate(value.fechaAlta));
 		gen.writeStringField("fechaNacimiento", getStringDateFromLocalDate(value.fechaNacimiento));
 		gen.writeStringField("dni", value.dni.toString);
 		gen.writeStringField("telefono", value.telefono);
 		gen.writeStringField("direccion", value.direccion);
-		gen.writeStringField("email", value.email);
 		gen.writeEndObject();
 	}
 	

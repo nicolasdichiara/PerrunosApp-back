@@ -64,17 +64,12 @@ class PerrunosRestAPI {
 	def crearDuenio(@Body String body) {
 		try {
 			val nuevoDuenio = new Duenio => [
-				username = body.getPropertyValue("username")
-				password = body.getPropertyValue("password")
-				fechaAlta = LocalDate.now
+				email = body.getPropertyValue("email")
 				nombre = body.getPropertyValue("nombre")
 				apellido = body.getPropertyValue("apellido")
-				fechaNacimiento = body.getPropertyAsDate("fechaNacimiento","dd/MM/yyyy")
-				dni = Integer.parseInt(body.getPropertyValue("dni"))
-				telefono = body.getPropertyValue("telefono")
-				direccion = body.getPropertyValue("direccion")
+				password = body.getPropertyValue("password")
+				fechaAlta = LocalDate.now
 				activo = true
-				email = body.getPropertyValue("email")
 			]
 			repoUsuario.create(nuevoDuenio)
 			return ok()
@@ -87,19 +82,14 @@ class PerrunosRestAPI {
 	def crearPaseador(@Body String body) {
 		try {
 			val nuevoPaseador = new Paseador => [
-				username = body.getPropertyValue("username")
-				password = body.getPropertyValue("password")
-				fechaAlta = LocalDate.now
+				email = body.getPropertyValue("email")
 				nombre = body.getPropertyValue("nombre")
 				apellido = body.getPropertyValue("apellido")
-				fechaNacimiento = body.getPropertyAsDate("fechaNacimiento","dd/MM/yyyy")//LocalDate.of(1994, 11, 17)
-				dni = Integer.parseInt(body.getPropertyValue("dni"))
-				telefono = body.getPropertyValue("telefono")
-				direccion = body.getPropertyValue("direccion")
+				password = body.getPropertyValue("password")
+				fechaAlta = LocalDate.now
 				activo = true
-				email = body.getPropertyValue("email")
 			]
-			println("el usuario nuevo es: " + nuevoPaseador.toJson)
+			repoUsuario.create(nuevoPaseador)
 			return ok()
 		} catch (UserException exception) {
 			return badRequest()
