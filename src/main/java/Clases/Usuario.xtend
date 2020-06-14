@@ -8,6 +8,11 @@ import javax.persistence.Id
 import javax.persistence.GeneratedValue
 import javax.persistence.GenerationType
 import javax.persistence.Column
+import javax.persistence.OneToMany
+import javax.persistence.FetchType
+import java.util.List
+import javax.persistence.ManyToOne
+
 
 @Entity
 @Observable
@@ -47,9 +52,27 @@ class Usuario {
 	
 	@Column
 	Boolean activo
+	
+	@ManyToOne(fetch=FetchType.LAZY)
+	Perfil tipoPerfil
+	
+	@OneToMany(fetch=FetchType.LAZY)
+	List<Perro> perros = newArrayList
+	
+	def agregarPerro(Perro unPerro){
+		perros.add(unPerro)
+	}
+	
+	def eliminarPerro(Perro unPerro){
+		perros.remove(unPerro)
+	}
 
 	def verificarUsuario(String usuarioLogin, String passwordLogin) {
 		return (email == usuarioLogin && password == passwordLogin)
+	}
+	
+	def deshabilitarPerfil(){
+		activo = false
 	}
 
 }

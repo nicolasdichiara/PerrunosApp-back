@@ -2,23 +2,26 @@ package Clases
 
 import org.eclipse.xtend.lib.annotations.Accessors
 import javax.persistence.Entity
-import java.util.List
-import javax.persistence.OneToMany
-import javax.persistence.FetchType
+import javax.persistence.Transient
+import javax.persistence.Column
 
 @Accessors
 @Entity
-class Duenio extends Usuario{
+class Duenio extends Perfil {
 	
-	@OneToMany(fetch=FetchType.LAZY)
-	List<Perro> perros = newArrayList
+	@Column
+	String nombrePerfil = "Dueño"
 	
-	def agregarPerro(Perro unPerro){
-		perros.add(unPerro)
+	@Transient
+	static Duenio instance = null
+
+	private new() {
 	}
-	
-	def eliminarPerro(Perro unPerro){
-		perros.remove(unPerro)
+
+	static def getInstance() {
+		if (instance === null) {
+			instance = new Duenio
+		}
+		instance
 	}
-	
 }

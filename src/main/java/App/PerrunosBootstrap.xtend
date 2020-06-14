@@ -8,12 +8,17 @@ import Clases.Raza
 import Repositorio.RepositorioRazas
 import Repositorio.RepositorioPerros
 import Clases.Perro
+import Clases.Usuario
+import Repositorio.RepositorioPerfil
+import Clases.Guarderia
 
 class PerrunosBootstrap {
 
 	static RepositorioUsuario repoU = new RepositorioUsuario
 	static RepositorioRazas repoRazas = new RepositorioRazas
 	static RepositorioPerros repoPerros = new RepositorioPerros
+	static RepositorioPerfil repoPerfil = new RepositorioPerfil
+	
 
 	def static crearDatosSiNoHay() {
 		if (repoPerros.allInstances.size == 0) {
@@ -25,7 +30,7 @@ class PerrunosBootstrap {
 
 	def static crearDatos() {
 		// CREO LOS USUARIOS
-		val nico = new Duenio => [
+		val nico = new Usuario => [
 			email = "nicolasdichiara@hotmail.com"
 			nombre = "Nicolás"
 			apellido = "Dichiara"
@@ -36,9 +41,10 @@ class PerrunosBootstrap {
 			telefono = "1166899679"
 			direccion = "Calle Falsa 123"
 			activo = true
+			tipoPerfil = Duenio.instance
 		]
 
-		val brian = new Paseador => [
+		val brian = new Usuario => [
 			email = "brian@hotmail.com"
 			nombre = "Brian"
 			apellido = "Zerial"
@@ -49,9 +55,10 @@ class PerrunosBootstrap {
 			telefono = "123456789"
 			direccion = "Calle Falsa 1234"
 			activo = true
+			tipoPerfil = Paseador.instance
 		]
 
-		val maxi = new Duenio => [
+		val maxi = new Usuario => [
 			email = "maxi@hotmail.com"
 			nombre = "Maximiliano"
 			apellido = "Bianco"
@@ -62,6 +69,7 @@ class PerrunosBootstrap {
 			telefono = "123456789"
 			direccion = "Calle Falsa 1234"
 			activo = true
+			tipoPerfil = Duenio.instance
 		]
 
 		// CREO LAS RAZAS
@@ -102,6 +110,11 @@ class PerrunosBootstrap {
 
 		// AGREGO LOS PERROS A LOS USUARIOS
 		nico.agregarPerro(remi)
+		
+		// PERSISTO LOS PERFILES
+		repoPerfil.create(Paseador.instance)
+		repoPerfil.create(Guarderia.instance)
+		repoPerfil.create(Duenio.instance)
 		
 		// PERSISTO LAS RAZAS TODO:Repo razas
 		repoRazas.create(pointer)
