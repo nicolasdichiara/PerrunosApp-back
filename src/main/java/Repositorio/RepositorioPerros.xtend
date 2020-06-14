@@ -17,8 +17,11 @@ class RepositorioPerros extends RepositorioAbstract<Perro> {
 	
 	override generateWhereId(CriteriaBuilder criteria, CriteriaQuery<Perro> query, Root<Perro> camposRaza,
 		Long id) {
-		if (id !== null) {
-			query.where(criteria.equal(camposRaza.get("idPerro"), id))
+		if (id !== null) {			
+			query.where(newArrayList => [
+				add(criteria.equal(camposRaza.get("idPerro"), id))
+				add(criteria.equal(camposRaza.get("activo"), 1))
+			])
 		}
 	}
 	

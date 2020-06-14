@@ -20,15 +20,15 @@ import Clases.Perro
 import Repositorio.RepositorioPerros
 import Repositorio.RepositorioRazas
 
-@Controller			//maneja las llamadas post, etc
+@Controller //maneja las llamadas post, etc
 class PerrunosRestAPI {
 
-	extension JSONUtils = new JSONUtils		//permite combertir a json y diceversa (serializar y deserealizar)
-	RepositorioUsuario repoUsuario = new RepositorioUsuario	
+	extension JSONUtils = new JSONUtils // permite combertir a json y diceversa (serializar y deserealizar)
+	RepositorioUsuario repoUsuario = new RepositorioUsuario
 	RepositorioPerros repoPerro = new RepositorioPerros
 	RepositorioRazas repoRaza = new RepositorioRazas
 
-	static ParserStringToLong parserStringToLong = ParserStringToLong.instance	//los ID en hibernate son de tipo long o inter y los pasamos a tipo string
+	static ParserStringToLong parserStringToLong = ParserStringToLong.instance // los ID en hibernate son de tipo long o inter y los pasamos a tipo string
 
 	new() {
 	}
@@ -36,10 +36,10 @@ class PerrunosRestAPI {
 	// /////////////////////////////////////////////////////////////////////////////////
 	// LOGIN                                                                          //
 	// /////////////////////////////////////////////////////////////////////////////////
-	@Post("/usuario/login")						//te permite enviar un body de json sin que se vea en la direccion esto te lo envia el front, envia informa y espera respuesta
-	def login(@Body String body) {				
+	@Post("/usuario/login") // te permite enviar un body de json sin que se vea en la direccion esto te lo envia el front, envia informa y espera respuesta
+	def login(@Body String body) {
 		try {
-			val usuarioLogeadoBody = body.fromJson(UsuarioLogeadoRequest) 	//fromJson deserealiza de json a tipo objeto y trae el usaurio y contrasenia
+			val usuarioLogeadoBody = body.fromJson(UsuarioLogeadoRequest) // fromJson deserealiza de json a tipo objeto y trae el usaurio y contrasenia
 			try {
 				val usuarioLogeado = this.repoUsuario.verificarLogin(usuarioLogeadoBody.usuario,
 					usuarioLogeadoBody.password)
@@ -47,12 +47,12 @@ class PerrunosRestAPI {
 			} catch (UserException exception) {
 				return badRequest()
 			}
-		} catch (UnrecognizedPropertyException exception) {		//el segundo sirve por si se trata de asignar una propiedad objeto por otro medio como constructor
+		} catch (UnrecognizedPropertyException exception) { // el segundo sirve por si se trata de asignar una propiedad objeto por otro medio como constructor
 			return badRequest()
 		}
 	}
 
-	@Get("/usuario/:id")						//busca informacion en el back
+	@Get("/usuario/:id") // busca informacion en el back
 	def dameUsuario() {
 		try {
 			val usuario = repoUsuario.searchByID(parserStringToLong.parsearDeStringALong(id))
@@ -69,17 +69,21 @@ class PerrunosRestAPI {
 	@Post("/usuario/createDuenio")
 	def crearDuenio(@Body String body) {
 		try {
-			val nuevoDuenio = new Usuario => [
-				email = body.getPropertyValue("email")
-				nombre = body.getPropertyValue("nombre")
-				apellido = body.getPropertyValue("apellido")
-				password = body.getPropertyValue("password")
-				fechaAlta = LocalDate.now
-				activo = true
-				tipoPerfil = Duenio.instance
-			]
-			repoUsuario.create(nuevoDuenio)
-			return ok()
+			if (repoUsuario.validarCreate(body.getPropertyValue("email"))) {
+				val nuevoDuenio = new Usuario => [
+					email = body.getPropertyValue("email")
+					nombre = body.getPropertyValue("nombre")
+					apellido = body.getPropertyValue("apellido")
+					password = body.getPropertyValue("password")
+					fechaAlta = LocalDate.now
+					activo = true
+					tipoPerfil = Duenio.instance
+				]
+				repoUsuario.create(nuevoDuenio)
+				return ok()
+			} else {
+				throw new Exception("Ya existe un usuario con ese correo")
+			}
 		} catch (UserException exception) {
 			return badRequest()
 		}
@@ -88,17 +92,19 @@ class PerrunosRestAPI {
 	@Post("/usuario/createPaseador")
 	def crearPaseador(@Body String body) {
 		try {
-			val nuevoPaseador = new Usuario => [
-				email = body.getPropertyValue("email")
-				nombre = body.getPropertyValue("nombre")
-				apellido = body.getPropertyValue("apellido")
-				password = body.getPropertyValue("password")
-				fechaAlta = LocalDate.now
-				activo = true
-				tipoPerfil = Paseador.instance
-			]
-			repoUsuario.create(nuevoPaseador)
-			return ok()
+			if (repoUsuario.validarCreate(body.getPropertyValue("email"))) {
+				val nuevoPaseador = new Usuario => [
+					email = body.getPropertyValue("email")
+					nombre = body.getPropertyValue("nombre")
+					apellido = body.getPropertyValue("apellido")
+					password = body.getPropertyValue("password")
+					fechaAlta = LocalDate.now
+					activo = true
+					tipoPerfil = Paseador.instance
+				]
+				repoUsuario.create(nuevoPaseador)
+				return ok()
+			}
 		} catch (UserException exception) {
 			return badRequest()
 		}
@@ -187,17 +193,17 @@ class PerrunosRestAPI {
 			perro.paseoAlgunaVez = Boolean.parseBoolean(body.getPropertyValue("paseoAlgunaVez"))
 			perro.paseoConUnPaseador = Boolean.parseBoolean(body.getPropertyValue("paseoConUnPaseador"))
 			perro.paseoConOtrosPerros = Boolean.parseBoolean(body.getPropertyValue("paseoConOtrosPerros"))
-			
+
 			repoPerro.update(perro)
-			
+
 			return ok()
 		} catch (UserException exception) {
 			return badRequest()
 		}
 	}
-	
+
 	@Delete("/perros/deshabilitarPerro/:id")
-	def deshabilitarPerro(){
+	def deshabilitarPerro() {
 		try {
 			val perro = repoPerro.searchByID(parserStringToLong.parsearDeStringALong(id))
 			perro.deshabilitarPerro
@@ -207,9 +213,9 @@ class PerrunosRestAPI {
 			return badRequest()
 		}
 	}
-	
+
 	@Get("/perros/:id")
-	def dameElPerro(){
+	def dameElPerro() {
 		try {
 			val perro = repoPerro.searchByID(parserStringToLong.parsearDeStringALong(id))
 			return ok(perro.toJson)
@@ -217,25 +223,23 @@ class PerrunosRestAPI {
 			return badRequest()
 		}
 	}
-	
+
 	@Get("/usuario/perros/:idUser")
-	def perrosDelUsuario(){
+	def perrosDelUsuario() {
 		try {
 			val perrosDelUsuario = repoUsuario.perrosDelUsuario(parserStringToLong.parsearDeStringALong(idUser)).perros
-			return ok(perrosDelUsuario.toJson)
+			val perrosFiltrados = perrosDelUsuario.filter[perro|perro.activo].toList
+			return ok(perrosFiltrados.toJson)
 		} catch (UserException exception) {
 			return badRequest()
 		}
 	}
-	
-	//TODO:Perros del dueño
-	
-	//TODO:validar creacion de usuario por mail
-	
-	//TODO:Solo debe traer los habilitados para usuario y para mascota
-	
+
+	// /////////////////////////////////////////////////////////////////////////////////
+	// GET RAZAS                                                                      //
+	// /////////////////////////////////////////////////////////////////////////////////
 	@Get("/razas")
-	def dameTodasLasRazas(){
+	def dameTodasLasRazas() {
 		try {
 			val razas = repoRaza.allInstances
 			return ok(razas.toJson)

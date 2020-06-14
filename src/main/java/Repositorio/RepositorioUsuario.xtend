@@ -22,7 +22,12 @@ class RepositorioUsuario extends RepositorioAbstract<Usuario> {
 	override generateWhereId(CriteriaBuilder criteria, CriteriaQuery<Usuario> query, Root<Usuario> camposUsuario,
 		Long id) {
 		if (id !== null) {
-			query.where(criteria.equal(camposUsuario.get("idUsuario"), id))
+			
+			
+			query.where(newArrayList => [
+				add(criteria.equal(camposUsuario.get("idUsuario"), id))
+				add(criteria.equal(camposUsuario.get("activo"), 1))
+			])
 		}
 	}
 	
@@ -38,6 +43,23 @@ class RepositorioUsuario extends RepositorioAbstract<Usuario> {
 		} finally {
 			
 		}
+	}
+	
+	def obtenerUsuarioPorMail(String unEmail){
+		val entityManager = singletonDeEntityManager.getEntityManager
+		try {
+			val criteria = entityManager.criteriaBuilder
+			val query = criteria.createQuery(getEntityType)
+			val from = query.from(getEntityType)
+			query.where(criteria.equal(from.get("email"), unEmail))
+			entityManager.createQuery(query).singleResult
+		} finally {
+			
+		}
+	}
+	
+	def validarCreate(String unEmail) {
+		obtenerUsuarioPorMail(unEmail)===null
 	}
 
 }
