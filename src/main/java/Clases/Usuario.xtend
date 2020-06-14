@@ -60,7 +60,9 @@ class Usuario {
 	List<Perro> perros = newArrayList
 	
 	def agregarPerro(Perro unPerro){
-		perros.add(unPerro)
+		if("Dueño"==Duenio.instance.nombrePerfil){
+			perros.add(unPerro)
+		}
 	}
 	
 	def eliminarPerro(Perro unPerro){
