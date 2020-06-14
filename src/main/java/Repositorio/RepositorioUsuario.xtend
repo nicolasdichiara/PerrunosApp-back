@@ -25,5 +25,19 @@ class RepositorioUsuario extends RepositorioAbstract<Usuario> {
 			query.where(criteria.equal(camposUsuario.get("idUsuario"), id))
 		}
 	}
+	
+	def perrosDelUsuario(Long idUser){
+		val entityManager = singletonDeEntityManager.getEntityManager
+		try {
+			val criteria = entityManager.criteriaBuilder
+			val query = criteria.createQuery(getEntityType)
+			val from = query.from(getEntityType)
+			from.fetch("perros")
+			query.where(criteria.equal(from.get("idUsuario"), idUser))
+			entityManager.createQuery(query).singleResult
+		} finally {
+			
+		}
+	}
 
 }

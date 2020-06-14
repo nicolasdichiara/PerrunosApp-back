@@ -218,6 +218,22 @@ class PerrunosRestAPI {
 		}
 	}
 	
+	@Get("/usuario/perros/:idUser")
+	def perrosDelUsuario(){
+		try {
+			val perrosDelUsuario = repoUsuario.perrosDelUsuario(parserStringToLong.parsearDeStringALong(idUser)).perros
+			return ok(perrosDelUsuario.toJson)
+		} catch (UserException exception) {
+			return badRequest()
+		}
+	}
+	
+	//TODO:Perros del dueño
+	
+	//TODO:validar creacion de usuario por mail
+	
+	//TODO:Solo debe traer los habilitados para usuario y para mascota
+	
 	@Get("/razas")
 	def dameTodasLasRazas(){
 		try {
