@@ -37,6 +37,9 @@ class Usuario {
 
 	@Column
 	LocalDate fechaAlta
+	
+	@Column(length=150)
+	String apodo
 
 	@Column
 	LocalDate fechaNacimiento

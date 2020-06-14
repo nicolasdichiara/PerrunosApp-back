@@ -16,7 +16,7 @@ class Perro {
 
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
-	Integer ID
+	Integer idPerro
 	@Column(length=150)
 	String nombre
 	@ManyToOne(fetch=FetchType.LAZY)
@@ -43,5 +43,11 @@ class Perro {
 	Boolean paseoConUnPaseador
 	@Column
 	Boolean paseoConOtrosPerros
+	@Column
+	Boolean activo
+	
+	def deshabilitarPerro(){
+		activo = false
+	}
 
 }

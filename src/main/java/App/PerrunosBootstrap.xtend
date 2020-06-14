@@ -21,10 +21,10 @@ class PerrunosBootstrap {
 	
 
 	def static crearDatosSiNoHay() {
-		if (repoPerros.allInstances.size == 0) {
+		if (repoRazas.allInstances.size == 0) {
 			crearDatos
 		} else {
-			println("Ya hay datos cargados en al base, se saltea la creación de datos de prueba")
+			println("Ya hay datos cargados en la base, se saltea la creación de datos de prueba")
 		}
 	}
 
@@ -36,6 +36,7 @@ class PerrunosBootstrap {
 			apellido = "Dichiara"
 			password = "ndichiara"
 			fechaAlta = LocalDate.now
+			apodo = "Nico"
 			fechaNacimiento = LocalDate.of(1994, 11, 17)
 			dni = 38683033
 			telefono = "1166899679"
@@ -50,6 +51,7 @@ class PerrunosBootstrap {
 			apellido = "Zerial"
 			password = "bzerial"
 			fechaAlta = LocalDate.now
+			apodo = "Linkin"
 			fechaNacimiento = LocalDate.of(1994, 11, 17)
 			dni = 37494994
 			telefono = "123456789"
@@ -64,6 +66,7 @@ class PerrunosBootstrap {
 			apellido = "Bianco"
 			password = "mbianco"
 			fechaAlta = LocalDate.now
+			apodo = "El Masi"
 			fechaNacimiento = LocalDate.of(1994, 11, 17)
 			dni = 38282882
 			telefono = "123456789"
@@ -106,6 +109,7 @@ class PerrunosBootstrap {
 			paseoAlgunaVez = true
 			paseoConUnPaseador = false
 			paseoConOtrosPerros = false
+			activo = true
 		]
 
 		// AGREGO LOS PERROS A LOS USUARIOS

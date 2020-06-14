@@ -28,6 +28,7 @@ class UsuarioSerializer extends StdSerializer<Usuario>{
 		gen.writeStringField("email", value.email);
 		gen.writeStringField("nombre", value.nombre);
 		gen.writeStringField("apellido", value.apellido);
+		gen.writeStringField("apodo", value.apodo);
 		gen.writeStringField("fechaAlta", getStringDateFromLocalDate(value.fechaAlta));
 		gen.writeStringField("fechaNacimiento", getStringDateFromLocalDate(value.fechaNacimiento));
 		gen.writeStringField("dni", value.dni.toString);

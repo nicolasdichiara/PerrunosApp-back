@@ -17,9 +17,7 @@ import Clases.Paseador
 import Clases.Usuario
 import org.uqbar.xtrest.api.annotation.Delete
 import Clases.Perro
-import Clases.Raza
 import Repositorio.RepositorioPerros
-import org.hibernate.query.criteria.internal.expression.SearchedCaseExpression.WhenClause
 import Repositorio.RepositorioRazas
 
 @Controller
@@ -113,6 +111,7 @@ class PerrunosRestAPI {
 	def completarPerfil(@Body String body) {
 		try {
 			val usuario = repoUsuario.searchByID(parserStringToLong.parsearDeStringALong(id))
+			usuario.apodo = body.getPropertyValue("apodo")
 			usuario.fechaNacimiento = body.getPropertyAsDate("fechaNacimiento", "dd/MM/yyyy")
 			usuario.dni = Integer.parseInt(body.getPropertyValue("dni"))
 			usuario.telefono = body.getPropertyValue("telefono")
@@ -158,11 +157,48 @@ class PerrunosRestAPI {
 				paseoAlgunaVez = Boolean.parseBoolean(body.getPropertyValue("paseoAlgunaVez"))
 				paseoConUnPaseador = Boolean.parseBoolean(body.getPropertyValue("paseoConUnPaseador"))
 				paseoConOtrosPerros = Boolean.parseBoolean(body.getPropertyValue("paseoConOtrosPerros"))
+				activo = true
 			]
 			usuario.agregarPerro(nuevoPerro)
 			repoPerro.create(nuevoPerro)
 			repoUsuario.update(usuario)
 
+			return ok()
+		} catch (UserException exception) {
+			return badRequest()
+		}
+	}
+
+	@Post("/perros/modificarPerro/:id")
+	def modificarPerro(@Body String body) {
+		try {
+			val perro = repoPerro.searchByID(parserStringToLong.parsearDeStringALong(id))
+			val razaPerro = repoRaza.searchByID(parserStringToLong.parsearDeStringALong(body.getPropertyValue("raza")))
+			perro.nombre = body.getPropertyValue("nombre")
+			perro.raza = razaPerro
+			perro.imagen = body.getPropertyValue("imagen")
+			perro.fechaNacimiento = body.getPropertyAsDate("fechaNacimiento", "dd/MM/yyyy")
+			perro.poseeLibretaSanitaria = Boolean.parseBoolean(body.getPropertyValue("poseeLibretaSanitaria"))
+			perro.imagenLibretaVacunacion = body.getPropertyValue("imagenLibretaVacunacion")
+			perro.vacunaDeLaRabia = Boolean.parseBoolean(body.getPropertyValue("vacunaDeLaRabia"))
+			perro.desparasitado = Boolean.parseBoolean(body.getPropertyValue("desparasitado"))
+			perro.enfermedadesPrevias = body.getPropertyValue("enfermedadesPrevias")
+			perro.paseaFrecuente = Boolean.parseBoolean(body.getPropertyValue("paseaFrecuente"))
+			perro.paseoAlgunaVez = Boolean.parseBoolean(body.getPropertyValue("paseoAlgunaVez"))
+			perro.paseoConUnPaseador = Boolean.parseBoolean(body.getPropertyValue("paseoConUnPaseador"))
+			perro.paseoConOtrosPerros = Boolean.parseBoolean(body.getPropertyValue("paseoConOtrosPerros"))
+			return ok()
+		} catch (UserException exception) {
+			return badRequest()
+		}
+	}
+	
+	@Delete("/perros/deshabilitarPerro/:id")
+	def deshabilitarPerro(){
+		try {
+			val perro = repoPerro.searchByID(parserStringToLong.parsearDeStringALong(id))
+			perro.deshabilitarPerro
+			repoPerro.update(perro)
 			return ok()
 		} catch (UserException exception) {
 			return badRequest()

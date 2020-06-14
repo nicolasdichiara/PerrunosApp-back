@@ -18,7 +18,7 @@ class RepositorioPerfil extends RepositorioAbstract<Perfil> {
 	override generateWhereId(CriteriaBuilder criteria, CriteriaQuery<Perfil> query, Root<Perfil> camposRaza,
 		Long id) {
 		if (id !== null) {
-			query.where(criteria.equal(camposRaza.get("idRaza"), id))
+			query.where(criteria.equal(camposRaza.get("idPerfil"), id))
 		}
 	}
 	
