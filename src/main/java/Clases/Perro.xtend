@@ -19,7 +19,7 @@ class Perro {
 	Integer idPerro
 	@Column(length=150)
 	String nombre
-	@ManyToOne(fetch=FetchType.LAZY)
+	@ManyToOne(fetch=FetchType.EAGER) //TODO:PERDONAME DODINO
 	Raza raza
 	@Column(length=150)
 	String imagen // hay que cargar la imagen del perro

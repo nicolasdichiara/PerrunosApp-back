@@ -204,8 +204,26 @@ class PerrunosRestAPI {
 			return badRequest()
 		}
 	}
-
-// TODO:GETRAZA
+	
+	@Get("/perros/:id")
+	def dameElPerro(){
+		try {
+			val perro = repoPerro.searchByID(parserStringToLong.parsearDeStringALong(id))
+			return ok(perro.toJson)
+		} catch (UserException exception) {
+			return badRequest()
+		}
+	}
+	
+	@Get("/razas")
+	def dameTodasLasRazas(){
+		try {
+			val razas = repoRaza.allInstances
+			return ok(razas.toJson)
+		} catch (UserException exception) {
+			return badRequest()
+		}
+	}
 }
 
 @Accessors
