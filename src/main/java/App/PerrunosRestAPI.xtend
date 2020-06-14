@@ -20,15 +20,15 @@ import Clases.Perro
 import Repositorio.RepositorioPerros
 import Repositorio.RepositorioRazas
 
-@Controller
+@Controller			//maneja las llamadas post, etc
 class PerrunosRestAPI {
 
-	extension JSONUtils = new JSONUtils
-	RepositorioUsuario repoUsuario = new RepositorioUsuario
+	extension JSONUtils = new JSONUtils		//permite combertir a json y diceversa (serializar y deserealizar)
+	RepositorioUsuario repoUsuario = new RepositorioUsuario	
 	RepositorioPerros repoPerro = new RepositorioPerros
 	RepositorioRazas repoRaza = new RepositorioRazas
 
-	static ParserStringToLong parserStringToLong = ParserStringToLong.instance
+	static ParserStringToLong parserStringToLong = ParserStringToLong.instance	//los ID en hibernate son de tipo long o inter y los pasamos a tipo string
 
 	new() {
 	}
@@ -36,10 +36,10 @@ class PerrunosRestAPI {
 	// /////////////////////////////////////////////////////////////////////////////////
 	// LOGIN                                                                          //
 	// /////////////////////////////////////////////////////////////////////////////////
-	@Post("/usuario/login")
-	def login(@Body String body) {
+	@Post("/usuario/login")						//te permite enviar un body de json sin que se vea en la direccion esto te lo envia el front, envia informa y espera respuesta
+	def login(@Body String body) {				
 		try {
-			val usuarioLogeadoBody = body.fromJson(UsuarioLogeadoRequest)
+			val usuarioLogeadoBody = body.fromJson(UsuarioLogeadoRequest) 	//fromJson deserealiza de json a tipo objeto y trae el usaurio y contrasenia
 			try {
 				val usuarioLogeado = this.repoUsuario.verificarLogin(usuarioLogeadoBody.usuario,
 					usuarioLogeadoBody.password)
@@ -47,12 +47,12 @@ class PerrunosRestAPI {
 			} catch (UserException exception) {
 				return badRequest()
 			}
-		} catch (UnrecognizedPropertyException exception) {
+		} catch (UnrecognizedPropertyException exception) {		//el segundo sirve por si se trata de asignar una propiedad objeto por otro medio como constructor
 			return badRequest()
 		}
 	}
 
-	@Get("/usuario/:id")
+	@Get("/usuario/:id")						//busca informacion en el back
 	def dameUsuario() {
 		try {
 			val usuario = repoUsuario.searchByID(parserStringToLong.parsearDeStringALong(id))

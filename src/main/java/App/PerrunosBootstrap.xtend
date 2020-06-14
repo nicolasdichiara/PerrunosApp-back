@@ -42,7 +42,7 @@ class PerrunosBootstrap {
 			telefono = "1166899679"
 			direccion = "Calle Falsa 123"
 			activo = true
-			tipoPerfil = Duenio.instance
+			tipoPerfil = Duenio.instance //creas una unica instancia 
 		]
 
 		val brian = new Usuario => [
@@ -116,7 +116,7 @@ class PerrunosBootstrap {
 		nico.agregarPerro(remi)
 		
 		// PERSISTO LOS PERFILES
-		repoPerfil.create(Paseador.instance)
+		repoPerfil.create(Paseador.instance) //como es un tipo de perfil creamos un unico tipo de paseador
 		repoPerfil.create(Guarderia.instance)
 		repoPerfil.create(Duenio.instance)
 		
