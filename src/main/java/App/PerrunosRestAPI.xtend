@@ -187,6 +187,9 @@ class PerrunosRestAPI {
 			perro.paseoAlgunaVez = Boolean.parseBoolean(body.getPropertyValue("paseoAlgunaVez"))
 			perro.paseoConUnPaseador = Boolean.parseBoolean(body.getPropertyValue("paseoConUnPaseador"))
 			perro.paseoConOtrosPerros = Boolean.parseBoolean(body.getPropertyValue("paseoConOtrosPerros"))
+			
+			repoPerro.update(perro)
+			
 			return ok()
 		} catch (UserException exception) {
 			return badRequest()
