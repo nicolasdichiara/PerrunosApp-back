@@ -255,12 +255,12 @@ class PerrunosRestAPI {
 			return badRequest()
 		}
 	}
-	
+
 	// /////////////////////////////////////////////////////////////////////////////////
 	// ABMC AVISOS                                                                    //
 	// /////////////////////////////////////////////////////////////////////////////////
 	@Get("/usuario/avisos/:idUser")
-	def avisosDelUsuario(){
+	def avisosDelUsuario() {
 		try {
 			val avisosDelUsuario = repoUsuario.perrosDelUsuario(parserStringToLong.parsearDeStringALong(idUser)).avisos
 			val avisosFiltrados = avisosDelUsuario.filter[aviso|aviso.activo].toList
@@ -270,6 +270,16 @@ class PerrunosRestAPI {
 		}
 	}
 	
+	@Get("/usuario/traerUnAviso/:idAviso")
+	def dameUnAviso() {
+		try {
+			val aviso = repoAviso.searchByID(Long.parseLong(idAviso))
+			return ok(aviso.toJson)
+		} catch (UserException exception) {
+			return badRequest()
+		}
+	}
+
 	@Post("/usuario/avisos/crearAviso/:idUser")
 	def crearAviso(@Body String body) {
 		try {
@@ -295,16 +305,54 @@ class PerrunosRestAPI {
 			usuario.agregarAviso(nuevoAviso)
 			repoAviso.create(nuevoAviso)
 			repoUsuario.update(usuario)
+			return ok()
+		} catch (UserException exception) {
+			return badRequest()
+		}
+	}
 
+	@Post("/usuario/avisos/modificarAviso/:idAviso")
+	def modificarAviso(@Body String body) {
+		try {
+			val idPerroValidado = repoPerro.validarIdPerro(body.getPropertyValue("idPerro"))
+			val avisoAEditar = repoAviso.searchByID(Long.parseLong(idAviso))
+			avisoAEditar.recurrente = Boolean.parseBoolean(body.getPropertyValue("recurrente"))
+			avisoAEditar.lunes = Boolean.parseBoolean(body.getPropertyValue("lunes"))
+			avisoAEditar.martes = Boolean.parseBoolean(body.getPropertyValue("martes"))
+			avisoAEditar.miercoles = Boolean.parseBoolean(body.getPropertyValue("miercoles"))
+			avisoAEditar.jueves = Boolean.parseBoolean(body.getPropertyValue("jueves"))
+			avisoAEditar.viernes = Boolean.parseBoolean(body.getPropertyValue("viernes"))
+			avisoAEditar.sabado = Boolean.parseBoolean(body.getPropertyValue("sabado"))
+			avisoAEditar.domingo = Boolean.parseBoolean(body.getPropertyValue("domingo"))
+			avisoAEditar.fechaParticular = Boolean.parseBoolean(body.getPropertyValue("fechaparticular"))
+			avisoAEditar.fecha = body.getPropertyAsDate("fecha", "dd/MM/yyyy")
+			avisoAEditar.horario = LocalTime.parse(body.getPropertyValue("horario"))
+			avisoAEditar.detalle = body.getPropertyValue("detalle")
+			avisoAEditar.activo = true
+			avisoAEditar.tipoServicio = repoTipoServicio.tipoDeServicio(body.getPropertyValue("tipoServicio"))
+			avisoAEditar.idPerro = idPerroValidado
+			repoAviso.update(avisoAEditar)
 			return ok()
 		} catch (UserException exception) {
 			return badRequest()
 		}
 	}
 	
-	// /////////////////////////////////////////////////////////////////////////////////
-	// ABMC SERVICIOS                                                                 //
-	// /////////////////////////////////////////////////////////////////////////////////
+	@Delete("/usuario/eliminarAviso/:idAviso")
+	def deshabilitarAviso() {
+		try {
+			val aviso = repoAviso.searchByID(Long.parseLong(idAviso))
+			aviso.finalizarAviso
+			repoAviso.update(aviso)
+			return ok()
+		} catch (UserException exception) {
+			return badRequest()
+		}
+	}
+
+// /////////////////////////////////////////////////////////////////////////////////
+// ABMC SERVICIOS                                                                 //
+// /////////////////////////////////////////////////////////////////////////////////
 }
 
 @Accessors
