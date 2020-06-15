@@ -25,4 +25,12 @@ class RepositorioPerros extends RepositorioAbstract<Perro> {
 		}
 	}
 	
+	def validarIdPerro(String unIdPerro) {
+		if(unIdPerro.isNullOrEmpty){
+			null
+		} else {
+			Long.parseLong(unIdPerro)
+		}
+	}
+	
 }

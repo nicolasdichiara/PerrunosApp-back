@@ -17,7 +17,7 @@ class RepositorioAvisos extends RepositorioAbstract<Aviso> {
 
 	override generateWhereId(CriteriaBuilder criteria, CriteriaQuery<Aviso> query, Root<Aviso> camposRaza, Long id) {
 		if (id !== null) {
-			query.where(criteria.equal(camposRaza.get("idPerfil"), id))
+			query.where(criteria.equal(camposRaza.get("idAviso"), id))
 		}
 	}
 

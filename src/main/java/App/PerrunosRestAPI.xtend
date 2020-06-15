@@ -19,6 +19,11 @@ import org.uqbar.xtrest.api.annotation.Delete
 import Clases.Perro
 import Repositorio.RepositorioPerros
 import Repositorio.RepositorioRazas
+import Clases.Aviso
+import Repositorio.RepositorioAvisos
+import Repositorio.RepositorioServicio
+import java.time.LocalTime
+import Repositorio.RepositorioTipoServicio
 
 @Controller //maneja las llamadas post, etc
 class PerrunosRestAPI {
@@ -27,6 +32,9 @@ class PerrunosRestAPI {
 	RepositorioUsuario repoUsuario = new RepositorioUsuario
 	RepositorioPerros repoPerro = new RepositorioPerros
 	RepositorioRazas repoRaza = new RepositorioRazas
+	RepositorioAvisos repoAviso = new RepositorioAvisos
+	RepositorioServicio repoServicio = new RepositorioServicio
+	RepositorioTipoServicio repoTipoServicio = new RepositorioTipoServicio
 
 	static ParserStringToLong parserStringToLong = ParserStringToLong.instance // los ID en hibernate son de tipo long o inter y los pasamos a tipo string
 
@@ -251,6 +259,48 @@ class PerrunosRestAPI {
 	// /////////////////////////////////////////////////////////////////////////////////
 	// ABMC AVISOS                                                                    //
 	// /////////////////////////////////////////////////////////////////////////////////
+	@Get("/usuario/avisos/:idUser")
+	def avisosDelUsuario(){
+		try {
+			val avisosDelUsuario = repoUsuario.perrosDelUsuario(parserStringToLong.parsearDeStringALong(idUser)).avisos
+			val avisosFiltrados = avisosDelUsuario.filter[aviso|aviso.activo].toList
+			return ok(avisosFiltrados.toJson)
+		} catch (UserException exception) {
+			return badRequest()
+		}
+	}
+	
+	@Post("/usuario/avisos/crearAviso/:idUser")
+	def crearAviso(@Body String body) {
+		try {
+			val usuario = repoUsuario.searchByID(parserStringToLong.parsearDeStringALong(idUser))
+			val idPerroValidado = repoPerro.validarIdPerro(body.getPropertyValue("idPerro"))
+			val nuevoAviso = new Aviso => [
+				recurrente = Boolean.parseBoolean(body.getPropertyValue("recurrente"))
+				lunes = Boolean.parseBoolean(body.getPropertyValue("lunes"))
+				martes = Boolean.parseBoolean(body.getPropertyValue("martes"))
+				miercoles = Boolean.parseBoolean(body.getPropertyValue("miercoles"))
+				jueves = Boolean.parseBoolean(body.getPropertyValue("jueves"))
+				viernes = Boolean.parseBoolean(body.getPropertyValue("viernes"))
+				sabado = Boolean.parseBoolean(body.getPropertyValue("sabado"))
+				domingo = Boolean.parseBoolean(body.getPropertyValue("domingo"))
+				fechaParticular = Boolean.parseBoolean(body.getPropertyValue("fechaparticular"))
+				fecha = body.getPropertyAsDate("fecha", "dd/MM/yyyy")
+				horario = LocalTime.parse(body.getPropertyValue("horario"))
+				detalle = body.getPropertyValue("detalle")
+				activo = true
+				tipoServicio = repoTipoServicio.tipoDeServicio(body.getPropertyValue("tipoServicio"))
+				idPerro = idPerroValidado
+			]
+			usuario.agregarAviso(nuevoAviso)
+			repoAviso.create(nuevoAviso)
+			repoUsuario.update(usuario)
+
+			return ok()
+		} catch (UserException exception) {
+			return badRequest()
+		}
+	}
 	
 	// /////////////////////////////////////////////////////////////////////////////////
 	// ABMC SERVICIOS                                                                 //

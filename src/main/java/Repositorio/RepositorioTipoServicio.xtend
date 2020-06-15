@@ -4,6 +4,8 @@ import Clases.TipoServicio
 import javax.persistence.criteria.Root
 import javax.persistence.criteria.CriteriaBuilder
 import javax.persistence.criteria.CriteriaQuery
+import Clases.ServicioPaseo
+import Clases.ServicioGuarderia
 
 class RepositorioTipoServicio extends RepositorioAbstract<TipoServicio> {
 
@@ -17,7 +19,15 @@ class RepositorioTipoServicio extends RepositorioAbstract<TipoServicio> {
 
 	override generateWhereId(CriteriaBuilder criteria, CriteriaQuery<TipoServicio> query, Root<TipoServicio> camposRaza, Long id) {
 		if (id !== null) {
-			query.where(criteria.equal(camposRaza.get("idPerfil"), id))
+			query.where(criteria.equal(camposRaza.get("idTipoServicio"), id))
+		}
+	}
+	
+	def TipoServicio tipoDeServicio(String unTipo) {
+		if(unTipo == "Paseo"){
+			ServicioPaseo.instance
+		} else {
+			ServicioGuarderia.instance
 		}
 	}
 

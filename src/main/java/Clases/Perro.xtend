@@ -16,7 +16,7 @@ class Perro {
 
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
-	Integer idPerro
+	Long idPerro
 	@Column(length=150)
 	String nombre
 	@ManyToOne(fetch=FetchType.EAGER) //TODO:PERDONAME DODINO

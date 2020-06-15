@@ -15,6 +15,8 @@ import Repositorio.RepositorioAvisos
 import Clases.Aviso
 import java.time.LocalTime
 import Repositorio.RepositorioTipoServicio
+import Clases.ServicioPaseo
+import Clases.ServicioGuarderia
 
 class PerrunosBootstrap {
 
@@ -135,11 +137,11 @@ class PerrunosBootstrap {
 			viernes = false
 			sabado = false
 			domingo = false
-			horario = LocalTime.of(15, 30)
+			horario = LocalTime.of(14, 30)
 			detalle = "Tiene collar de ahorque"
 			activo = true
 			tipoServicio = ServicioPaseo.instance
-			idPerro = Long.parseLong("9")
+			idPerro = remi.idPerro//TODO:Ver tema de id que queda null porque todavia no persiste
 		]
 
 		val avisoNicoPaseo2 = new Aviso => [
@@ -153,11 +155,11 @@ class PerrunosBootstrap {
 			domingo = false
 			fechaParticular = true
 			fecha = LocalDate.of(2020, 7, 15)
-			horario = LocalTime.of(15, 30)
+			horario = LocalTime.of(14, 30)
 			detalle = "Aca iria una descripcion pero no se que poner"
 			activo = true
 			tipoServicio = ServicioPaseo.instance
-			idPerro = Long.parseLong("9")
+			idPerro = remi.idPerro
 		]
 
 		// AGREGO LOS PERROS A LOS USUARIOS
