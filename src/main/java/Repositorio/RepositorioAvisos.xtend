@@ -1,21 +1,21 @@
 package Repositorio
 
-import Clases.Perfil
+import Clases.Aviso
 import javax.persistence.criteria.Root
-import javax.persistence.criteria.CriteriaQuery
 import javax.persistence.criteria.CriteriaBuilder
+import javax.persistence.criteria.CriteriaQuery
 
-class RepositorioPerfil extends RepositorioAbstract<Perfil> {
+class RepositorioAvisos extends RepositorioAbstract<Aviso> {
 
 	override getEntityType() {
-		return Perfil
+		return Aviso
 	}
 
-	override fetch(Root<Perfil> from) {
+	override fetch(Root<Aviso> from) {
 		throw new UnsupportedOperationException("TODO: auto-generated method stub")
 	}
 
-	override generateWhereId(CriteriaBuilder criteria, CriteriaQuery<Perfil> query, Root<Perfil> camposRaza, Long id) {
+	override generateWhereId(CriteriaBuilder criteria, CriteriaQuery<Aviso> query, Root<Aviso> camposRaza, Long id) {
 		if (id !== null) {
 			query.where(criteria.equal(camposRaza.get("idPerfil"), id))
 		}

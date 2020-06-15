@@ -11,6 +11,10 @@ import Clases.Perro
 import Clases.Usuario
 import Repositorio.RepositorioPerfil
 import Clases.Guarderia
+import Repositorio.RepositorioAvisos
+import Clases.Aviso
+import java.time.LocalTime
+import Repositorio.RepositorioTipoServicio
 
 class PerrunosBootstrap {
 
@@ -18,7 +22,8 @@ class PerrunosBootstrap {
 	static RepositorioRazas repoRazas = new RepositorioRazas
 	static RepositorioPerros repoPerros = new RepositorioPerros
 	static RepositorioPerfil repoPerfil = new RepositorioPerfil
-	
+	static RepositorioAvisos repoAviso = new RepositorioAvisos
+	static RepositorioTipoServicio repoTipoDeServicio = new RepositorioTipoServicio
 
 	def static crearDatosSiNoHay() {
 		if (repoRazas.allInstances.size == 0) {
@@ -29,7 +34,9 @@ class PerrunosBootstrap {
 	}
 
 	def static crearDatos() {
-		// CREO LOS USUARIOS
+		// ////////////////////////////////////////////
+		// CREO LOS USUARIOS                         //
+		// ////////////////////////////////////////////
 		val nico = new Usuario => [
 			email = "nicolasdichiara@hotmail.com"
 			nombre = "Nicolás"
@@ -42,7 +49,7 @@ class PerrunosBootstrap {
 			telefono = "1166899679"
 			direccion = "Calle Falsa 123"
 			activo = true
-			tipoPerfil = Duenio.instance //creas una unica instancia 
+			tipoPerfil = Duenio.instance // creas una unica instancia 
 		]
 
 		val brian = new Usuario => [
@@ -75,7 +82,9 @@ class PerrunosBootstrap {
 			tipoPerfil = Duenio.instance
 		]
 
-		// CREO LAS RAZAS
+		// ////////////////////////////////////////////
+		// CREO LAS RAZAS                            //
+		// ////////////////////////////////////////////
 		val pointer = new Raza => [
 			nombre = "Pointer"
 		]
@@ -93,7 +102,9 @@ class PerrunosBootstrap {
 			nombre = "Golden Retriever"
 		]
 
-		// CREO LOS PERROS
+		// ////////////////////////////////////////////
+		// CREO LOS PERROS                           //
+		// ////////////////////////////////////////////
 		// PERROS DE NICO
 		val remi = new Perro => [
 			nombre = "Remi"
@@ -112,29 +123,80 @@ class PerrunosBootstrap {
 			activo = true
 		]
 
+		// ////////////////////////////////////////////
+		// CREO LOS AVISOS                           //
+		// ////////////////////////////////////////////
+		val avisoNicoPaseo = new Aviso => [
+			recurrente = true
+			lunes = true
+			martes = false
+			miercoles = true
+			jueves = false
+			viernes = false
+			sabado = false
+			domingo = false
+			horario = LocalTime.of(15, 30)
+			detalle = "Tiene collar de ahorque"
+			activo = true
+			tipoServicio = ServicioPaseo.instance
+			idPerro = Long.parseLong("9")
+		]
+
+		val avisoNicoPaseo2 = new Aviso => [
+			recurrente = false
+			lunes = false
+			martes = false
+			miercoles = false
+			jueves = false
+			viernes = false
+			sabado = false
+			domingo = false
+			fechaParticular = true
+			fecha = LocalDate.of(2020, 7, 15)
+			horario = LocalTime.of(15, 30)
+			detalle = "Aca iria una descripcion pero no se que poner"
+			activo = true
+			tipoServicio = ServicioPaseo.instance
+			idPerro = Long.parseLong("9")
+		]
+
 		// AGREGO LOS PERROS A LOS USUARIOS
 		nico.agregarPerro(remi)
-		
+
+		// AGREGO LOS AVISOS A LOS USUARIOS
+		nico.agregarAviso(avisoNicoPaseo)
+		nico.agregarAviso(avisoNicoPaseo2)
+
+		// ////////////////////////////////////////////
+		// PERSISTO LAS COSAS                        //
+		// ////////////////////////////////////////////
 		// PERSISTO LOS PERFILES
-		repoPerfil.create(Paseador.instance) //como es un tipo de perfil creamos un unico tipo de paseador
+		repoPerfil.create(Paseador.instance) // como es un tipo de perfil creamos un unico tipo de paseador
 		repoPerfil.create(Guarderia.instance)
 		repoPerfil.create(Duenio.instance)
-		
+
+		// PERSISTO LOS TIPOS DE SERVICIO
+		repoTipoDeServicio.create(ServicioPaseo.instance)
+		repoTipoDeServicio.create(ServicioGuarderia.instance)
+
 		// PERSISTO LAS RAZAS TODO:Repo razas
 		repoRazas.create(pointer)
 		repoRazas.create(pitbull)
 		repoRazas.create(borderCollie)
 		repoRazas.create(labrador)
 		repoRazas.create(golden)
-		
+
 		// PERSISTO LOS PERROS TODO:Repo perros
 		repoPerros.create(remi)
 
+		// PERSISTO LOS AVISOS
+		repoAviso.create(avisoNicoPaseo)
+		repoAviso.create(avisoNicoPaseo2)
+		
 		// PERSISTO LOS USUARIOS
 		repoU.create(nico)
 		repoU.create(brian)
 		repoU.create(maxi)
-
 
 	}
 }

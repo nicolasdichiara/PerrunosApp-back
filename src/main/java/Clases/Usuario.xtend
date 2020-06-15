@@ -62,6 +62,9 @@ class Usuario {
 	@OneToMany(fetch=FetchType.LAZY)
 	List<Perro> perros = newArrayList
 	
+	@OneToMany(fetch=FetchType.LAZY)
+	List<Aviso> avisos = newArrayList
+	
 	def agregarPerro(Perro unPerro){
 		if("Dueño"==Duenio.instance.nombrePerfil){
 			perros.add(unPerro)
@@ -78,6 +81,10 @@ class Usuario {
 	
 	def deshabilitarPerfil(){
 		activo = false
+	}
+	
+	def agregarAviso(Aviso aviso) {
+		avisos.add(aviso)
 	}
 
 }

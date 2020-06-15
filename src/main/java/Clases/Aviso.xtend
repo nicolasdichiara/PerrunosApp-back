@@ -45,6 +45,8 @@ class Aviso {
 	Boolean activo
 	@ManyToOne
 	TipoServicio tipoServicio
+	@Column
+	Long idPerro
 	
 	def finalizarAviso(){//porque lo contrataron o porque lo dio de baja
 		activo = false
