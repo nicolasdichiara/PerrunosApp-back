@@ -20,7 +20,12 @@ class Servicio {
 	Long idDunio
 	
 	@Column
+	Long idPerro
+	
+	@Column
 	Long idPrestadorDeServicio
+	
+	val tipoServicio = TipoServicio
 	
 	@Column
 	Boolean estadoFinalizado
