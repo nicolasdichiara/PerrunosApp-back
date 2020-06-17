@@ -43,20 +43,20 @@ class RepositorioUsuario extends RepositorioAbstract<Usuario> {
 		}
 	}
 
-	def obtenerUsuarioPorMail(String unEmail) {
+	def buscoUsuariosParaEseMail(String unEmail) {
 		val entityManager = singletonDeEntityManager.getEntityManager
 		try {
 			val criteria = entityManager.criteriaBuilder
 			val query = criteria.createQuery(getEntityType)
 			val from = query.from(getEntityType)
 			query.where(criteria.equal(from.get("email"), unEmail))
-			entityManager.createQuery(query).singleResult
+			entityManager.createQuery(query).resultList
 		} finally {
 		}
 	}
 
 	def validarCreate(String unEmail) {
-		obtenerUsuarioPorMail(unEmail) === null
+		buscoUsuariosParaEseMail(unEmail).size==0
 	}
 
 }
