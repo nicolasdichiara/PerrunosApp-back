@@ -4,6 +4,7 @@ import Clases.Aviso
 import javax.persistence.criteria.Root
 import javax.persistence.criteria.CriteriaBuilder
 import javax.persistence.criteria.CriteriaQuery
+import Clases.Usuario
 
 class RepositorioAvisos extends RepositorioAbstract<Aviso> {
 
@@ -23,5 +24,4 @@ class RepositorioAvisos extends RepositorioAbstract<Aviso> {
 			])
 		}
 	}
-
 }

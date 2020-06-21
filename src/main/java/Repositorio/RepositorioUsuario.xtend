@@ -58,5 +58,27 @@ class RepositorioUsuario extends RepositorioAbstract<Usuario> {
 	def validarCreate(String unEmail) {
 		buscoUsuariosParaEseMail(unEmail).size==0
 	}
+	
+	def usuariosFetcheados() {
+		val entityManager = singletonDeEntityManager.getEntityManager
+		try {
+			val criteria = entityManager.criteriaBuilder
+			val query = criteria.createQuery(entityType)
+			val from = query.from(entityType)
+			fetchsParaElUsuario(from)
+			query.select(from)
+			entityManager.createQuery(query).resultList
+		} finally {
+			entityManager?.close
+		}
+	}
+	
+	def fetchsParaElUsuario(Root<Usuario> from) {
+		from.fetch("avisos")
+	}
+	
+	def idUsuarioDelAviso(Long idAviso) {
+		usuariosFetcheados.findFirst[usuario|usuario.tieneAviso(idAviso)].idUsuario
+	}
 
 }

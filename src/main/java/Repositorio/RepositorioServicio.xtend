@@ -17,7 +17,10 @@ class RepositorioServicio extends RepositorioAbstract<Servicio> {
 
 	override generateWhereId(CriteriaBuilder criteria, CriteriaQuery<Servicio> query, Root<Servicio> camposRaza, Long id) {
 		if (id !== null) {
-			query.where(criteria.equal(camposRaza.get("idServicio"), id))
+			query.where(newArrayList => [
+				add(criteria.equal(camposRaza.get("idServicio"), id))
+				add(criteria.equal(camposRaza.get("activo"), 1))
+			])
 		}
 	}
 	

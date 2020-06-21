@@ -12,7 +12,7 @@ import javax.persistence.OneToMany
 import javax.persistence.FetchType
 import java.util.List
 import javax.persistence.ManyToOne
-
+import javax.persistence.ManyToMany
 
 @Entity
 @Observable
@@ -65,6 +65,9 @@ class Usuario {
 	@OneToMany(fetch=FetchType.LAZY)
 	List<Aviso> avisos = newArrayList
 	
+	@ManyToMany(fetch=FetchType.LAZY)
+	List<Servicio> servicios = newArrayList
+	
 	def agregarPerro(Perro unPerro){
 		if("Dueño"==Duenio.instance.nombrePerfil){
 			perros.add(unPerro)
@@ -85,6 +88,14 @@ class Usuario {
 	
 	def agregarAviso(Aviso aviso) {
 		avisos.add(aviso)
+	}
+	
+	def agregarServicio(Servicio servicio) {
+		servicios.add(servicio)
+	}
+	
+	def tieneAviso(Long idAviso) {
+		avisos.map[aviso|aviso.idAviso].contains(idAviso)
 	}
 
 }

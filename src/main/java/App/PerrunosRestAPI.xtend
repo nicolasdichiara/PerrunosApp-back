@@ -24,6 +24,8 @@ import Repositorio.RepositorioAvisos
 import Repositorio.RepositorioServicio
 import java.time.LocalTime
 import Repositorio.RepositorioTipoServicio
+import Clases.Servicio
+import Clases.ServicioPaseo
 
 @Controller //maneja las llamadas post, etc
 class PerrunosRestAPI {
@@ -269,7 +271,7 @@ class PerrunosRestAPI {
 			return badRequest()
 		}
 	}
-	
+
 	@Get("/usuario/traerUnAviso/:idAviso")
 	def dameUnAviso() {
 		try {
@@ -337,7 +339,7 @@ class PerrunosRestAPI {
 			return badRequest()
 		}
 	}
-	
+
 	@Delete("/usuario/eliminarAviso/:idAviso")
 	def deshabilitarAviso() {
 		try {
@@ -350,9 +352,49 @@ class PerrunosRestAPI {
 		}
 	}
 
-// /////////////////////////////////////////////////////////////////////////////////
-// ABMC SERVICIOS                                                                 //
-// /////////////////////////////////////////////////////////////////////////////////
+	// /////////////////////////////////////////////////////////////////////////////////
+	// ABMC SERVICIOS                                                                 //
+	// /////////////////////////////////////////////////////////////////////////////////
+	@Post("/usuario/servicios/contratarPaseo")
+	def crearServicio(@Body String body) {
+		try {
+			val avisoADarDeBaja = repoAviso.searchByID(Long.parseLong(body.getPropertyValue("idAviso")))
+			val contratante = repoUsuario.searchByID(Long.parseLong(body.getPropertyValue("idContratante")))
+			val idPerroValidado = repoPerro.validarIdPerro(body.getPropertyValue("idPerro"))
+			val publicante = repoUsuario.searchByID(repoUsuario.idUsuarioDelAviso(avisoADarDeBaja.idAviso))
+			val nuevoServicio = new Servicio => [
+				idPerro = idPerroValidado
+				activo = true
+				fechaRealizacion = avisoADarDeBaja.fecha
+				horario = avisoADarDeBaja.horario
+				pago = false
+				calificacion = null
+				tipoServicio = ServicioPaseo.instance
+			]
+			avisoADarDeBaja.finalizarAviso
+			contratante.agregarServicio(nuevoServicio)
+			println(contratante.servicios)
+			publicante.agregarServicio(nuevoServicio)
+			repoAviso.update(avisoADarDeBaja)
+			repoServicio.create(nuevoServicio)
+			repoUsuario.update(contratante)
+			repoUsuario.update(publicante)
+			return ok()
+		} catch (UserException exception) {
+			return badRequest()
+		}
+	}
+	
+	@Post("/usuario/servicios/finalizarServicio/:idServicio")
+	def finalizarServicio(@Body String body) {
+		try {
+			val serviciofinalizado = repoServicio.searchByID(Long.parseLong(idServicio))
+			repoServicio.update(serviciofinalizado)
+			return ok()
+		} catch (UserException exception) {
+			return badRequest()
+		}
+	}
 }
 
 @Accessors

@@ -7,6 +7,9 @@ import javax.persistence.GeneratedValue
 import javax.persistence.GenerationType
 import javax.persistence.Column
 import java.time.LocalDate
+import javax.persistence.ManyToOne
+import java.time.LocalTime
+import javax.persistence.FetchType
 
 @Entity
 @Accessors
@@ -15,40 +18,31 @@ class Servicio {
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
 	Long idServicio
-	
-	@Column
-	Long idDunio
-	
 	@Column
 	Long idPerro
-	
 	@Column
-	Long idPrestadorDeServicio
-	
-	val tipoServicio = TipoServicio
-	
-	@Column
-	Boolean estadoFinalizado
-	
+	Boolean activo
 	@Column
 	LocalDate fechaRealizacion
-	
+	@Column
+	LocalTime horario
 	@Column
 	Boolean pago
-	
 	@Column
 	Double calificacion
+	@ManyToOne(fetch=FetchType.EAGER)
+	TipoServicio tipoServicio 
 	
 	def finalizarServicio(){
-		estadoFinalizado = false
+		activo = false
 	}
 	
 	def seEncuentraPago(){
 		pago = true
 	}
 	
-	def calificar(){
-		
+	def calificar(Double unaCalificacion){
+		calificacion = unaCalificacion
 	}
 	
 }
