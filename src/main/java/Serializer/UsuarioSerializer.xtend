@@ -11,17 +11,17 @@ import com.fasterxml.jackson.databind.ser.std.StdSerializer
 import java.time.format.DateTimeFormatter
 import java.time.LocalDate
 
-class UsuarioSerializer extends StdSerializer<Usuario>{
-	new(Class<Usuario> s){
+class UsuarioSerializer extends StdSerializer<Usuario> {
+	new(Class<Usuario> s) {
 		super(s)
 	}
-	
+
 	static ParserStringToLong parserStringToLong = ParserStringToLong.instance
-	
+
 	static val DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
-	
-	static def getStringDateFromLocalDate(LocalDate date) { 	date.format(formatter) 	}
-	
+
+	static def getStringDateFromLocalDate(LocalDate date) { date.format(formatter) }
+
 	override serialize(Usuario value, JsonGenerator gen, SerializerProvider provider) throws IOException {
 		gen.writeStartObject();
 		gen.writeStringField("id", parserStringToLong.parsearDeLongAString(value.idUsuario));
@@ -30,19 +30,30 @@ class UsuarioSerializer extends StdSerializer<Usuario>{
 		gen.writeStringField("apellido", value.apellido);
 		gen.writeStringField("apodo", value.apodo);
 		gen.writeStringField("fechaAlta", getStringDateFromLocalDate(value.fechaAlta));
-		gen.writeStringField("fechaNacimiento", getStringDateFromLocalDate(value.fechaNacimiento));
-		gen.writeStringField("dni", value.dni.toString);
+		if (value.dni !== null) {
+			gen.writeStringField("fechaNacimiento", getStringDateFromLocalDate(value.fechaNacimiento));
+		} else {
+			gen.writeStringField("fechaNacimiento",null)
+		}
+		if (value.dni !== null) {
+			gen.writeStringField("dni", value.dni.toString);
+		} else {
+			gen.writeStringField("dni", null)
+		}
 		gen.writeStringField("telefono", value.telefono);
 		gen.writeStringField("direccion", value.direccion);
+		gen.writeStringField("tipoPerfil", value.tipoPerfil.nombrePerfil)
 		gen.writeEndObject();
 	}
-	
+
 	static def String toJson(Usuario usuario) {
-		if(usuario === null){return "[ ]"}
+		if (usuario === null) {
+			return "[ ]"
+		}
 		mapper().writeValueAsString(usuario)
 	}
-	
-	static def mapper(){
+
+	static def mapper() {
 		val ObjectMapper mapper = new ObjectMapper()
 		val SimpleModule module = new SimpleModule()
 		module.addSerializer(Usuario, new UsuarioSerializer(Usuario))

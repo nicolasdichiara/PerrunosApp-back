@@ -56,7 +56,7 @@ class Usuario {
 	@Column
 	Boolean activo
 	
-	@ManyToOne(fetch=FetchType.LAZY)
+	@ManyToOne(fetch=FetchType.EAGER)
 	Perfil tipoPerfil
 	
 	@OneToMany(fetch=FetchType.LAZY)

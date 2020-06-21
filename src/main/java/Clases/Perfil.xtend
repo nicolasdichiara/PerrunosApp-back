@@ -14,4 +14,8 @@ abstract class Perfil {//STRATEGY
 	@GeneratedValue(strategy=GenerationType.AUTO)
 	Long idPerfil
 	
+	def String getNombrePerfil(){
+		
+	}
+	
 }
