@@ -163,18 +163,20 @@ class PerrunosRestAPI {
 			val usuario = repoUsuario.searchByID(parserStringToLong.parsearDeStringALong(idUser))
 			val nuevoPerro = new Perro => [
 				nombre = body.getPropertyValue("nombre")
-				raza = razaPerro
-				imagen = body.getPropertyValue("imagen")
-				fechaNacimiento = body.getPropertyAsDate("fechaNacimiento", "dd/MM/yyyy")
-				poseeLibretaSanitaria = Boolean.parseBoolean(body.getPropertyValue("poseeLibretaSanitaria"))
-				imagenLibretaVacunacion = body.getPropertyValue("imagenLibretaVacunacion")
-				vacunaDeLaRabia = Boolean.parseBoolean(body.getPropertyValue("vacunaDeLaRabia"))
-				desparasitado = Boolean.parseBoolean(body.getPropertyValue("desparasitado"))
+				cuidadosEspeciales = body.getPropertyValue("cuidadosEspeciales")
+				descripcion = body.getPropertyValue("descripcion")
 				enfermedadesPrevias = body.getPropertyValue("enfermedadesPrevias")
-				paseaFrecuente = Boolean.parseBoolean(body.getPropertyValue("paseaFrecuente"))
+				fechaNacimiento = body.getPropertyAsDate("fechaNacimiento", "dd/MM/yyyy")
+				desparasitado = Boolean.parseBoolean(body.getPropertyValue("desparasitado"))
 				paseoAlgunaVez = Boolean.parseBoolean(body.getPropertyValue("paseoAlgunaVez"))
+				imagenLibretaVacunacion = body.getPropertyValue("imagenLibretaVacunacion")
+				imagen = body.getPropertyValue("imagen")
 				paseoConUnPaseador = Boolean.parseBoolean(body.getPropertyValue("paseoConUnPaseador"))
+				paseaFrecuente = Boolean.parseBoolean(body.getPropertyValue("paseaFrecuente"))
 				paseoConOtrosPerros = Boolean.parseBoolean(body.getPropertyValue("paseoConOtrosPerros"))
+				raza = razaPerro
+				poseeLibretaSanitaria = Boolean.parseBoolean(body.getPropertyValue("poseeLibretaSanitaria"))
+				vacunaDeLaRabia = Boolean.parseBoolean(body.getPropertyValue("vacunaDeLaRabia"))
 				activo = true
 			]
 			usuario.agregarPerro(nuevoPerro)
@@ -387,7 +389,7 @@ class PerrunosRestAPI {
 			return badRequest()
 		}
 	}
-	
+
 	@Post("/usuario/servicios/finalizarServicio/:idServicio")
 	def finalizarServicio(@Body String body) {
 		try {
@@ -398,12 +400,12 @@ class PerrunosRestAPI {
 			return badRequest()
 		}
 	}
-	
+
 	// /////////////////////////////////////////////////////////////////////////////////
 	// CALIFICAR SERVICIO                                                             //
 	// /////////////////////////////////////////////////////////////////////////////////
 	@Post("/servicios/calificarAlDuenio")
-	def calificarServicioDuenio(@Body String body){
+	def calificarServicioDuenio(@Body String body) {
 		try {
 			val servicioACalificar = repoServicio.searchByID(Long.parseLong(body.getPropertyValue("idServicio")))
 			servicioACalificar.calificacionDuenio = Double.parseDouble(body.getPropertyValue("calificacion"))
@@ -416,9 +418,9 @@ class PerrunosRestAPI {
 			return badRequest()
 		}
 	}
-	
+
 	@Post("/servicios/calificarAlPrestador")
-	def calificarServicioPrestador(@Body String body){
+	def calificarServicioPrestador(@Body String body) {
 		try {
 			val servicioACalificar = repoServicio.searchByID(Long.parseLong(body.getPropertyValue("idServicio")))
 			servicioACalificar.calificacionPrestador = Double.parseDouble(body.getPropertyValue("calificacion"))
@@ -431,7 +433,7 @@ class PerrunosRestAPI {
 			return badRequest()
 		}
 	}
-	
+
 }
 
 @Accessors
