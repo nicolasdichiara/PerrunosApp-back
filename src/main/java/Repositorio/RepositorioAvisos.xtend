@@ -4,7 +4,6 @@ import Clases.Aviso
 import javax.persistence.criteria.Root
 import javax.persistence.criteria.CriteriaBuilder
 import javax.persistence.criteria.CriteriaQuery
-import Clases.Usuario
 
 class RepositorioAvisos extends RepositorioAbstract<Aviso> {
 
@@ -24,4 +23,19 @@ class RepositorioAvisos extends RepositorioAbstract<Aviso> {
 			])
 		}
 	}
+	
+	def avisosActivos() {
+		val entityManager = singletonDeEntityManager.getEntityManager
+		try {
+			val criteria = entityManager.criteriaBuilder
+			val query = criteria.createQuery(entityType)
+			val from = query.from(entityType)
+			query.select(from)
+			query.where(criteria.equal(from.get("activo"), 1))
+			entityManager.createQuery(query).resultList
+		} finally {
+			entityManager?.close
+		}
+	}
+	
 }

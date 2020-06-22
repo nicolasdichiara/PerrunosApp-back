@@ -359,7 +359,7 @@ class PerrunosRestAPI {
 	@Get("/avisos/traerTodosLosAvisos")
 	def dameTodosLosAvisos(){
 		try {
-			val avisos = repoAviso.allInstances
+			val avisos = repoAviso.avisosActivos
 			return ok(avisos.toJson)
 		} catch (UserException exception) {
 			return badRequest()
