@@ -43,6 +43,7 @@ class UsuarioSerializer extends StdSerializer<Usuario> {
 		gen.writeStringField("telefono", value.telefono);
 		gen.writeStringField("direccion", value.direccion);
 		gen.writeStringField("tipoPerfil", value.tipoPerfil.nombrePerfil)
+		gen.writeStringField("calificacion", value.calificacion.toString)
 		gen.writeEndObject();
 	}
 

@@ -355,6 +355,16 @@ class PerrunosRestAPI {
 			return badRequest()
 		}
 	}
+	
+	@Get("/avisos/traerTodosLosAvisos")
+	def dameTodosLosAvisos(){
+		try {
+			val avisos = repoAviso.allInstances
+			return ok(avisos.toJson)
+		} catch (UserException exception) {
+			return badRequest()
+		}
+	}
 
 	// /////////////////////////////////////////////////////////////////////////////////
 	// ABMC SERVICIOS                                                                 //
@@ -396,6 +406,40 @@ class PerrunosRestAPI {
 			val serviciofinalizado = repoServicio.searchByID(Long.parseLong(idServicio))
 			repoServicio.update(serviciofinalizado)
 			return ok()
+		} catch (UserException exception) {
+			return badRequest()
+		}
+	}
+	
+	//Ver Servicio Actual
+	@Get("/usuario/serviciosActualesDelUsuario/:idUsuario")
+	def serviciosActualesDelUsuario(){
+		try {
+			val serviciosDelUsuario = repoUsuario.perrosDelUsuario(parserStringToLong.parsearDeStringALong(idUsuario)).servicios
+			val serviciosFiltrados = serviciosDelUsuario.filter[servicio|servicio.activo].toList
+			return ok(serviciosFiltrados.toJson)
+		} catch (UserException exception) {
+			return badRequest()
+		}
+	}
+	
+	//Historial De Servicios
+	@Get("/usuario/historialDeServicios/:idUsuario")
+	def historialDeServicios(){
+		try {
+			val serviciosDelUsuario = repoUsuario.perrosDelUsuario(parserStringToLong.parsearDeStringALong(idUsuario)).servicios
+			val serviciosFiltrados = serviciosDelUsuario.filter[servicio|!servicio.activo].toList
+			return ok(serviciosFiltrados.toJson)
+		} catch (UserException exception) {
+			return badRequest()
+		}
+	}
+	
+	@Get("/usuario/traerUnServicio/:idServicio")
+	def dameUnServicio() {
+		try {
+			val aviso = repoServicio.searchByID(Long.parseLong(idServicio))
+			return ok(aviso.toJson)
 		} catch (UserException exception) {
 			return badRequest()
 		}
