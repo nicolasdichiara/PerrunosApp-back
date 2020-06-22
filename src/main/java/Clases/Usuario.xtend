@@ -68,6 +68,9 @@ class Usuario {
 	@ManyToMany(fetch=FetchType.LAZY)
 	List<Servicio> servicios = newArrayList
 	
+	@Column
+	Double calificacion
+	
 	def agregarPerro(Perro unPerro){
 		if("Dueño"==Duenio.instance.nombrePerfil){
 			perros.add(unPerro)

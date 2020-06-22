@@ -395,6 +395,15 @@ class PerrunosRestAPI {
 			return badRequest()
 		}
 	}
+	
+	// /////////////////////////////////////////////////////////////////////////////////
+	// CALIFICAR SERVICIO                                                             //
+	// /////////////////////////////////////////////////////////////////////////////////
+	@Post("/usuario/servicios/calificarServicio")
+	def calificarServicio(@Body String body){
+		
+	}
+	
 }
 
 @Accessors
