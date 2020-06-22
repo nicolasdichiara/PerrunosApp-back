@@ -29,7 +29,9 @@ class Servicio {
 	@Column
 	Boolean pago
 	@Column
-	Double calificacion
+	Double calificacionDuenio
+	@Column
+	Double calificacionPrestador
 	@ManyToOne(fetch=FetchType.EAGER)
 	TipoServicio tipoServicio 
 	
@@ -39,10 +41,6 @@ class Servicio {
 	
 	def seEncuentraPago(){
 		pago = true
-	}
-	
-	def calificar(Double unaCalificacion){
-		calificacion = unaCalificacion
 	}
 	
 }

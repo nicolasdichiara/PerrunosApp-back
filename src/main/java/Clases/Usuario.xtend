@@ -100,5 +100,24 @@ class Usuario {
 	def tieneAviso(Long idAviso) {
 		avisos.map[aviso|aviso.idAviso].contains(idAviso)
 	}
-
+	
+	def calificaciones(){
+		if(tipoPerfil.nombrePerfil=="Dueño"){
+			servicios.filter[servicio|servicio.calificacionDuenio!==null].map[servicio|servicio.calificacionDuenio].toList
+		} else {
+			servicios.filter[servicio|servicio.calificacionDuenio!==null].map[servicio|servicio.calificacionPrestador].toList
+		}
+	}
+	
+	def actualizarCalificacion(Servicio unServicio) {
+		calificacion = calificaciones.fold(0.0, [acum, calificacion|acum + calificacion]) / cantidadCalificacionesParaPromediar
+	}
+	
+	def cantidadCalificacionesParaPromediar(){//Devuelve 1 si no hay
+		if(calificaciones.size==0){
+			1
+		} else {
+			calificaciones.size
+		}
+	}
 }

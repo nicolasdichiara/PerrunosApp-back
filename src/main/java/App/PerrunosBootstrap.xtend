@@ -52,6 +52,7 @@ class PerrunosBootstrap {
 			direccion = "Calle Falsa 123"
 			activo = true
 			tipoPerfil = Duenio.instance // creas una unica instancia 
+			calificacion = 5.0
 		]
 
 		val brian = new Usuario => [
@@ -67,6 +68,7 @@ class PerrunosBootstrap {
 			direccion = "Calle Falsa 1234"
 			activo = true
 			tipoPerfil = Paseador.instance
+			calificacion = 5.0
 		]
 
 		val maxi = new Usuario => [
@@ -82,6 +84,7 @@ class PerrunosBootstrap {
 			direccion = "Calle Falsa 1234"
 			activo = true
 			tipoPerfil = Duenio.instance
+			calificacion = 5.0
 		]
 
 		// ////////////////////////////////////////////

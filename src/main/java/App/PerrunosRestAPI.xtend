@@ -88,6 +88,7 @@ class PerrunosRestAPI {
 					fechaAlta = LocalDate.now
 					activo = true
 					tipoPerfil = Duenio.instance
+					calificacion = 5.0
 				]
 				repoUsuario.create(nuevoDuenio)
 				return ok()
@@ -111,6 +112,7 @@ class PerrunosRestAPI {
 					fechaAlta = LocalDate.now
 					activo = true
 					tipoPerfil = Paseador.instance
+					calificacion = 5.0
 				]
 				repoUsuario.create(nuevoPaseador)
 				return ok()
@@ -169,8 +171,6 @@ class PerrunosRestAPI {
 				vacunaDeLaRabia = Boolean.parseBoolean(body.getPropertyValue("vacunaDeLaRabia"))
 				desparasitado = Boolean.parseBoolean(body.getPropertyValue("desparasitado"))
 				enfermedadesPrevias = body.getPropertyValue("enfermedadesPrevias")
-				descripcion = body.getPropertyValue("descripcion")
-				cuidadosEspeciales = body.getPropertyValue("cuidadosEspeciales")
 				paseaFrecuente = Boolean.parseBoolean(body.getPropertyValue("paseaFrecuente"))
 				paseoAlgunaVez = Boolean.parseBoolean(body.getPropertyValue("paseoAlgunaVez"))
 				paseoConUnPaseador = Boolean.parseBoolean(body.getPropertyValue("paseoConUnPaseador"))
@@ -370,7 +370,8 @@ class PerrunosRestAPI {
 				fechaRealizacion = avisoADarDeBaja.fecha
 				horario = avisoADarDeBaja.horario
 				pago = false
-				calificacion = null
+				calificacionDuenio = null
+				calificacionPrestador = null
 				tipoServicio = ServicioPaseo.instance
 			]
 			avisoADarDeBaja.finalizarAviso
@@ -401,9 +402,34 @@ class PerrunosRestAPI {
 	// /////////////////////////////////////////////////////////////////////////////////
 	// CALIFICAR SERVICIO                                                             //
 	// /////////////////////////////////////////////////////////////////////////////////
-	@Post("/usuario/servicios/calificarServicio")
-	def calificarServicio(@Body String body){
-		
+	@Post("/servicios/calificarAlDuenio")
+	def calificarServicioDuenio(@Body String body){
+		try {
+			val servicioACalificar = repoServicio.searchByID(Long.parseLong(body.getPropertyValue("idServicio")))
+			servicioACalificar.calificacionDuenio = Double.parseDouble(body.getPropertyValue("calificacion"))
+			repoServicio.update(servicioACalificar)
+			val duenio = repoUsuario.searchByID(Long.parseLong(body.getPropertyValue("idUsuario")))
+			duenio.actualizarCalificacion(servicioACalificar)
+			repoUsuario.update(duenio)
+			return ok()
+		} catch (UserException exception) {
+			return badRequest()
+		}
+	}
+	
+	@Post("/servicios/calificarAlPrestador")
+	def calificarServicioPrestador(@Body String body){
+		try {
+			val servicioACalificar = repoServicio.searchByID(Long.parseLong(body.getPropertyValue("idServicio")))
+			servicioACalificar.calificacionPrestador = Double.parseDouble(body.getPropertyValue("calificacion"))
+			repoServicio.update(servicioACalificar)
+			val prestador = repoUsuario.searchByID(Long.parseLong(body.getPropertyValue("idUsuario")))
+			prestador.actualizarCalificacion(servicioACalificar)
+			repoUsuario.update(prestador)
+			return ok()
+		} catch (UserException exception) {
+			return badRequest()
+		}
 	}
 	
 }
