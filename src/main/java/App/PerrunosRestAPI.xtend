@@ -161,20 +161,20 @@ class PerrunosRestAPI {
 			val usuario = repoUsuario.searchByID(parserStringToLong.parsearDeStringALong(idUser))
 			val nuevoPerro = new Perro => [
 				nombre = body.getPropertyValue("nombre")
-				raza = razaPerro
-				imagen = body.getPropertyValue("imagen")
-				fechaNacimiento = body.getPropertyAsDate("fechaNacimiento", "dd/MM/yyyy")
-				poseeLibretaSanitaria = Boolean.parseBoolean(body.getPropertyValue("poseeLibretaSanitaria"))
-				imagenLibretaVacunacion = body.getPropertyValue("imagenLibretaVacunacion")
-				vacunaDeLaRabia = Boolean.parseBoolean(body.getPropertyValue("vacunaDeLaRabia"))
-				desparasitado = Boolean.parseBoolean(body.getPropertyValue("desparasitado"))
-				enfermedadesPrevias = body.getPropertyValue("enfermedadesPrevias")
-				descripcion = body.getPropertyValue("descripcion")
 				cuidadosEspeciales = body.getPropertyValue("cuidadosEspeciales")
-				paseaFrecuente = Boolean.parseBoolean(body.getPropertyValue("paseaFrecuente"))
+				descripcion = body.getPropertyValue("descripcion")
+				enfermedadesPrevias = body.getPropertyValue("enfermedadesPrevias")
+				fechaNacimiento = body.getPropertyAsDate("fechaNacimiento", "dd/MM/yyyy")
+				desparasitado = Boolean.parseBoolean(body.getPropertyValue("desparasitado"))
 				paseoAlgunaVez = Boolean.parseBoolean(body.getPropertyValue("paseoAlgunaVez"))
+				imagenLibretaVacunacion = body.getPropertyValue("imagenLibretaVacunacion")
+				imagen = body.getPropertyValue("imagen")
 				paseoConUnPaseador = Boolean.parseBoolean(body.getPropertyValue("paseoConUnPaseador"))
-				paseoConOtrosPerros = Boolean.parseBoolean(body.getPropertyValue("paseoConOtrosPerros"))
+				paseaFrecuente = Boolean.parseBoolean(body.getPropertyValue("paseaFrecuente"))
+				paseoConOtrosPerros = Boolean.parseBoolean(body.getPropertyValue("paseoConOtrosPerros"))	
+				raza = razaPerro			
+				poseeLibretaSanitaria = Boolean.parseBoolean(body.getPropertyValue("poseeLibretaSanitaria"))
+				vacunaDeLaRabia = Boolean.parseBoolean(body.getPropertyValue("vacunaDeLaRabia"))
 				activo = true
 			]
 			usuario.agregarPerro(nuevoPerro)
