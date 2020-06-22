@@ -115,9 +115,11 @@ class PerrunosBootstrap {
 			fechaNacimiento = LocalDate.of(2017, 11, 10)
 			poseeLibretaSanitaria = true
 			imagenLibretaVacunacion = "aca va a ir un path al server"
+			descripcion = "amigable"
+			cuidadosEspeciales = "ninguno"
 			vacunaDeLaRabia = true
 			desparasitado = true
-			enfermedadesPrevias = "Ninguna"
+			enfermedadesPrevias = "ninguna"
 			paseaFrecuente = true
 			paseoAlgunaVez = true
 			paseoConUnPaseador = false
