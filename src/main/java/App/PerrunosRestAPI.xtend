@@ -169,6 +169,8 @@ class PerrunosRestAPI {
 				vacunaDeLaRabia = Boolean.parseBoolean(body.getPropertyValue("vacunaDeLaRabia"))
 				desparasitado = Boolean.parseBoolean(body.getPropertyValue("desparasitado"))
 				enfermedadesPrevias = body.getPropertyValue("enfermedadesPrevias")
+				descripcion = body.getPropertyValue("descripcion")
+				cuidadosEspeciales = body.getPropertyValue("cuidadosEspeciales")
 				paseaFrecuente = Boolean.parseBoolean(body.getPropertyValue("paseaFrecuente"))
 				paseoAlgunaVez = Boolean.parseBoolean(body.getPropertyValue("paseoAlgunaVez"))
 				paseoConUnPaseador = Boolean.parseBoolean(body.getPropertyValue("paseoConUnPaseador"))

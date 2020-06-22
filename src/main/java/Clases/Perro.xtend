@@ -35,6 +35,10 @@ class Perro {
 	Boolean desparasitado // check
 	@Column(length=150)
 	String enfermedadesPrevias
+	@Column(length=150)
+	String descripcion
+	@Column(length=150)
+	String cuidadosEspeciales
 	@Column
 	Boolean paseaFrecuente
 	@Column
