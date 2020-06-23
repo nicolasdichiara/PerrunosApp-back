@@ -106,6 +106,126 @@ class PerrunosBootstrap {
 		val golden = new Raza => [
 			nombre = "Golden Retriever"
 		]
+		
+		val ovejeroAleman = new Raza => [
+			nombre = "Ovejero alemán"
+		]
+		
+		val bulldogFrances = new Raza => [
+			nombre = "Bulldog francés"
+		]
+		
+		val chihuahua = new Raza => [
+			nombre = "Chihuahua"
+		]
+		
+		val canicheToy = new Raza => [
+			nombre = "Caniche toy"
+		]
+		
+		val rottweiler = new Raza => [
+			nombre = "Rottweiler"
+		]
+		
+		val boxer = new Raza => [
+			nombre = "Boxer"
+		]
+		
+		val shnauser = new Raza => [
+			nombre = "Shnauser"
+		]
+		
+		val bojeroDeBerna = new Raza => [
+			nombre = "Bojero de berna"
+		]
+		
+		val galgo = new Raza => [
+			nombre = "Galgo"
+		]
+		
+		val pug = new Raza => [
+			nombre = "Pug"
+		]
+		
+		val husky = new Raza => [
+			nombre = "Husky Siberiano"
+		]
+		
+		val bullTerrier = new Raza => [
+			nombre = "Bull Terrier"
+		]
+		
+		val beagle = new Raza => [
+			nombre = "Beagle"
+		]
+		
+		val springerSp = new Raza => [
+			nombre = "Springer Spaniel"
+		]
+		
+		val cockerSp = new Raza => [
+			nombre = "Cocker spaniel"
+		]
+		
+		val dachshund = new Raza => [
+			nombre = "Dachshund - Salchicha"
+		]
+		
+		val maltes = new Raza => [
+			nombre = "Bichón Maltés"
+		]
+		
+		val doberman = new Raza => [
+			nombre = "Dóberman"
+		]
+		
+		val dogoBur = new Raza => [
+			nombre = "Dogo de Burdeos"
+		]
+		
+		val dogoAr = new Raza => [
+			nombre = "Dogo Argentino"
+		]
+		
+		val foxTerr = new Raza => [
+			nombre = "Fox terrier"
+		]
+		
+		val granDanes = new Raza => [
+			nombre = "Gran danés"
+		]
+		
+		val dalmata = new Raza => [
+			nombre = "Dálmata"
+		]
+		
+		val sanBer = new Raza => [
+			nombre = "San Bernardo"
+		]
+		
+		val shihTzu = new Raza => [
+			nombre = "Shih Tzu"
+		]
+		
+		val poodle = new Raza => [
+			nombre = "Poodle"
+		]
+		
+		val sharPei = new Raza => [
+			nombre = "Shar Pei"
+		]
+		
+		val chow = new Raza => [
+			nombre = "Chow Chow"
+		]
+		
+		val yorkTerr = new Raza => [
+			nombre = "Yorkshire terrier"
+		]
+		
+		val mestizo = new Raza => [
+			nombre = "Mestizo"
+		]
 
 		// ////////////////////////////////////////////
 		// CREO LOS PERROS                           //
@@ -133,46 +253,46 @@ class PerrunosBootstrap {
 		// ////////////////////////////////////////////
 		// CREO LOS AVISOS                           //
 		// ////////////////////////////////////////////
-		val avisoNicoPaseo = new Aviso => [
-			recurrente = true
-			lunes = true
-			martes = false
-			miercoles = true
-			jueves = false
-			viernes = false
-			sabado = false
-			domingo = false
-			horario = LocalTime.of(14, 30)
-			detalle = "Tiene collar de ahorque"
-			activo = true
-			tipoServicio = ServicioPaseo.instance
-			idPerro = remi.idPerro//TODO:Ver tema de id que queda null porque todavia no persiste
-		]
-
-		val avisoNicoPaseo2 = new Aviso => [
-			recurrente = false
-			lunes = false
-			martes = false
-			miercoles = false
-			jueves = false
-			viernes = false
-			sabado = false
-			domingo = false
-			fechaParticular = true
-			fecha = LocalDate.of(2020, 7, 15)
-			horario = LocalTime.of(14, 30)
-			detalle = "Aca iria una descripcion pero no se que poner"
-			activo = true
-			tipoServicio = ServicioPaseo.instance
-			idPerro = remi.idPerro
-		]
+//		val avisoNicoPaseo = new Aviso => [
+//			recurrente = true
+//			lunes = true
+//			martes = false
+//			miercoles = true
+//			jueves = false
+//			viernes = false
+//			sabado = false
+//			domingo = false
+//			horario = LocalTime.of(14, 30)
+//			detalle = "Tiene collar de ahorque"
+//			activo = true
+//			tipoServicio = ServicioPaseo.instance
+//			idPerro = remi.idPerro//TODO:Ver tema de id que queda null porque todavia no persiste
+//		]
+//
+//		val avisoNicoPaseo2 = new Aviso => [
+//			recurrente = false
+//			lunes = false
+//			martes = false
+//			miercoles = false
+//			jueves = false
+//			viernes = false
+//			sabado = false
+//			domingo = false
+//			fechaParticular = true
+//			fecha = LocalDate.of(2020, 7, 15)
+//			horario = LocalTime.of(14, 30)
+//			detalle = "Aca iria una descripcion pero no se que poner"
+//			activo = true
+//			tipoServicio = ServicioPaseo.instance
+//			idPerro = remi.idPerro
+//		]
 
 		// AGREGO LOS PERROS A LOS USUARIOS
 		nico.agregarPerro(remi)
 
 		// AGREGO LOS AVISOS A LOS USUARIOS
-		nico.agregarAviso(avisoNicoPaseo)
-		nico.agregarAviso(avisoNicoPaseo2)
+//		nico.agregarAviso(avisoNicoPaseo)
+//		nico.agregarAviso(avisoNicoPaseo2)
 
 		// ////////////////////////////////////////////
 		// PERSISTO LAS COSAS                        //
@@ -192,13 +312,42 @@ class PerrunosBootstrap {
 		repoRazas.create(borderCollie)
 		repoRazas.create(labrador)
 		repoRazas.create(golden)
+		repoRazas.create(ovejeroAleman)
+		repoRazas.create(bulldogFrances)
+		repoRazas.create(chihuahua)
+		repoRazas.create(canicheToy)
+		repoRazas.create(rottweiler)
+		repoRazas.create(boxer)
+		repoRazas.create(shnauser)
+		repoRazas.create(bojeroDeBerna)
+		repoRazas.create(galgo)
+		repoRazas.create(pug)
+		repoRazas.create(husky)
+		repoRazas.create(bullTerrier)
+		repoRazas.create(beagle)
+		repoRazas.create(springerSp)
+		repoRazas.create(cockerSp)
+		repoRazas.create(dachshund)
+		repoRazas.create(maltes)
+		repoRazas.create(doberman)
+		repoRazas.create(dogoBur)
+		repoRazas.create(foxTerr)
+		repoRazas.create(granDanes)
+		repoRazas.create(dalmata)
+		repoRazas.create(sanBer)
+		repoRazas.create(shihTzu)
+		repoRazas.create(poodle)
+		repoRazas.create(sharPei)
+		repoRazas.create(chow)
+		repoRazas.create(yorkTerr)
+		repoRazas.create(mestizo)
 
 		// PERSISTO LOS PERROS TODO:Repo perros
 		repoPerros.create(remi)
 
 		// PERSISTO LOS AVISOS
-		repoAviso.create(avisoNicoPaseo)
-		repoAviso.create(avisoNicoPaseo2)
+//		repoAviso.create(avisoNicoPaseo)
+//		repoAviso.create(avisoNicoPaseo2)
 		
 		// PERSISTO LOS USUARIOS
 		repoU.create(nico)
