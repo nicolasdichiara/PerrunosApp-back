@@ -410,6 +410,7 @@ class PerrunosRestAPI {
 	def finalizarServicio(@Body String body) {
 		try {
 			val serviciofinalizado = repoServicio.searchByID(Long.parseLong(idServicio))
+			serviciofinalizado.finalizarServicio
 			repoServicio.update(serviciofinalizado)
 			return ok()
 		} catch (UserException exception) {
