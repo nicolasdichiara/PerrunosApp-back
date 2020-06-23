@@ -391,6 +391,8 @@ class PerrunosRestAPI {
 				calificacionDuenio = null
 				calificacionPrestador = null
 				tipoServicio = ServicioPaseo.instance
+				idDuenio = publicante.idUsuario.toString//TODO:Cuando los paseadores puedan publicar esto hay que cambiarlo
+				idPrestador = contratante.idUsuario.toString
 			]
 			avisoADarDeBaja.finalizarAviso
 			contratante.agregarServicio(nuevoServicio)
@@ -463,7 +465,7 @@ class PerrunosRestAPI {
 			val servicioACalificar = repoServicio.searchByID(Long.parseLong(body.getPropertyValue("idServicio")))
 			servicioACalificar.calificacionDuenio = Double.parseDouble(body.getPropertyValue("calificacion"))
 			repoServicio.update(servicioACalificar)
-			val duenio = repoUsuario.searchByID(Long.parseLong(body.getPropertyValue("idUsuario")))
+			val duenio = repoUsuario.searchByID(Long.parseLong(servicioACalificar.idDuenio))
 			duenio.actualizarCalificacion(servicioACalificar)
 			repoUsuario.update(duenio)
 			return ok()
@@ -478,7 +480,7 @@ class PerrunosRestAPI {
 			val servicioACalificar = repoServicio.searchByID(Long.parseLong(body.getPropertyValue("idServicio")))
 			servicioACalificar.calificacionPrestador = Double.parseDouble(body.getPropertyValue("calificacion"))
 			repoServicio.update(servicioACalificar)
-			val prestador = repoUsuario.searchByID(Long.parseLong(body.getPropertyValue("idUsuario")))
+			val prestador = repoUsuario.searchByID(Long.parseLong(servicioACalificar.idPrestador))
 			prestador.actualizarCalificacion(servicioACalificar)
 			repoUsuario.update(prestador)
 			return ok()

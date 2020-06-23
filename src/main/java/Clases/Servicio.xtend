@@ -19,6 +19,10 @@ class Servicio {
 	@GeneratedValue(strategy=GenerationType.AUTO)
 	Long idServicio
 	@Column
+	String idPrestador
+	@Column
+	String idDuenio
+	@Column
 	Long idPerro
 	@Column
 	Boolean activo
