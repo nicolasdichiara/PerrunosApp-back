@@ -30,15 +30,30 @@ class RepositorioUsuario extends RepositorioAbstract<Usuario> {
 		}
 	}
 
-	def perrosDelUsuario(Long idUser) {
+//	def usuarioConFetchDePerros(Long idUser) {
+//		val entityManager = singletonDeEntityManager.getEntityManager
+//		try {
+//			val criteria = entityManager.criteriaBuilder
+//			val query = criteria.createQuery(getEntityType)
+//			val from = query.from(getEntityType)
+//			from.fetch("perros")
+//			query.where(criteria.equal(from.get("idUsuario"), idUser))
+//			entityManager.createQuery(query).singleResult
+//		} finally {
+//		}
+//	}
+
+	def usuarioConFetchDePerros(Long idUser) {
 		val entityManager = singletonDeEntityManager.getEntityManager
 		try {
-			val criteria = entityManager.criteriaBuilder
-			val query = criteria.createQuery(getEntityType)
-			val from = query.from(getEntityType)
-			from.fetch("perros")
-			query.where(criteria.equal(from.get("idUsuario"), idUser))
-			entityManager.createQuery(query).singleResult
+			entityManager
+			.createQuery(
+				"SELECT u " +
+				"FROM Usuario u " +
+				"LEFT JOIN fetch u.perros " +
+				"WHERE u.idUsuario = :idUser", Usuario)
+			.setParameter("idUser", idUser)
+			.singleResult
 		} finally {
 		}
 	}
@@ -56,9 +71,9 @@ class RepositorioUsuario extends RepositorioAbstract<Usuario> {
 	}
 
 	def validarCreate(String unEmail) {
-		buscoUsuariosParaEseMail(unEmail).size==0
+		buscoUsuariosParaEseMail(unEmail).size == 0
 	}
-	
+
 	def usuariosFetcheados() {
 		val entityManager = singletonDeEntityManager.getEntityManager
 		try {
@@ -72,11 +87,11 @@ class RepositorioUsuario extends RepositorioAbstract<Usuario> {
 			entityManager?.close
 		}
 	}
-	
+
 	def fetchsParaElUsuario(Root<Usuario> from) {
 		from.fetch("avisos")
 	}
-	
+
 	def idUsuarioDelAviso(Long idAviso) {
 		usuariosFetcheados.findFirst[usuario|usuario.tieneAviso(idAviso)].idUsuario
 	}

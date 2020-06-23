@@ -241,7 +241,7 @@ class PerrunosRestAPI {
 	@Get("/usuario/perros/:idUser")
 	def perrosDelUsuario() {
 		try {
-			val perrosDelUsuario = repoUsuario.perrosDelUsuario(parserStringToLong.parsearDeStringALong(idUser)).perros
+			val perrosDelUsuario = repoUsuario.usuarioConFetchDePerros(parserStringToLong.parsearDeStringALong(idUser)).perros
 			val perrosFiltrados = perrosDelUsuario.filter[perro|perro.activo].toList
 			return ok(perrosFiltrados.toJson)
 		} catch (UserException exception) {
@@ -268,7 +268,7 @@ class PerrunosRestAPI {
 	@Get("/usuario/avisos/:idUser")
 	def avisosDelUsuario() {
 		try {
-			val avisosDelUsuario = repoUsuario.perrosDelUsuario(parserStringToLong.parsearDeStringALong(idUser)).avisos
+			val avisosDelUsuario = repoUsuario.usuarioConFetchDePerros(parserStringToLong.parsearDeStringALong(idUser)).avisos
 			val avisosFiltrados = avisosDelUsuario.filter[aviso|aviso.activo].toList
 			return ok(avisosFiltrados.toJson)
 		} catch (UserException exception) {
@@ -413,9 +413,9 @@ class PerrunosRestAPI {
 	
 	//Ver Servicio Actual
 	@Get("/usuario/serviciosActualesDelUsuario/:idUsuario")
-	def serviciosActualesDelUsuario(){
+	def serviciosActualesDelUsuario(){//TODO:aca rompe el paseador
 		try {
-			val serviciosDelUsuario = repoUsuario.perrosDelUsuario(parserStringToLong.parsearDeStringALong(idUsuario)).servicios
+			val serviciosDelUsuario = repoUsuario.usuarioConFetchDePerros(parserStringToLong.parsearDeStringALong(idUsuario)).servicios
 			val serviciosFiltrados = serviciosDelUsuario.filter[servicio|servicio.activo].toList
 			return ok(serviciosFiltrados.toJson)
 		} catch (UserException exception) {
@@ -425,9 +425,9 @@ class PerrunosRestAPI {
 	
 	//Historial De Servicios
 	@Get("/usuario/historialDeServicios/:idUsuario")
-	def historialDeServicios(){
+	def historialDeServicios(){//TODO:aca rompe el paseador
 		try {
-			val serviciosDelUsuario = repoUsuario.perrosDelUsuario(parserStringToLong.parsearDeStringALong(idUsuario)).servicios
+			val serviciosDelUsuario = repoUsuario.usuarioConFetchDePerros(parserStringToLong.parsearDeStringALong(idUsuario)).servicios
 			val serviciosFiltrados = serviciosDelUsuario.filter[servicio|!servicio.activo].toList
 			return ok(serviciosFiltrados.toJson)
 		} catch (UserException exception) {
