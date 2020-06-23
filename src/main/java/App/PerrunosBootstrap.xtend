@@ -341,6 +341,7 @@ class PerrunosBootstrap {
 		repoRazas.create(chow)
 		repoRazas.create(yorkTerr)
 		repoRazas.create(mestizo)
+		repoRazas.create(dogoAr)
 
 		// PERSISTO LOS PERROS TODO:Repo perros
 		repoPerros.create(remi)

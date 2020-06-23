@@ -10,7 +10,7 @@ import javax.persistence.Column
 class Duenio extends Perfil {
 	
 	@Column
-	String nombrePerfil = "Dueño"
+	String nombrePerfil = "Duenio"
 	
 	@Transient
 	static Duenio instance = null

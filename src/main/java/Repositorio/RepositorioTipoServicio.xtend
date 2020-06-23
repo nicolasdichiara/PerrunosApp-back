@@ -24,7 +24,7 @@ class RepositorioTipoServicio extends RepositorioAbstract<TipoServicio> {
 	}
 	
 	def TipoServicio tipoDeServicio(String unTipo) {
-		if(unTipo == "Paseo"){
+		if(unTipo == "4"){
 			ServicioPaseo.instance
 		} else {
 			ServicioGuarderia.instance

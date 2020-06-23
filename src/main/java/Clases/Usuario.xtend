@@ -102,7 +102,7 @@ class Usuario {
 	}
 	
 	def calificaciones(){
-		if(tipoPerfil.nombrePerfil=="Dueño"){
+		if(tipoPerfil.nombrePerfil=="Duenio"){
 			servicios.filter[servicio|servicio.calificacionDuenio!==null].map[servicio|servicio.calificacionDuenio].toList
 		} else {
 			servicios.filter[servicio|servicio.calificacionDuenio!==null].map[servicio|servicio.calificacionPrestador].toList
