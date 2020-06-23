@@ -32,8 +32,16 @@ class Servicio {
 	Double calificacionDuenio
 	@Column
 	Double calificacionPrestador
-	@ManyToOne(fetch=FetchType.EAGER)
+	@ManyToOne(fetch=FetchType.EAGER) //TODO:Perdoname Dodino
 	TipoServicio tipoServicio 
+	@Column(length=150)
+	String latitudDuenio
+	@Column(length=150)
+	String longitudDuenio
+	@Column(length=150)
+	String latitudPrestador
+	@Column(length=150)
+	String longitudPrestador
 	
 	def finalizarServicio(){
 		activo = false

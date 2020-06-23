@@ -26,6 +26,8 @@ import java.time.LocalTime
 import Repositorio.RepositorioTipoServicio
 import Clases.Servicio
 import Clases.ServicioPaseo
+import Serializer.GpsSerializerDuenio
+import Serializer.GpsSerializerPrestador
 
 @Controller //maneja las llamadas post, etc
 class PerrunosRestAPI {
@@ -241,7 +243,8 @@ class PerrunosRestAPI {
 	@Get("/usuario/perros/:idUser")
 	def perrosDelUsuario() {
 		try {
-			val perrosDelUsuario = repoUsuario.usuarioConFetchDePerros(parserStringToLong.parsearDeStringALong(idUser)).perros
+			val perrosDelUsuario = repoUsuario.usuarioConFetchDePerros(parserStringToLong.parsearDeStringALong(idUser)).
+				perros
 			val perrosFiltrados = perrosDelUsuario.filter[perro|perro.activo].toList
 			return ok(perrosFiltrados.toJson)
 		} catch (UserException exception) {
@@ -268,7 +271,8 @@ class PerrunosRestAPI {
 	@Get("/usuario/avisos/:idUser")
 	def avisosDelUsuario() {
 		try {
-			val avisosDelUsuario = repoUsuario.usuarioConFetchDePerros(parserStringToLong.parsearDeStringALong(idUser)).avisos
+			val avisosDelUsuario = repoUsuario.usuarioConFetchDePerros(parserStringToLong.parsearDeStringALong(idUser)).
+				avisos
 			val avisosFiltrados = avisosDelUsuario.filter[aviso|aviso.activo].toList
 			return ok(avisosFiltrados.toJson)
 		} catch (UserException exception) {
@@ -355,9 +359,9 @@ class PerrunosRestAPI {
 			return badRequest()
 		}
 	}
-	
+
 	@Get("/avisos/traerTodosLosAvisos")
-	def dameTodosLosAvisos(){
+	def dameTodosLosAvisos() {
 		try {
 			val avisos = repoAviso.avisosActivos
 			return ok(avisos.toJson)
@@ -410,36 +414,38 @@ class PerrunosRestAPI {
 			return badRequest()
 		}
 	}
-	
-	//Ver Servicio Actual
+
+	// Ver Servicio Actual
 	@Get("/usuario/serviciosActualesDelUsuario/:idUsuario")
-	def serviciosActualesDelUsuario(){//TODO:aca rompe el paseador
+	def serviciosActualesDelUsuario() {
 		try {
-			val serviciosDelUsuario = repoUsuario.usuarioConFetchDePerros(parserStringToLong.parsearDeStringALong(idUsuario)).servicios
+			val serviciosDelUsuario = repoUsuario.usuarioConFetchDePerros(
+				parserStringToLong.parsearDeStringALong(idUsuario)).servicios
 			val serviciosFiltrados = serviciosDelUsuario.filter[servicio|servicio.activo].toList
 			return ok(serviciosFiltrados.toJson)
 		} catch (UserException exception) {
 			return badRequest()
 		}
 	}
-	
-	//Historial De Servicios
+
+	// Historial De Servicios
 	@Get("/usuario/historialDeServicios/:idUsuario")
-	def historialDeServicios(){//TODO:aca rompe el paseador
+	def historialDeServicios() {
 		try {
-			val serviciosDelUsuario = repoUsuario.usuarioConFetchDePerros(parserStringToLong.parsearDeStringALong(idUsuario)).servicios
+			val serviciosDelUsuario = repoUsuario.usuarioConFetchDePerros(
+				parserStringToLong.parsearDeStringALong(idUsuario)).servicios
 			val serviciosFiltrados = serviciosDelUsuario.filter[servicio|!servicio.activo].toList
 			return ok(serviciosFiltrados.toJson)
 		} catch (UserException exception) {
 			return badRequest()
 		}
 	}
-	
+
 	@Get("/usuario/traerUnServicio/:idServicio")
 	def dameUnServicio() {
 		try {
-			val aviso = repoServicio.searchByID(Long.parseLong(idServicio))
-			return ok(aviso.toJson)
+			val servicio = repoServicio.searchByID(Long.parseLong(idServicio))
+			return ok(servicio.toJson)
 		} catch (UserException exception) {
 			return badRequest()
 		}
@@ -473,6 +479,55 @@ class PerrunosRestAPI {
 			prestador.actualizarCalificacion(servicioACalificar)
 			repoUsuario.update(prestador)
 			return ok()
+		} catch (UserException exception) {
+			return badRequest()
+		}
+	}
+
+	// /////////////////////////////////////////////////////////////////////////////////
+	// GEOLOCALIZACION                                                                //
+	// /////////////////////////////////////////////////////////////////////////////////
+	@Post("/servicios/geolocalizacionDuenio")
+	def establecerUbicacionDuenio(@Body String body) {
+		try {
+			val servicioAEstablecerGPS = repoServicio.searchByID(Long.parseLong(body.getPropertyValue("idServicio")))
+			servicioAEstablecerGPS.latitudDuenio = body.getPropertyValue("lat")
+			servicioAEstablecerGPS.longitudDuenio = body.getPropertyValue("lng")
+			repoServicio.update(servicioAEstablecerGPS)
+			return ok()
+		} catch (UserException exception) {
+			return badRequest()
+		}
+	}
+
+	@Post("/servicios/geolocalizacionPrestador")
+	def establecerUbicacionPrestador(@Body String body) {
+		try {
+			val servicioAEstablecerGPS = repoServicio.searchByID(Long.parseLong(body.getPropertyValue("idServicio")))
+			servicioAEstablecerGPS.latitudPrestador = body.getPropertyValue("lat")
+			servicioAEstablecerGPS.longitudPrestador = body.getPropertyValue("lng")
+			repoServicio.update(servicioAEstablecerGPS)
+			return ok()
+		} catch (UserException exception) {
+			return badRequest()
+		}
+	}
+
+	@Get("/servicios/getGPSDuenio/:idServicio")
+	def dameUbicacionDuenio() {
+		try {
+			val servicio = repoServicio.searchByID(Long.parseLong(idServicio))
+			return ok(GpsSerializerDuenio.toJson(servicio))
+		} catch (UserException exception) {
+			return badRequest()
+		}
+	}
+	
+	@Get("/servicios/getGPSPrestador/:idServicio")
+	def dameUbicacionPrestador() {
+		try {
+			val servicio = repoServicio.searchByID(Long.parseLong(idServicio))
+			return ok(GpsSerializerPrestador.toJson(servicio))
 		} catch (UserException exception) {
 			return badRequest()
 		}
