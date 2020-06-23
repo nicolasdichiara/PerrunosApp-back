@@ -72,7 +72,7 @@ class Usuario {
 	Double calificacion
 	
 	def agregarPerro(Perro unPerro){
-		if("Dueño"==Duenio.instance.nombrePerfil){
+		if("Duenio"==Duenio.instance.nombrePerfil){
 			perros.add(unPerro)
 		}
 	}
