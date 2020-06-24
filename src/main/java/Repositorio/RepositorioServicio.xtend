@@ -30,7 +30,7 @@ class RepositorioServicio extends RepositorioAbstract<Servicio> {
 			val criteria = entityManager.criteriaBuilder
 			val query = criteria.createQuery(getEntityType)
 			val from = query.from(getEntityType)
-			criteria.equal(from.get("idServicio"), id)
+			query.where(criteria.equal(from.get("idServicio"), id))
 			entityManager.createQuery(query).singleResult
 		} finally {
 			
