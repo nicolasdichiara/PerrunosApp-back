@@ -105,7 +105,7 @@ class Usuario {
 		if(tipoPerfil.nombrePerfil=="Duenio"){
 			servicios.filter[servicio|servicio.calificacionDuenio!==null].map[servicio|servicio.calificacionDuenio].toList
 		} else {
-			servicios.filter[servicio|servicio.calificacionDuenio!==null].map[servicio|servicio.calificacionPrestador].toList
+			servicios.filter[servicio|servicio.calificacionPrestador!==null].map[servicio|servicio.calificacionPrestador].toList
 		}
 	}
 	

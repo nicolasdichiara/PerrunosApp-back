@@ -97,7 +97,7 @@ abstract class RepositorioAbstract<T> {
 			generateWhereId(criteria, query, from, id)
 			entityManager.createQuery(query).singleResult
 		} finally {
-			
+			entityManager?.close
 		}
 	}
 

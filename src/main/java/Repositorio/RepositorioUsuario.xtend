@@ -55,6 +55,7 @@ class RepositorioUsuario extends RepositorioAbstract<Usuario> {
 			.setParameter("idUser", idUser)
 			.singleResult
 		} finally {
+			entityManager?.close
 		}
 	}
 
@@ -67,6 +68,7 @@ class RepositorioUsuario extends RepositorioAbstract<Usuario> {
 			query.where(criteria.equal(from.get("email"), unEmail))
 			entityManager.createQuery(query).resultList
 		} finally {
+			entityManager?.close
 		}
 	}
 
