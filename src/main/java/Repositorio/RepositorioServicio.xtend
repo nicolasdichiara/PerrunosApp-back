@@ -24,4 +24,17 @@ class RepositorioServicio extends RepositorioAbstract<Servicio> {
 		}
 	}
 	
+	def searchByIDSinWhereDeActivo(Long id) {
+		val entityManager = singletonDeEntityManager.getEntityManager
+		try {
+			val criteria = entityManager.criteriaBuilder
+			val query = criteria.createQuery(getEntityType)
+			val from = query.from(getEntityType)
+			criteria.equal(from.get("idServicio"), id)
+			entityManager.createQuery(query).singleResult
+		} finally {
+			
+		}
+	}
+	
 }

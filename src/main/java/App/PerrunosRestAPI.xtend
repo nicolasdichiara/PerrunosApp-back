@@ -462,7 +462,7 @@ class PerrunosRestAPI {
 	@Post("/servicios/calificarAlDuenio")
 	def calificarServicioDuenio(@Body String body) {
 		try {
-			val servicioACalificar = repoServicio.searchByID(Long.parseLong(body.getPropertyValue("idServicio")))
+			val servicioACalificar = repoServicio.searchByIDSinWhereDeActivo(Long.parseLong(body.getPropertyValue("idServicio")))
 			servicioACalificar.calificacionDuenio = Double.parseDouble(body.getPropertyValue("calificacion"))
 			repoServicio.update(servicioACalificar)
 			val duenio = repoUsuario.searchByID(Long.parseLong(servicioACalificar.idDuenio))
@@ -477,7 +477,7 @@ class PerrunosRestAPI {
 	@Post("/servicios/calificarAlPrestador")
 	def calificarServicioPrestador(@Body String body) {
 		try {
-			val servicioACalificar = repoServicio.searchByID(Long.parseLong(body.getPropertyValue("idServicio")))
+			val servicioACalificar = repoServicio.searchByIDSinWhereDeActivo(Long.parseLong(body.getPropertyValue("idServicio")))
 			servicioACalificar.calificacionPrestador = Double.parseDouble(body.getPropertyValue("calificacion"))
 			repoServicio.update(servicioACalificar)
 			val prestador = repoUsuario.searchByID(Long.parseLong(servicioACalificar.idPrestador))
