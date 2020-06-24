@@ -55,6 +55,8 @@ class PerrunosRestAPI {
 			try {
 				val usuarioLogeado = this.repoUsuario.verificarLogin(usuarioLogeadoBody.usuario,
 					usuarioLogeadoBody.password)
+				usuarioLogeado.fechaAlta = usuarioLogeado.fechaAlta.plusDays(1)
+				//usuarioLogeado.fechaNacimiento.plusDays(1)
 				return ok(UsuarioSerializer.toJson(usuarioLogeado))
 			} catch (UserException exception) {
 				return badRequest()
@@ -68,6 +70,8 @@ class PerrunosRestAPI {
 	def dameUsuario() {
 		try {
 			val usuario = repoUsuario.searchByID(parserStringToLong.parsearDeStringALong(id))
+			usuario.fechaAlta.plusDays(1)
+			//usuario.fechaAlta = usuario.fechaNacimiento.plusDays(1)
 			return ok(UsuarioSerializer.toJson(usuario))
 
 		} catch (UserException exception) {
@@ -210,7 +214,7 @@ class PerrunosRestAPI {
 			perro.paseoConUnPaseador = Boolean.parseBoolean(body.getPropertyValue("paseoConUnPaseador"))
 			perro.paseoConOtrosPerros = Boolean.parseBoolean(body.getPropertyValue("paseoConOtrosPerros"))
 			perro.descripcion = body.getPropertyValue("descripcion")
-    		perro.cuidadosEspeciales = body.getPropertyValue("cuidadosEspeciales")
+			perro.cuidadosEspeciales = body.getPropertyValue("cuidadosEspeciales")
 
 			repoPerro.update(perro)
 
@@ -236,6 +240,7 @@ class PerrunosRestAPI {
 	def dameElPerro() {
 		try {
 			val perro = repoPerro.searchByID(parserStringToLong.parsearDeStringALong(id))
+			perro.fechaNacimiento = perro.fechaNacimiento.plusDays(1)
 			return ok(perro.toJson)
 		} catch (UserException exception) {
 			return badRequest()
@@ -276,6 +281,8 @@ class PerrunosRestAPI {
 			val avisosDelUsuario = repoUsuario.usuarioConFetchDePerros(parserStringToLong.parsearDeStringALong(idUser)).
 				avisos
 			val avisosFiltrados = avisosDelUsuario.filter[aviso|aviso.activo].toList
+			avisosFiltrados.forEach[aviso|aviso.fecha = aviso.fecha.plusDays(1)]
+			println(avisosFiltrados.toJson)
 			return ok(avisosFiltrados.toJson)
 		} catch (UserException exception) {
 			return badRequest()
@@ -286,6 +293,7 @@ class PerrunosRestAPI {
 	def dameUnAviso() {
 		try {
 			val aviso = repoAviso.searchByID(Long.parseLong(idAviso))
+			aviso.fecha = aviso.fecha.plusDays(1)
 			return ok(aviso.toJson)
 		} catch (UserException exception) {
 			return badRequest()
@@ -366,6 +374,7 @@ class PerrunosRestAPI {
 	def dameTodosLosAvisos() {
 		try {
 			val avisos = repoAviso.avisosActivos
+			avisos.forEach[aviso|aviso.fecha = aviso.fecha.plusDays(1)]
 			return ok(avisos.toJson)
 		} catch (UserException exception) {
 			return badRequest()
@@ -391,7 +400,7 @@ class PerrunosRestAPI {
 				calificacionDuenio = null
 				calificacionPrestador = null
 				tipoServicio = ServicioPaseo.instance
-				idDuenio = publicante.idUsuario.toString//TODO:Cuando los paseadores puedan publicar esto hay que cambiarlo
+				idDuenio = publicante.idUsuario.toString // TODO:Cuando los paseadores puedan publicar esto hay que cambiarlo
 				idPrestador = contratante.idUsuario.toString
 			]
 			avisoADarDeBaja.finalizarAviso
@@ -427,6 +436,7 @@ class PerrunosRestAPI {
 			val serviciosDelUsuario = repoUsuario.usuarioConFetchDePerros(
 				parserStringToLong.parsearDeStringALong(idUsuario)).servicios
 			val serviciosFiltrados = serviciosDelUsuario.filter[servicio|servicio.activo].toList
+			serviciosFiltrados.forEach[servicio|servicio.fechaRealizacion = servicio.fechaRealizacion.plusDays(1)]
 			return ok(serviciosFiltrados.toJson)
 		} catch (UserException exception) {
 			return badRequest()
@@ -440,6 +450,7 @@ class PerrunosRestAPI {
 			val serviciosDelUsuario = repoUsuario.usuarioConFetchDePerros(
 				parserStringToLong.parsearDeStringALong(idUsuario)).servicios
 			val serviciosFiltrados = serviciosDelUsuario.filter[servicio|!servicio.activo].toList
+			serviciosFiltrados.forEach[servicio|servicio.fechaRealizacion = servicio.fechaRealizacion.plusDays(1)]
 			return ok(serviciosFiltrados.toJson)
 		} catch (UserException exception) {
 			return badRequest()
@@ -450,6 +461,7 @@ class PerrunosRestAPI {
 	def dameUnServicio() {
 		try {
 			val servicio = repoServicio.searchByID(Long.parseLong(idServicio))
+			servicio.fechaRealizacion = servicio.fechaRealizacion.plusDays(1)
 			return ok(servicio.toJson)
 		} catch (UserException exception) {
 			return badRequest()
@@ -462,7 +474,8 @@ class PerrunosRestAPI {
 	@Post("/servicios/calificarAlDuenio")
 	def calificarServicioDuenio(@Body String body) {
 		try {
-			val servicioACalificar = repoServicio.searchByIDSinWhereDeActivo(Long.parseLong(body.getPropertyValue("idServicio")))
+			val servicioACalificar = repoServicio.searchByIDSinWhereDeActivo(
+				Long.parseLong(body.getPropertyValue("idServicio")))
 			servicioACalificar.calificacionDuenio = Double.parseDouble(body.getPropertyValue("calificacion"))
 			repoServicio.update(servicioACalificar)
 			val duenio = repoUsuario.searchByID(Long.parseLong(servicioACalificar.idDuenio))
@@ -477,7 +490,8 @@ class PerrunosRestAPI {
 	@Post("/servicios/calificarAlPrestador")
 	def calificarServicioPrestador(@Body String body) {
 		try {
-			val servicioACalificar = repoServicio.searchByIDSinWhereDeActivo(Long.parseLong(body.getPropertyValue("idServicio")))
+			val servicioACalificar = repoServicio.searchByIDSinWhereDeActivo(
+				Long.parseLong(body.getPropertyValue("idServicio")))
 			servicioACalificar.calificacionPrestador = Double.parseDouble(body.getPropertyValue("calificacion"))
 			repoServicio.update(servicioACalificar)
 			val prestador = repoUsuario.searchByID(Long.parseLong(servicioACalificar.idPrestador))
@@ -527,7 +541,7 @@ class PerrunosRestAPI {
 			return badRequest()
 		}
 	}
-	
+
 	@Get("/servicios/getGPSPrestador/:idServicio")
 	def dameUbicacionPrestador() {
 		try {
