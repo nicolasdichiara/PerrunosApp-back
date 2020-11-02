@@ -43,7 +43,7 @@ class PerrunosBootstrap {
 			email = "nicolasdichiara@hotmail.com"
 			nombre = "Nicolás"
 			apellido = "Dichiara"
-			password = "ndichiara"
+			password = "nico"
 			fechaAlta = LocalDate.now
 			apodo = "Nico"
 			fechaNacimiento = LocalDate.of(1994, 11, 17)
@@ -59,7 +59,7 @@ class PerrunosBootstrap {
 			email = "brian@hotmail.com"
 			nombre = "Brian"
 			apellido = "Zerial"
-			password = "bzerial"
+			password = "brian"
 			fechaAlta = LocalDate.now
 			apodo = "Linkin"
 			fechaNacimiento = LocalDate.of(1994, 11, 17)
@@ -75,7 +75,7 @@ class PerrunosBootstrap {
 			email = "maxi@hotmail.com"
 			nombre = "Maximiliano"
 			apellido = "Bianco"
-			password = "mbianco"
+			password = "maxi"
 			fechaAlta = LocalDate.now
 			apodo = "El Masi"
 			fechaNacimiento = LocalDate.of(1994, 11, 17)
@@ -233,7 +233,7 @@ class PerrunosBootstrap {
 		// PERROS DE NICO
 		val remi = new Perro => [
 			nombre = "Remi"
-			raza = borderCollie
+			raza = borderCollie	//TODO es un objeto hay que verlo
 			imagen = "aca va a ir un path al server"
 			fechaNacimiento = LocalDate.of(2017, 11, 10)
 			poseeLibretaSanitaria = true
