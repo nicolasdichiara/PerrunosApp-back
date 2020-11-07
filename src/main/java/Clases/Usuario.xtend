@@ -71,6 +71,9 @@ class Usuario {
 	@Column
 	Double calificacion
 	
+	@Column(length=150)
+	String imagenPerfil
+	
 	def agregarPerro(Perro unPerro){
 		if("Duenio"==Duenio.instance.nombrePerfil){
 			perros.add(unPerro)

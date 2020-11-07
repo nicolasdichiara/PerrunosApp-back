@@ -17,6 +17,8 @@ import java.time.LocalTime
 import Repositorio.RepositorioTipoServicio
 import Clases.ServicioPaseo
 import Clases.ServicioGuarderia
+import Clases.Especialista
+import Clases.Administrador
 
 class PerrunosBootstrap {
 
@@ -301,6 +303,8 @@ class PerrunosBootstrap {
 		repoPerfil.create(Paseador.instance) // como es un tipo de perfil creamos un unico tipo de paseador
 		repoPerfil.create(Guarderia.instance)
 		repoPerfil.create(Duenio.instance)
+		repoPerfil.create(Especialista.instance)
+		repoPerfil.create(Administrador.instance)
 
 		// PERSISTO LOS TIPOS DE SERVICIO
 		repoTipoDeServicio.create(ServicioPaseo.instance)
