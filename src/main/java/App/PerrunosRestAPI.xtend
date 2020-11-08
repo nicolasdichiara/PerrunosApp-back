@@ -158,6 +158,28 @@ class PerrunosRestAPI {
 			return badRequest()
 		}
 	}
+	
+	@Post("/usuario/perfil/cargarImagen/:id")
+	def cargarImagenAlUsuario(@Body String body) {
+		try {
+			val usuario = repoUsuario.searchByID(parserStringToLong.parsearDeStringALong(id))
+			usuario.imagenPerfil = body.getPropertyValue("imagen")
+			repoUsuario.update(usuario)
+			return ok()
+		} catch (UserException exception) {
+			return badRequest()
+		}
+	}
+	
+	@Get("/usuario/perfil/dameImagen/:id")
+	def dameImagenPerfilUsuario() {
+		try {
+			val usuario = repoUsuario.searchByID(parserStringToLong.parsearDeStringALong(id))
+			return ok(usuario.imagenPerfil.toJson)
+		} catch (UserException exception) {
+			return badRequest()
+		}
+	}
 
 	// /////////////////////////////////////////////////////////////////////////////////
 	// ABMC PERROS                                                                    //
@@ -254,6 +276,28 @@ class PerrunosRestAPI {
 				perros
 			val perrosFiltrados = perrosDelUsuario.filter[perro|perro.activo].toList
 			return ok(perrosFiltrados.toJson)
+		} catch (UserException exception) {
+			return badRequest()
+		}
+	}
+	
+	@Post("/perros/cargarImagen/:id")
+	def cargarImagenAlPerro(@Body String body) {
+		try {
+			val perro = repoPerro.searchByID(parserStringToLong.parsearDeStringALong(id))
+			perro.imagen = body.getPropertyValue("imagen")
+			repoPerro.update(perro)
+			return ok()
+		} catch (UserException exception) {
+			return badRequest()
+		}
+	}
+	
+	@Get("/perros/dameImagen/:id")
+	def dameImagenPerfilPerro() {
+		try {
+			val perro = repoPerro.searchByID(parserStringToLong.parsearDeStringALong(id))
+			return ok(perro.imagen.toJson)
 		} catch (UserException exception) {
 			return badRequest()
 		}
