@@ -30,6 +30,8 @@ class UsuarioSerializer extends StdSerializer<Usuario> {
 		gen.writeStringField("apellido", value.apellido);
 		gen.writeStringField("apodo", value.apodo);
 		gen.writeStringField("fechaAlta", getStringDateFromLocalDate(value.fechaAlta));
+		gen.writeStringField("imagenPerfil", value.imagenPerfil); //TODO agregar un if para el caso de que no traiga imagen
+	
 		if (value.dni !== null) {
 			gen.writeStringField("fechaNacimiento", getStringDateFromLocalDate(value.fechaNacimiento));
 		} else {
