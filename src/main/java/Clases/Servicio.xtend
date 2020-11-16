@@ -46,6 +46,8 @@ class Servicio {
 	String latitudPrestador
 	@Column(length=150)
 	String longitudPrestador
+	@Column
+	Long Precio
 	
 	def finalizarServicio(){
 		activo = false
