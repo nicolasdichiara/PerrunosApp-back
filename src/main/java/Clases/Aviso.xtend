@@ -48,6 +48,8 @@ class Aviso {
 	TipoServicio tipoServicio
 	@Column
 	Long idPerro
+	@Column
+	Double Precio
 	
 	def finalizarAviso(){//porque lo contrataron o porque lo dio de baja
 		activo = false

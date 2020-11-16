@@ -365,6 +365,7 @@ class PerrunosRestAPI {
 				activo = true
 				tipoServicio = repoTipoServicio.tipoDeServicio(body.getPropertyValue("tipoServicio"))
 				idPerro = idPerroValidado
+				precio = Double.parseDouble(body.getPropertyValue("precio"))
 			]
 			usuario.agregarAviso(nuevoAviso)
 			repoAviso.create(nuevoAviso)
@@ -395,6 +396,7 @@ class PerrunosRestAPI {
 			avisoAEditar.activo = true
 			avisoAEditar.tipoServicio = repoTipoServicio.tipoDeServicio(body.getPropertyValue("tipoServicio"))
 			avisoAEditar.idPerro = idPerroValidado
+			avisoAEditar.precio = Double.parseDouble(body.getPropertyValue("precio"))
 			repoAviso.update(avisoAEditar)
 			return ok()
 		} catch (UserException exception) {
@@ -434,6 +436,7 @@ class PerrunosRestAPI {
 			val avisoADarDeBaja = repoAviso.searchByID(Long.parseLong(body.getPropertyValue("idAviso")))
 			val contratante = repoUsuario.searchByID(Long.parseLong(body.getPropertyValue("idContratante")))
 			val idPerroValidado = repoPerro.validarIdPerro(body.getPropertyValue("idPerro"))
+			val precioServicio = Double.parseDouble(body.getPropertyValue("precio"))
 			val publicante = repoUsuario.searchByID(repoUsuario.idUsuarioDelAviso(avisoADarDeBaja.idAviso))
 			val nuevoServicio = new Servicio => [
 				idPerro = idPerroValidado
@@ -446,6 +449,7 @@ class PerrunosRestAPI {
 				tipoServicio = ServicioPaseo.instance
 				idDuenio = publicante.idUsuario.toString // TODO:Cuando los paseadores puedan publicar esto hay que cambiarlo
 				idPrestador = contratante.idUsuario.toString
+				precio=precioServicio
 			]
 			avisoADarDeBaja.finalizarAviso
 			contratante.agregarServicio(nuevoServicio)
