@@ -10,6 +10,8 @@ class ServicioGuarderia extends TipoServicio {
 	
 	String nombre = "Servicio de Guarderia"		//tipo de servicio
 	
+	Double PrecioStandard = 200.0
+	
 	@Transient
 	static ServicioGuarderia instance = null
 

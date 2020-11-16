@@ -49,7 +49,7 @@ class Aviso {
 	@Column
 	Long idPerro
 	@Column
-	Long Precio
+	Double Precio
 	
 	def finalizarAviso(){//porque lo contrataron o porque lo dio de baja
 		activo = false

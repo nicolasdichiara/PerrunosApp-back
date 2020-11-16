@@ -47,7 +47,7 @@ class Servicio {
 	@Column(length=150)
 	String longitudPrestador
 	@Column
-	Long Precio
+	Double Precio
 	
 	def finalizarServicio(){
 		activo = false
