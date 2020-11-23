@@ -14,4 +14,5 @@ abstract class TipoServicio {
 	@GeneratedValue(strategy=GenerationType.AUTO)
 	Long idTipoServicio
 	
+	Double PrecioStandard
 }

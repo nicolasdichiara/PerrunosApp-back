@@ -366,7 +366,12 @@ class PerrunosRestAPI {
 				activo = true
 				tipoServicio = repoTipoServicio.tipoDeServicio(body.getPropertyValue("tipoServicio"))
 				idPerro = idPerroValidado
-				precio = Double.parseDouble(body.getPropertyValue("precio"))
+				if(body.getPropertyValue("precio")!==null){
+					precio = Double.parseDouble(body.getPropertyValue("precio"))
+				} else{
+					precio=tipoServicio.precioStandard
+				}
+				
 			]
 			usuario.agregarAviso(nuevoAviso)
 			repoAviso.create(nuevoAviso)
