@@ -30,13 +30,6 @@ class UsuarioSerializer extends StdSerializer<Usuario> {
 		gen.writeStringField("apellido", value.apellido);
 		gen.writeStringField("apodo", value.apodo);
 		gen.writeStringField("fechaAlta", getStringDateFromLocalDate(value.fechaAlta));
-		
-		if(value.imagenPerfil !== null){
-			gen.writeStringField("imagenPerfil", value.imagenPerfil)
-			
-		} else {
-			gen.writeStringField("fechaNacimiento","https://lh3.googleusercontent.com/proxy/VkIjNMnPeXHIeLkARjmhlfA1s4AnWWbhiduH5vyN-389-gGXOBi1ZclPY6u5Sh_1ls56_8UDmFhuACcxMkkfjDL8TAMhfB5yhPd5DsZMgBGVg1B88_oVqzLR_AYHGmKZ")
-		}
 	
 		if (value.fechaNacimiento !== null) {
 			gen.writeStringField("fechaNacimiento", getStringDateFromLocalDate(value.fechaNacimiento));
@@ -52,6 +45,14 @@ class UsuarioSerializer extends StdSerializer<Usuario> {
 		gen.writeStringField("direccion", value.direccion);
 		gen.writeStringField("tipoPerfil", value.tipoPerfil.nombrePerfil)
 		gen.writeStringField("calificacion", value.calificacion.toString)
+		
+		if(value.imagenPerfil !== null){
+			gen.writeStringField("imagenPerfil", value.imagenPerfil)
+			
+		} else {
+			gen.writeStringField("imagenPerfil","https://lh3.googleusercontent.com/proxy/VkIjNMnPeXHIeLkARjmhlfA1s4AnWWbhiduH5vyN-389-gGXOBi1ZclPY6u5Sh_1ls56_8UDmFhuACcxMkkfjDL8TAMhfB5yhPd5DsZMgBGVg1B88_oVqzLR_AYHGmKZ")
+		}
+		
 		gen.writeEndObject();
 	}
 
