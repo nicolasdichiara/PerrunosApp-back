@@ -140,6 +140,7 @@ class PerrunosRestAPI {
 			usuario.dni = Integer.parseInt(body.getPropertyValue("dni"))
 			usuario.telefono = body.getPropertyValue("telefono")
 			usuario.direccion = body.getPropertyValue("direccion")
+			usuario.imagenPerfil = body.getPropertyValue("imagen")
 			repoUsuario.update(usuario)
 			return ok()
 		} catch (UserException exception) {
