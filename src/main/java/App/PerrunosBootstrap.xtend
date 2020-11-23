@@ -236,7 +236,7 @@ class PerrunosBootstrap {
 		val remi = new Perro => [
 			nombre = "Remi"
 			raza = borderCollie	//TODO es un objeto hay que verlo
-			imagen = "aca va a ir un path al server"
+			
 			fechaNacimiento = LocalDate.of(2017, 11, 10)
 			poseeLibretaSanitaria = true
 			imagenLibretaVacunacion = "aca va a ir un path al server"
