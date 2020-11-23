@@ -71,7 +71,7 @@ class Usuario {
 	@Column
 	Double calificacion
 	
-	@Column(length=150)
+	@Column(length=1000)
 	String imagenPerfil
 	
 	def agregarPerro(Perro unPerro){

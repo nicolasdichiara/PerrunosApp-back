@@ -21,7 +21,7 @@ class Perro {
 	String nombre
 	@ManyToOne(fetch=FetchType.EAGER) //TODO:PERDONAME DODINO
 	Raza raza
-	@Column(length=150)
+	@Column(length=1000)
 	String imagen // hay que cargar la imagen del perro
 	@Column
 	LocalDate fechaNacimiento
