@@ -28,6 +28,7 @@ import Clases.Servicio
 import Clases.ServicioPaseo
 import Serializer.GpsSerializerDuenio
 import Serializer.GpsSerializerPrestador
+import EntityManager.EntityManager
 
 @Controller //maneja las llamadas post, etc
 class PerrunosRestAPI {
@@ -39,6 +40,7 @@ class PerrunosRestAPI {
 	RepositorioAvisos repoAviso = new RepositorioAvisos
 	RepositorioServicio repoServicio = new RepositorioServicio
 	RepositorioTipoServicio repoTipoServicio = new RepositorioTipoServicio
+	public static EntityManager singletonDeEntityManager = EntityManager.instance
 
 	static ParserStringToLong parserStringToLong = ParserStringToLong.instance // los ID en hibernate son de tipo long o inter y los pasamos a tipo string
 
@@ -64,12 +66,12 @@ class PerrunosRestAPI {
 		} catch (UnrecognizedPropertyException exception) { // el segundo sirve por si se trata de asignar una propiedad objeto por otro medio como constructor
 			return badRequest()
 		}
-	}
+	}//OK
 
 	@Get("/usuario/:id") // busca informacion en el back
 	def dameUsuario() {
 		try {
-			val usuario = repoUsuario.searchByID(parserStringToLong.parsearDeStringALong(id))
+			val usuario = repoUsuario.searchByID(Long.parseLong(id))
 			usuario.fechaAlta.plusDays(1)
 			//usuario.fechaAlta = usuario.fechaNacimiento.plusDays(1)
 			return ok(UsuarioSerializer.toJson(usuario))
@@ -364,7 +366,7 @@ class PerrunosRestAPI {
 				horario = LocalTime.parse(body.getPropertyValue("horario"))
 				detalle = body.getPropertyValue("detalle")
 				activo = true
-				tipoServicio = repoTipoServicio.tipoDeServicio(body.getPropertyValue("tipoServicio"))
+				tipoServicio = repoTipoServicio.searchByID(Long.parseLong(body.getPropertyValue("tipoServicio")))
 				idPerro = idPerroValidado
 				if(body.getPropertyValue("precio")!==null){
 					precio = Double.parseDouble(body.getPropertyValue("precio"))
@@ -373,6 +375,7 @@ class PerrunosRestAPI {
 				}
 				
 			]
+			println("TIPO DE SERVICIOOOOOOOOOOOOOO" + nuevoAviso.tipoServicio.toJson)
 			usuario.agregarAviso(nuevoAviso)
 			repoAviso.create(nuevoAviso)
 			repoUsuario.update(usuario)

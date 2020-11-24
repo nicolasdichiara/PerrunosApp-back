@@ -89,8 +89,8 @@ abstract class RepositorioAbstract<T> {
 	}
 
 	def searchByID(Long id) {
-		val entityManager = singletonDeEntityManager.getEntityManager
 		try {
+			val entityManager = singletonDeEntityManager.getEntityManager
 			val criteria = entityManager.criteriaBuilder
 			val query = criteria.createQuery(getEntityType)
 			val from = query.from(getEntityType)

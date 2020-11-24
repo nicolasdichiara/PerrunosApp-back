@@ -10,6 +10,7 @@ import javax.persistence.GenerationType
 import javax.persistence.Column
 import javax.persistence.ManyToOne
 import javax.persistence.FetchType
+import javax.persistence.OneToOne
 
 @Entity
 @Accessors
@@ -44,7 +45,7 @@ class Aviso {
 	String detalle
 	@Column
 	Boolean activo
-	@ManyToOne(fetch=FetchType.EAGER)
+	@OneToOne(fetch=FetchType.EAGER)
 	TipoServicio tipoServicio
 	@Column
 	Long idPerro
