@@ -1,34 +1,35 @@
 package App
 
-import org.uqbar.xtrest.api.annotation.Controller
-import Repositorio.RepositorioUsuario
-import org.uqbar.xtrest.json.JSONUtils
-import org.uqbar.xtrest.api.annotation.Body
-import org.eclipse.xtend.lib.annotations.Accessors
-import org.uqbar.xtrest.api.annotation.Post
-import ParserStringToLong.ParserStringToLong
-import org.uqbar.commons.model.exceptions.UserException
-import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException
-import org.uqbar.xtrest.api.annotation.Get
-import Serializer.UsuarioSerializer
-import Clases.Duenio
-import java.time.LocalDate
-import Clases.Paseador
-import Clases.Usuario
-import org.uqbar.xtrest.api.annotation.Delete
-import Clases.Perro
-import Repositorio.RepositorioPerros
-import Repositorio.RepositorioRazas
 import Clases.Aviso
-import Repositorio.RepositorioAvisos
-import Repositorio.RepositorioServicio
-import java.time.LocalTime
-import Repositorio.RepositorioTipoServicio
+import Clases.Duenio
+import Clases.PagoServicio
+import Clases.Paseador
+import Clases.Perro
 import Clases.Servicio
 import Clases.ServicioPaseo
+import Clases.Usuario
+import ParserStringToLong.ParserStringToLong
+import Repositorio.RepositorioAvisos
+import Repositorio.RepositorioPerros
+import Repositorio.RepositorioRazas
+import Repositorio.RepositorioServicio
+import Repositorio.RepositorioTipoServicio
+import Repositorio.RepositorioUsuario
 import Serializer.GpsSerializerDuenio
 import Serializer.GpsSerializerPrestador
-import EntityManager.EntityManager
+import Serializer.UsuarioSerializer
+import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException
+import java.time.LocalDate
+import java.time.LocalTime
+import org.eclipse.xtend.lib.annotations.Accessors
+import org.uqbar.commons.model.exceptions.UserException
+import org.uqbar.xtrest.api.annotation.Body
+import org.uqbar.xtrest.api.annotation.Controller
+import org.uqbar.xtrest.api.annotation.Delete
+import org.uqbar.xtrest.api.annotation.Get
+import org.uqbar.xtrest.api.annotation.Post
+import org.uqbar.xtrest.json.JSONUtils
+import Repositorio.RepositorioPagos
 
 @Controller //maneja las llamadas post, etc
 class PerrunosRestAPI {
@@ -40,7 +41,7 @@ class PerrunosRestAPI {
 	RepositorioAvisos repoAviso = new RepositorioAvisos
 	RepositorioServicio repoServicio = new RepositorioServicio
 	RepositorioTipoServicio repoTipoServicio = new RepositorioTipoServicio
-	public static EntityManager singletonDeEntityManager = EntityManager.instance
+	RepositorioPagos repoPagoServicio = new RepositorioPagos
 
 	static ParserStringToLong parserStringToLong = ParserStringToLong.instance // los ID en hibernate son de tipo long o inter y los pasamos a tipo string
 
@@ -58,7 +59,7 @@ class PerrunosRestAPI {
 				val usuarioLogeado = this.repoUsuario.verificarLogin(usuarioLogeadoBody.usuario,
 					usuarioLogeadoBody.password)
 				usuarioLogeado.fechaAlta = usuarioLogeado.fechaAlta.plusDays(1)
-				//usuarioLogeado.fechaNacimiento.plusDays(1)
+				// usuarioLogeado.fechaNacimiento.plusDays(1)
 				return ok(UsuarioSerializer.toJson(usuarioLogeado))
 			} catch (UserException exception) {
 				return badRequest()
@@ -66,14 +67,14 @@ class PerrunosRestAPI {
 		} catch (UnrecognizedPropertyException exception) { // el segundo sirve por si se trata de asignar una propiedad objeto por otro medio como constructor
 			return badRequest()
 		}
-	}//OK
+	} // OK
 
 	@Get("/usuario/:id") // busca informacion en el back
 	def dameUsuario() {
 		try {
 			val usuario = repoUsuario.searchByID(Long.parseLong(id))
 			usuario.fechaAlta.plusDays(1)
-			//usuario.fechaAlta = usuario.fechaNacimiento.plusDays(1)
+			// usuario.fechaAlta = usuario.fechaNacimiento.plusDays(1)
 			return ok(UsuarioSerializer.toJson(usuario))
 
 		} catch (UserException exception) {
@@ -161,7 +162,7 @@ class PerrunosRestAPI {
 			return badRequest()
 		}
 	}
-	
+
 	@Post("/usuario/perfil/cargarImagen/:id")
 	def cargarImagenAlUsuario(@Body String body) {
 		try {
@@ -173,7 +174,7 @@ class PerrunosRestAPI {
 			return badRequest()
 		}
 	}
-	
+
 	@Get("/usuario/perfil/dameImagen/:id")
 	def dameImagenPerfilUsuario() {
 		try {
@@ -283,7 +284,7 @@ class PerrunosRestAPI {
 			return badRequest()
 		}
 	}
-	
+
 	@Post("/perros/cargarImagen/:id")
 	def cargarImagenAlPerro(@Body String body) {
 		try {
@@ -295,7 +296,7 @@ class PerrunosRestAPI {
 			return badRequest()
 		}
 	}
-	
+
 	@Get("/perros/dameImagen/:id")
 	def dameImagenPerfilPerro() {
 		try {
@@ -325,7 +326,7 @@ class PerrunosRestAPI {
 	@Get("/usuario/avisos/:idUser")
 	def avisosDelUsuario() {
 		try {
-			val avisosDelUsuario = repoUsuario.usuarioConFetchDePerros(parserStringToLong.parsearDeStringALong(idUser)).
+			val avisosDelUsuario = repoUsuario.usuarioConFetchDeAvisos(parserStringToLong.parsearDeStringALong(idUser)).
 				avisos
 			val avisosFiltrados = avisosDelUsuario.filter[aviso|aviso.activo].toList
 			avisosFiltrados.forEach[aviso|aviso.fecha = aviso.fecha.plusDays(1)]
@@ -350,7 +351,7 @@ class PerrunosRestAPI {
 	@Post("/usuario/avisos/crearAviso/:idUser")
 	def crearAviso(@Body String body) {
 		try {
-			val usuario = repoUsuario.searchByID(parserStringToLong.parsearDeStringALong(idUser))
+			val usuario = repoUsuario.usuarioConFetchDeAvisos(parserStringToLong.parsearDeStringALong(idUser))
 			val idPerroValidado = repoPerro.validarIdPerro(body.getPropertyValue("idPerro"))
 			val nuevoAviso = new Aviso => [
 				recurrente = Boolean.parseBoolean(body.getPropertyValue("recurrente"))
@@ -368,14 +369,13 @@ class PerrunosRestAPI {
 				activo = true
 				tipoServicio = repoTipoServicio.searchByID(Long.parseLong(body.getPropertyValue("tipoServicio")))
 				idPerro = idPerroValidado
-				if(body.getPropertyValue("precio")!==null){
+				if (body.getPropertyValue("precio") !== null) {
 					precio = Double.parseDouble(body.getPropertyValue("precio"))
-				} else{
-					precio=tipoServicio.precioStandard
+				} else {
+					precio = tipoServicio.precioStandard
 				}
-				
+
 			]
-			println("TIPO DE SERVICIOOOOOOOOOOOOOO" + nuevoAviso.tipoServicio.toJson)
 			usuario.agregarAviso(nuevoAviso)
 			repoAviso.create(nuevoAviso)
 			repoUsuario.update(usuario)
@@ -403,7 +403,8 @@ class PerrunosRestAPI {
 			avisoAEditar.horario = LocalTime.parse(body.getPropertyValue("horario"))
 			avisoAEditar.detalle = body.getPropertyValue("detalle")
 			avisoAEditar.activo = true
-			avisoAEditar.tipoServicio = repoTipoServicio.tipoDeServicio(body.getPropertyValue("tipoServicio"))
+			avisoAEditar.tipoServicio = repoTipoServicio.searchByID(
+				Long.parseLong(body.getPropertyValue("tipoServicio")))
 			avisoAEditar.idPerro = idPerroValidado
 			avisoAEditar.precio = Double.parseDouble(body.getPropertyValue("precio"))
 			repoAviso.update(avisoAEditar)
@@ -458,7 +459,7 @@ class PerrunosRestAPI {
 				tipoServicio = ServicioPaseo.instance
 				idDuenio = publicante.idUsuario.toString // TODO:Cuando los paseadores puedan publicar esto hay que cambiarlo
 				idPrestador = contratante.idUsuario.toString
-				precio=precioServicio
+				precio = precioServicio
 			]
 			avisoADarDeBaja.finalizarAviso
 			contratante.agregarServicio(nuevoServicio)
@@ -490,7 +491,7 @@ class PerrunosRestAPI {
 	@Get("/usuario/serviciosActualesDelUsuario/:idUsuario")
 	def serviciosActualesDelUsuario() {
 		try {
-			val serviciosDelUsuario = repoUsuario.usuarioConFetchDePerros(
+			val serviciosDelUsuario = repoUsuario.usuarioConFetchDeServicios(
 				parserStringToLong.parsearDeStringALong(idUsuario)).servicios
 			val serviciosFiltrados = serviciosDelUsuario.filter[servicio|servicio.activo].toList
 			serviciosFiltrados.forEach[servicio|servicio.fechaRealizacion = servicio.fechaRealizacion.plusDays(1)]
@@ -504,7 +505,7 @@ class PerrunosRestAPI {
 	@Get("/usuario/historialDeServicios/:idUsuario")
 	def historialDeServicios() {
 		try {
-			val serviciosDelUsuario = repoUsuario.usuarioConFetchDePerros(
+			val serviciosDelUsuario = repoUsuario.usuarioConFetchDeServicios(
 				parserStringToLong.parsearDeStringALong(idUsuario)).servicios
 			val serviciosFiltrados = serviciosDelUsuario.filter[servicio|!servicio.activo].toList
 			serviciosFiltrados.forEach[servicio|servicio.fechaRealizacion = servicio.fechaRealizacion.plusDays(1)]
@@ -604,6 +605,37 @@ class PerrunosRestAPI {
 		try {
 			val servicio = repoServicio.searchByID(Long.parseLong(idServicio))
 			return ok(GpsSerializerPrestador.toJson(servicio))
+		} catch (UserException exception) {
+			return badRequest()
+		}
+	}
+
+	// /////////////////////////////////////////////////////////////////////////////////
+	// PAGO DEL SEVICIO                                                               //
+	// /////////////////////////////////////////////////////////////////////////////////
+	@Post("/servicios/pagarServicio")
+	def pagarServicio(@Body String body) {
+		try {
+			val servicioAPagar = repoServicio.searchByIDSinWhereDeActivo(
+				Long.parseLong(body.getPropertyValue("idServicio")))
+			val pagoServicioNuevo = new PagoServicio => [
+				collectionId = body.getPropertyValue("collection_id")
+				collectionStatus = body.getPropertyValue("collection_status")
+				paymentId = body.getPropertyValue("payment_id")
+				status = body.getPropertyValue("status")
+				externalReference = body.getPropertyValue("external_reference")
+				paymentType = body.getPropertyValue("payment_type")
+				merchantOrderId = body.getPropertyValue("merchant_order_id")
+				preferenceId = body.getPropertyValue("preference_id")
+				siteId = body.getPropertyValue("site_id")
+				processingMode = body.getPropertyValue("processing_mode")
+				merchantAccountId = body.getPropertyValue("merchant_account_id")
+			]
+			servicioAPagar.pago=true
+			servicioAPagar.pagarServicio(pagoServicioNuevo)
+			repoPagoServicio.create(pagoServicioNuevo)
+			repoServicio.update(servicioAPagar)
+			return ok()
 		} catch (UserException exception) {
 			return badRequest()
 		}

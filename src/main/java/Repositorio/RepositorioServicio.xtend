@@ -33,7 +33,7 @@ class RepositorioServicio extends RepositorioAbstract<Servicio> {
 			query.where(criteria.equal(from.get("idServicio"), id))
 			entityManager.createQuery(query).singleResult
 		} finally {
-			//entityManager?.close
+			entityManager?.close
 		}
 	}
 	

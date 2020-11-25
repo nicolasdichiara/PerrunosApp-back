@@ -1,24 +1,21 @@
 package App
 
+import Clases.Administrador
 import Clases.Duenio
-import java.time.LocalDate
-import Repositorio.RepositorioUsuario
+import Clases.Especialista
+import Clases.Guarderia
 import Clases.Paseador
-import Clases.Raza
-import Repositorio.RepositorioRazas
-import Repositorio.RepositorioPerros
 import Clases.Perro
+import Clases.Raza
+import Clases.ServicioGuarderia
+import Clases.ServicioPaseo
 import Clases.Usuario
 import Repositorio.RepositorioPerfil
-import Clases.Guarderia
-import Repositorio.RepositorioAvisos
-import Clases.Aviso
-import java.time.LocalTime
+import Repositorio.RepositorioPerros
+import Repositorio.RepositorioRazas
 import Repositorio.RepositorioTipoServicio
-import Clases.ServicioPaseo
-import Clases.ServicioGuarderia
-import Clases.Especialista
-import Clases.Administrador
+import Repositorio.RepositorioUsuario
+import java.time.LocalDate
 
 class PerrunosBootstrap {
 
@@ -26,7 +23,7 @@ class PerrunosBootstrap {
 	static RepositorioRazas repoRazas = new RepositorioRazas
 	static RepositorioPerros repoPerros = new RepositorioPerros
 	static RepositorioPerfil repoPerfil = new RepositorioPerfil
-	static RepositorioAvisos repoAviso = new RepositorioAvisos
+	//static RepositorioAvisos repoAviso = new RepositorioAvisos
 	static RepositorioTipoServicio repoTipoDeServicio = new RepositorioTipoServicio
 
 	def static crearDatosSiNoHay() {

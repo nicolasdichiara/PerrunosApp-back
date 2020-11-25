@@ -46,7 +46,7 @@ abstract class RepositorioAbstract<T> {
 			entityManager.transaction.rollback
 			throw new RuntimeException("Ocurrió un error, la operación no puede completarse", e)
 		} finally {
-			
+			entityManager?.close
 		}
 	}
 
@@ -63,7 +63,7 @@ abstract class RepositorioAbstract<T> {
 			entityManager.transaction.rollback
 			throw new RuntimeException("Ocurrió un error, la operación no puede completarse", e)
 		} finally {
-			
+			entityManager?.close
 		}
 	}
 
@@ -84,20 +84,20 @@ abstract class RepositorioAbstract<T> {
 			entityManager.transaction.rollback
 			throw new RuntimeException("Ocurrió un error, la operación no puede completarse", e)
 		} finally {
-			
+			entityManager?.close
 		}
 	}
 
 	def searchByID(Long id) {
-		try {
 			val entityManager = singletonDeEntityManager.getEntityManager
+		try {
 			val criteria = entityManager.criteriaBuilder
 			val query = criteria.createQuery(getEntityType)
 			val from = query.from(getEntityType)
 			generateWhereId(criteria, query, from, id)
 			entityManager.createQuery(query).singleResult
 		} finally {
-			//entityManager?.close
+			entityManager?.close
 		}
 	}
 

@@ -55,7 +55,39 @@ class RepositorioUsuario extends RepositorioAbstract<Usuario> {
 			.setParameter("idUser", idUser)
 			.singleResult
 		} finally {
-
+			entityManager?.close
+		}
+	}
+	
+	def usuarioConFetchDeServicios(Long idUser) {
+		val entityManager = singletonDeEntityManager.getEntityManager
+		try {
+			entityManager
+			.createQuery(
+				"SELECT u " +
+				"FROM Usuario u " +
+				"LEFT JOIN fetch u.servicios " +
+				"WHERE u.idUsuario = :idUser", Usuario)
+			.setParameter("idUser", idUser)
+			.singleResult
+		} finally {
+			entityManager?.close
+		}
+	}
+	
+	def usuarioConFetchDeAvisos(Long idUser) {
+		val entityManager = singletonDeEntityManager.getEntityManager
+		try {
+			entityManager
+			.createQuery(
+				"SELECT u " +
+				"FROM Usuario u " +
+				"LEFT JOIN fetch u.avisos " +
+				"WHERE u.idUsuario = :idUser", Usuario)
+			.setParameter("idUser", idUser)
+			.singleResult
+		} finally {
+			entityManager?.close
 		}
 	}
 
@@ -68,6 +100,7 @@ class RepositorioUsuario extends RepositorioAbstract<Usuario> {
 			query.where(criteria.equal(from.get("email"), unEmail))
 			entityManager.createQuery(query).resultList
 		} finally {
+			entityManager?.close
 		}
 	}
 

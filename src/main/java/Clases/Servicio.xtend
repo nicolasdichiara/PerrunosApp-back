@@ -10,6 +10,7 @@ import java.time.LocalDate
 import javax.persistence.ManyToOne
 import java.time.LocalTime
 import javax.persistence.FetchType
+import javax.persistence.OneToOne
 
 @Entity
 @Accessors
@@ -31,7 +32,7 @@ class Servicio {
 	@Column
 	LocalTime horario
 	@Column
-	Boolean pago
+	Boolean pago = false
 	@Column
 	Double calificacionDuenio
 	@Column
@@ -48,13 +49,16 @@ class Servicio {
 	String longitudPrestador
 	@Column
 	Double Precio
+	@OneToOne(fetch=FetchType.EAGER)
+	PagoServicio pagoDelServicio
 	
 	def finalizarServicio(){
 		activo = false
 	}
 	
-	def seEncuentraPago(){
+	def pagarServicio(PagoServicio unPago){
 		pago = true
+		pagoDelServicio=unPago
 	}
 	
 }
