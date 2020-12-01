@@ -5,3 +5,4 @@ bin
 .settings/
 src/test/xtend-gen/
 src/main/xtend-gen/
+/out
