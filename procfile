@@ -1,2 +1,0 @@
-web: java -jar target/myapp-1.0.0.jar
-web: gunicorn src/App/PerrunosApplicationService.class:main
