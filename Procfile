@@ -1,1 +1,1 @@
-web: java $JAVA_OPTS -Dserver.port=$PORT -class target/classes/*
+web: java $JAVA_OPTS -Dserver.port=$PORT target/classes/App/PerrunosApplicationService.class
