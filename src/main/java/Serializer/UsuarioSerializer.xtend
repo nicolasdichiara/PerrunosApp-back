@@ -50,7 +50,7 @@ class UsuarioSerializer extends StdSerializer<Usuario> {
 			gen.writeStringField("imagenPerfil", value.imagenPerfil)
 			
 		} else {
-			gen.writeStringField("imagenPerfil","https://lh3.googleusercontent.com/proxy/VkIjNMnPeXHIeLkARjmhlfA1s4AnWWbhiduH5vyN-389-gGXOBi1ZclPY6u5Sh_1ls56_8UDmFhuACcxMkkfjDL8TAMhfB5yhPd5DsZMgBGVg1B88_oVqzLR_AYHGmKZ")
+			gen.writeStringField("imagenPerfil","https://i.postimg.cc/bJMGBhMg/asd.png")
 		}
 		
 		gen.writeEndObject();
