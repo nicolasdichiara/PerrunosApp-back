@@ -6,6 +6,7 @@ import javax.persistence.Id
 import javax.persistence.GeneratedValue
 import javax.persistence.GenerationType
 import javax.persistence.Column
+import java.time.LocalDate
 
 @Entity
 @Accessors
@@ -15,6 +16,10 @@ class Promocion {
 	@GeneratedValue(strategy=GenerationType.AUTO)
 	Long idPromocion
 	@Column
-	String descripcionPromo
+	String imagenPromo
+	@Column
+	LocalDate fechaVigencia
+	@Column
+	Boolean activa
 	
 }

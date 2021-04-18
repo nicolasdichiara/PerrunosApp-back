@@ -30,6 +30,8 @@ import org.uqbar.xtrest.api.annotation.Get
 import org.uqbar.xtrest.api.annotation.Post
 import org.uqbar.xtrest.json.JSONUtils
 import Repositorio.RepositorioPagos
+import Clases.Promocion
+import Repositorio.RepositorioPromociones
 
 @Controller //maneja las llamadas post, etc
 class PerrunosRestAPI {
@@ -42,6 +44,7 @@ class PerrunosRestAPI {
 	RepositorioServicio repoServicio = new RepositorioServicio
 	RepositorioTipoServicio repoTipoServicio = new RepositorioTipoServicio
 	RepositorioPagos repoPagoServicio = new RepositorioPagos
+	RepositorioPromociones repoPromociones = new RepositorioPromociones
 
 	static ParserStringToLong parserStringToLong = ParserStringToLong.instance // los ID en hibernate son de tipo long o inter y los pasamos a tipo string
 
@@ -631,11 +634,63 @@ class PerrunosRestAPI {
 				processingMode = body.getPropertyValue("processing_mode")
 				merchantAccountId = body.getPropertyValue("merchant_account_id")
 			]
-			servicioAPagar.pago=true
+			servicioAPagar.pago = true
 			servicioAPagar.pagarServicio(pagoServicioNuevo)
 			repoPagoServicio.create(pagoServicioNuevo)
 			repoServicio.update(servicioAPagar)
 			return ok()
+		} catch (UserException exception) {
+			return badRequest()
+		}
+	}
+
+	// /////////////////////////////////////////////////////////////////////////////////
+	// ABMC PROMOCIONES                                                               //
+	// /////////////////////////////////////////////////////////////////////////////////
+	@Post("/promociones/crearPromocion")
+	def crearPromocion(@Body String body) {
+		try {
+			val nuevaPromo = new Promocion => [
+				imagenPromo = body.getPropertyValue("imagenPromo")
+				fechaVigencia = body.getPropertyAsDate("fechaVigencia")
+				activa = Boolean.parseBoolean(body.getPropertyValue("activa"))
+			]
+			repoPromociones.create(nuevaPromo)
+			return ok()
+		} catch (UserException exception) {
+			return badRequest()
+		}
+	}
+
+	@Get("/promociones/getTodasLasPromociones")
+	def getTodasLasPromociones() {
+		try {
+			val promociones = repoPromociones.allInstances
+			return ok(promociones.toJson)
+		} catch (UserException exception) {
+			return badRequest()
+		}
+	}
+
+	@Get("/promociones/getPromocion/:id")
+	def getPromocion() {
+		try {
+			val promocion = repoPromociones.searchByID(Long.parseLong(id))
+			return ok(promocion.toJson)
+		} catch (UserException exception) {
+			return badRequest()
+		}
+	}
+
+	@Post("/promociones/updatePromocion")
+	def modificarPromocion(@Body String body) {
+		try {
+			val promocion = repoPromociones.searchByID(Long.parseLong(body.getPropertyValue("id")))
+			promocion.imagenPromo = body.getPropertyValue("imagenPromo")
+			promocion.fechaVigencia = body.getPropertyAsDate("fechaVigencia")
+			promocion.activa = Boolean.parseBoolean(body.getPropertyValue("activa"))
+			repoPromociones.update(promocion)
+			return ok(promocion.toJson)
 		} catch (UserException exception) {
 			return badRequest()
 		}
