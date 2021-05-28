@@ -32,6 +32,7 @@ import org.uqbar.xtrest.json.JSONUtils
 import Repositorio.RepositorioPagos
 import Clases.Promocion
 import Repositorio.RepositorioPromociones
+import Repositorio.RepositorioPerfil
 
 @Controller //maneja las llamadas post, etc
 class PerrunosRestAPI {
@@ -45,6 +46,7 @@ class PerrunosRestAPI {
 	RepositorioTipoServicio repoTipoServicio = new RepositorioTipoServicio
 	RepositorioPagos repoPagoServicio = new RepositorioPagos
 	RepositorioPromociones repoPromociones = new RepositorioPromociones
+	RepositorioPerfil repoPerfil = new RepositorioPerfil
 
 	static ParserStringToLong parserStringToLong = ParserStringToLong.instance // los ID en hibernate son de tipo long o inter y los pasamos a tipo string
 
@@ -88,6 +90,18 @@ class PerrunosRestAPI {
 	// /////////////////////////////////////////////////////////////////////////////////
 	// REGISTRO USUARIO                                                               //
 	// /////////////////////////////////////////////////////////////////////////////////
+	
+	@Get("/perfiles")
+	def getTodosLosPerfiles(){
+		try {
+			val perfiles=repoPerfil.allInstances.filter[perfil|!perfil.nombrePerfil.equals("Administrador")].toList
+			println(perfiles)
+			return ok(perfiles.toJson)
+		} catch (UserException exception) {
+			return badRequest()
+		}
+	}
+	
 	@Post("/usuario/createDuenio")
 	def crearDuenio(@Body String body) {
 		try {
@@ -112,7 +126,7 @@ class PerrunosRestAPI {
 		}
 	}
 
-	@Post("/usuario/createPaseador")
+	@Post("/usuario/createPaseador")//TODO:FALLANDO
 	def crearPaseador(@Body String body) {
 		try {
 			if (repoUsuario.validarCreate(body.getPropertyValue("email"))) {
@@ -128,6 +142,34 @@ class PerrunosRestAPI {
 				]
 				repoUsuario.create(nuevoPaseador)
 				return ok()
+			} else {
+				throw new Exception("Ya existe un usuario con ese correo")
+			}
+		} catch (UserException exception) {
+			return badRequest()
+		}
+	}
+	
+	@Post("/usuario/createUsuario")//TODO:ESTE ES EL POSTA
+	def crearUsuario(@Body String body) {
+		try {
+			val tipoDePerfil = repoPerfil.searchByID(Long.parseLong(body.getPropertyValue("tipo")))
+			if (repoUsuario.validarCreate(body.getPropertyValue("email"))) {
+				val nuevoUsuario = new Usuario => [
+					email = body.getPropertyValue("email")
+					nombre = body.getPropertyValue("nombre")
+					apellido = body.getPropertyValue("apellido")
+					password = body.getPropertyValue("password")
+					fechaAlta = LocalDate.now
+					activo = true
+					tipoPerfil = tipoDePerfil
+					calificacion = 5.0
+				]
+				println(nuevoUsuario.tipoPerfil)
+				repoUsuario.create(nuevoUsuario)
+				return ok()
+			} else {
+				throw new Exception("Ya existe un usuario con ese correo")
 			}
 		} catch (UserException exception) {
 			return badRequest()
