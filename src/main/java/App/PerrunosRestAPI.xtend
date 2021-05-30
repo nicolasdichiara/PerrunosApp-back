@@ -237,7 +237,7 @@ class PerrunosRestAPI {
 	def crearPerro(@Body String body) {
 		try {
 			val razaPerro = repoRaza.searchByID(parserStringToLong.parsearDeStringALong(body.getPropertyValue("raza")))
-			val usuario = repoUsuario.searchByID(parserStringToLong.parsearDeStringALong(idUser))
+			val usuario = repoUsuario.usuarioConFetchDePerros(parserStringToLong.parsearDeStringALong(idUser))
 			val nuevoPerro = new Perro => [
 				nombre = body.getPropertyValue("nombre")
 				cuidadosEspeciales = body.getPropertyValue("cuidadosEspeciales")
