@@ -368,6 +368,7 @@ class PerrunosRestAPI {
 	// /////////////////////////////////////////////////////////////////////////////////
 	// ABMC AVISOS                                                                    //
 	// /////////////////////////////////////////////////////////////////////////////////
+	
 	@Get("/usuario/avisos/:idUser")
 	def avisosDelUsuario() {
 		try {
@@ -485,6 +486,28 @@ class PerrunosRestAPI {
 	// /////////////////////////////////////////////////////////////////////////////////
 	// ABMC SERVICIOS                                                                 //
 	// /////////////////////////////////////////////////////////////////////////////////
+	
+	@Get("/servicios/tiposDeServicio")
+	def getTiposDeServicios(){
+		try {
+			val tiposDeServicios = repoTipoServicio.allInstances
+			return ok(tiposDeServicios.toJson)
+		} catch (UserException exception) {
+			return badRequest()
+		}
+	}
+	
+	@Get("/servicios/tiposDeServicioPorUsuario/:id")
+	def getTiposDeServiciosPorUsuario(){
+		try {
+			val usuario = repoUsuario.searchByID(Long.parseLong(id))
+			val tiposDeServicios = repoTipoServicio.searchByID(usuario.tipoPerfil.tipoServicio.idTipoServicio)
+			return ok(tiposDeServicios.toJson)
+		} catch (UserException exception) {
+			return badRequest()
+		}
+	}
+	
 	@Post("/usuario/servicios/contratarPaseo")
 	def crearServicio(@Body String body) {
 		try {
