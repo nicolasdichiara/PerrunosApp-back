@@ -50,6 +50,8 @@ class Aviso {
 	Long idPerro
 	@Column
 	Double Precio
+	@OneToOne(fetch=FetchType.EAGER)
+	Zona zona
 	
 	def finalizarAviso(){//porque lo contrataron o porque lo dio de baja
 		activo = false
