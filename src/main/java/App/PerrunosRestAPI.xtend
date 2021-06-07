@@ -34,7 +34,6 @@ import Clases.Promocion
 import Repositorio.RepositorioPromociones
 import Repositorio.RepositorioPerfil
 import Repositorio.RepositorioZonas
-import Serializer.AvisoSerializer
 
 @Controller //maneja las llamadas post, etc
 class PerrunosRestAPI {
@@ -393,7 +392,7 @@ class PerrunosRestAPI {
 				avisos
 			val avisosFiltrados = avisosDelUsuario.filter[aviso|aviso.activo].toList
 			avisosFiltrados.forEach[aviso|aviso.fechaPublicacion = aviso.fechaPublicacion.plusDays(1)]
-			println(avisosFiltrados.toJson)
+			avisosFiltrados.forEach[aviso|aviso.usuarioPublicante=null]
 			return ok(avisosFiltrados.toJson)
 		} catch (UserException exception) {
 			return badRequest()
@@ -403,7 +402,7 @@ class PerrunosRestAPI {
 	@Get("/usuario/traerUnAviso/:idAviso")
 	def dameUnAviso() {
 		try {
-			val aviso = repoAviso.searchByID(Long.parseLong(idAviso))
+			val aviso = repoAviso.avisoPorIdConUsuario(Long.parseLong(idAviso))
 			aviso.fechaPublicacion = aviso.fechaPublicacion.plusDays(1)
 			return ok(aviso.toJson)
 		} catch (UserException exception) {

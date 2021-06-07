@@ -54,6 +54,20 @@ class RepositorioAvisos extends RepositorioAbstract<Aviso> {
 			entityManager?.close
 		}
 	}
+	
+	def avisoPorIdConUsuario(Long idAviso) {
+		val entityManager = singletonDeEntityManager.getEntityManager
+		try {
+			entityManager.createQuery(
+				"SELECT NEW Repositorio.AvisoConUsuario(a.idAviso, a.fechaPublicacion, a.horario, a.detalle, a.activo, a.tipoServicio, a.Precio, a.zona, " +
+					"a.lunes, a.martes, a.miercoles, a.jueves, a.viernes, a.sabado, a.domingo, u.nombre, u.apellido, u.telefono, u.tipoPerfil, u.calificacion) " +
+					"FROM Aviso a " + "JOIN a.usuarioPublicante u " + "WHERE a.idAviso = :idAviso AND a.activo = 1", AvisoConUsuario)
+			.setParameter("idAviso", idAviso)
+			.singleResult
+		} finally {
+			entityManager?.close
+		}
+	}
 }
 
 @Accessors
