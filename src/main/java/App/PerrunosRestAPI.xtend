@@ -33,6 +33,8 @@ import Repositorio.RepositorioPagos
 import Clases.Promocion
 import Repositorio.RepositorioPromociones
 import Repositorio.RepositorioPerfil
+import Repositorio.RepositorioZonas
+import Serializer.AvisoSerializer
 
 @Controller //maneja las llamadas post, etc
 class PerrunosRestAPI {
@@ -47,6 +49,7 @@ class PerrunosRestAPI {
 	RepositorioPagos repoPagoServicio = new RepositorioPagos
 	RepositorioPromociones repoPromociones = new RepositorioPromociones
 	RepositorioPerfil repoPerfil = new RepositorioPerfil
+	RepositorioZonas repoZonas = new RepositorioZonas
 
 	static ParserStringToLong parserStringToLong = ParserStringToLong.instance // los ID en hibernate son de tipo long o inter y los pasamos a tipo string
 
@@ -126,7 +129,7 @@ class PerrunosRestAPI {
 		}
 	}
 
-	@Post("/usuario/createPaseador")//TODO:FALLANDO
+	@Post("/usuario/createPaseador")
 	def crearPaseador(@Body String body) {
 		try {
 			if (repoUsuario.validarCreate(body.getPropertyValue("email"))) {
@@ -364,7 +367,21 @@ class PerrunosRestAPI {
 			return badRequest()
 		}
 	}
-
+	
+	// /////////////////////////////////////////////////////////////////////////////////
+	// ZONAS			                                                              //
+	// /////////////////////////////////////////////////////////////////////////////////
+	
+	@Get("/zonas")
+	def dameTodasLasZonas() {
+		try {
+			val zonas = repoZonas.allInstances
+			return ok(zonas.toJson)
+		} catch (UserException exception) {
+			return badRequest()
+		}
+	}
+	
 	// /////////////////////////////////////////////////////////////////////////////////
 	// ABMC AVISOS                                                                    //
 	// /////////////////////////////////////////////////////////////////////////////////
@@ -375,7 +392,7 @@ class PerrunosRestAPI {
 			val avisosDelUsuario = repoUsuario.usuarioConFetchDeAvisos(parserStringToLong.parsearDeStringALong(idUser)).
 				avisos
 			val avisosFiltrados = avisosDelUsuario.filter[aviso|aviso.activo].toList
-			avisosFiltrados.forEach[aviso|aviso.fecha = aviso.fecha.plusDays(1)]
+			avisosFiltrados.forEach[aviso|aviso.fechaPublicacion = aviso.fechaPublicacion.plusDays(1)]
 			println(avisosFiltrados.toJson)
 			return ok(avisosFiltrados.toJson)
 		} catch (UserException exception) {
@@ -387,7 +404,7 @@ class PerrunosRestAPI {
 	def dameUnAviso() {
 		try {
 			val aviso = repoAviso.searchByID(Long.parseLong(idAviso))
-			aviso.fecha = aviso.fecha.plusDays(1)
+			aviso.fechaPublicacion = aviso.fechaPublicacion.plusDays(1)
 			return ok(aviso.toJson)
 		} catch (UserException exception) {
 			return badRequest()
@@ -398,9 +415,14 @@ class PerrunosRestAPI {
 	def crearAviso(@Body String body) {
 		try {
 			val usuario = repoUsuario.usuarioConFetchDeAvisos(parserStringToLong.parsearDeStringALong(idUser))
-			val idPerroValidado = repoPerro.validarIdPerro(body.getPropertyValue("idPerro"))
+			val zonaElegida = repoZonas.searchByID(Long.parseLong(body.getPropertyValue("zona")))
 			val nuevoAviso = new Aviso => [
-				recurrente = Boolean.parseBoolean(body.getPropertyValue("recurrente"))
+				fechaPublicacion = LocalDate.now
+				horario = body.getPropertyValue("horario")
+				detalle = body.getPropertyValue("detalle")
+				activo = true
+				precio = Double.parseDouble(body.getPropertyValue("precio"))
+				tipoServicio = repoTipoServicio.searchByID(Long.parseLong(body.getPropertyValue("tipoServicio")))
 				lunes = Boolean.parseBoolean(body.getPropertyValue("lunes"))
 				martes = Boolean.parseBoolean(body.getPropertyValue("martes"))
 				miercoles = Boolean.parseBoolean(body.getPropertyValue("miercoles"))
@@ -408,19 +430,8 @@ class PerrunosRestAPI {
 				viernes = Boolean.parseBoolean(body.getPropertyValue("viernes"))
 				sabado = Boolean.parseBoolean(body.getPropertyValue("sabado"))
 				domingo = Boolean.parseBoolean(body.getPropertyValue("domingo"))
-				fechaParticular = Boolean.parseBoolean(body.getPropertyValue("fechaparticular"))
-				fecha = body.getPropertyAsDate("fecha", "dd/MM/yyyy")
-				horario = LocalTime.parse(body.getPropertyValue("horario"))
-				detalle = body.getPropertyValue("detalle")
-				activo = true
-				tipoServicio = repoTipoServicio.searchByID(Long.parseLong(body.getPropertyValue("tipoServicio")))
-				idPerro = idPerroValidado
-				if (body.getPropertyValue("precio") !== null) {
-					precio = Double.parseDouble(body.getPropertyValue("precio"))
-				} else {
-					precio = tipoServicio.precioStandard
-				}
-
+				zona = zonaElegida
+				usuarioPublicante=usuario
 			]
 			usuario.agregarAviso(nuevoAviso)
 			repoAviso.create(nuevoAviso)
@@ -434,9 +445,11 @@ class PerrunosRestAPI {
 	@Post("/usuario/avisos/modificarAviso/:idAviso")
 	def modificarAviso(@Body String body) {
 		try {
-			val idPerroValidado = repoPerro.validarIdPerro(body.getPropertyValue("idPerro"))
 			val avisoAEditar = repoAviso.searchByID(Long.parseLong(idAviso))
-			avisoAEditar.recurrente = Boolean.parseBoolean(body.getPropertyValue("recurrente"))
+			val zonaElegida = repoZonas.searchByID(Long.parseLong(body.getPropertyValue("zona")))
+			avisoAEditar.horario = body.getPropertyValue("horario")
+			avisoAEditar.detalle = body.getPropertyValue("detalle")
+			avisoAEditar.precio = Double.parseDouble(body.getPropertyValue("precio"))
 			avisoAEditar.lunes = Boolean.parseBoolean(body.getPropertyValue("lunes"))
 			avisoAEditar.martes = Boolean.parseBoolean(body.getPropertyValue("martes"))
 			avisoAEditar.miercoles = Boolean.parseBoolean(body.getPropertyValue("miercoles"))
@@ -444,15 +457,7 @@ class PerrunosRestAPI {
 			avisoAEditar.viernes = Boolean.parseBoolean(body.getPropertyValue("viernes"))
 			avisoAEditar.sabado = Boolean.parseBoolean(body.getPropertyValue("sabado"))
 			avisoAEditar.domingo = Boolean.parseBoolean(body.getPropertyValue("domingo"))
-			avisoAEditar.fechaParticular = Boolean.parseBoolean(body.getPropertyValue("fechaparticular"))
-			avisoAEditar.fecha = body.getPropertyAsDate("fecha", "dd/MM/yyyy")
-			avisoAEditar.horario = LocalTime.parse(body.getPropertyValue("horario"))
-			avisoAEditar.detalle = body.getPropertyValue("detalle")
-			avisoAEditar.activo = true
-			avisoAEditar.tipoServicio = repoTipoServicio.searchByID(
-				Long.parseLong(body.getPropertyValue("tipoServicio")))
-			avisoAEditar.idPerro = idPerroValidado
-			avisoAEditar.precio = Double.parseDouble(body.getPropertyValue("precio"))
+			avisoAEditar.zona = zonaElegida
 			repoAviso.update(avisoAEditar)
 			return ok()
 		} catch (UserException exception) {
@@ -475,8 +480,8 @@ class PerrunosRestAPI {
 	@Get("/avisos/traerTodosLosAvisos")
 	def dameTodosLosAvisos() {
 		try {
-			val avisos = repoAviso.avisosActivos
-			avisos.forEach[aviso|aviso.fecha = aviso.fecha.plusDays(1)]
+			val avisos = repoAviso.avisosActivosConUsuario
+			avisos.forEach[aviso|aviso.fechaPublicacion = aviso.fechaPublicacion.plusDays(1)]
 			return ok(avisos.toJson)
 		} catch (UserException exception) {
 			return badRequest()
@@ -492,6 +497,16 @@ class PerrunosRestAPI {
 		try {
 			val tiposDeServicios = repoTipoServicio.allInstances
 			return ok(tiposDeServicios.toJson)
+		} catch (UserException exception) {
+			return badRequest()
+		}
+	}
+	
+	@Get("/servicios/tiposDeServicio/:id")
+	def getTiposDeServicios(){
+		try {
+			val tipoDeServicio = repoTipoServicio.searchByID(Long.parseLong(id))
+			return ok(tipoDeServicio.toJson)
 		} catch (UserException exception) {
 			return badRequest()
 		}
@@ -519,8 +534,8 @@ class PerrunosRestAPI {
 			val nuevoServicio = new Servicio => [
 				idPerro = idPerroValidado
 				activo = true
-				fechaRealizacion = avisoADarDeBaja.fecha
-				horario = avisoADarDeBaja.horario
+				fechaRealizacion = avisoADarDeBaja.fechaPublicacion
+				//horario = avisoADarDeBaja.horario TODO: ESTO VA A FALLAR
 				pago = false
 				calificacionDuenio = null
 				calificacionPrestador = null

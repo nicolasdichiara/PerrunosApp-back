@@ -4,6 +4,11 @@ import Clases.Aviso
 import javax.persistence.criteria.Root
 import javax.persistence.criteria.CriteriaBuilder
 import javax.persistence.criteria.CriteriaQuery
+import java.time.LocalDate
+import Clases.TipoServicio
+import Clases.Zona
+import org.eclipse.xtend.lib.annotations.Accessors
+import Clases.Perfil
 
 class RepositorioAvisos extends RepositorioAbstract<Aviso> {
 
@@ -23,7 +28,7 @@ class RepositorioAvisos extends RepositorioAbstract<Aviso> {
 			])
 		}
 	}
-	
+
 	def avisosActivos() {
 		val entityManager = singletonDeEntityManager.getEntityManager
 		try {
@@ -37,5 +42,67 @@ class RepositorioAvisos extends RepositorioAbstract<Aviso> {
 			entityManager?.close
 		}
 	}
-	
+
+	def avisosActivosConUsuario() {
+		val entityManager = singletonDeEntityManager.getEntityManager
+		try {
+			entityManager.createQuery(
+				"SELECT NEW Repositorio.AvisoConUsuario(a.idAviso, a.fechaPublicacion, a.horario, a.detalle, a.activo, a.tipoServicio, a.Precio, a.zona, " +
+					"a.lunes, a.martes, a.miercoles, a.jueves, a.viernes, a.sabado, a.domingo, u.nombre, u.apellido, u.telefono, u.tipoPerfil, u.calificacion) " +
+					"FROM Aviso a " + "JOIN a.usuarioPublicante u " + "WHERE a.activo = 1", AvisoConUsuario).resultList
+		} finally {
+			entityManager?.close
+		}
+	}
+}
+
+@Accessors
+class AvisoConUsuario {
+	Long idAviso
+	LocalDate fechaPublicacion
+	String horario
+	String detalle
+	Boolean activo
+	TipoServicio tipoServicio
+	Double Precio
+	Zona zona
+	Boolean lunes
+	Boolean martes
+	Boolean miercoles
+	Boolean jueves
+	Boolean viernes
+	Boolean sabado
+	Boolean domingo
+	String nombre
+	String apellido
+	String telefono
+	Perfil tipoPerfil
+	Double calificacion
+
+	new(Long _idAviso, LocalDate _fechaPublicacion, String _horario, String _detalle, Boolean _activo,
+		TipoServicio _tipoServicio, Double _Precio, Zona _zona, Boolean _lunes, Boolean _martes, Boolean _miercoles,
+		Boolean _jueves, Boolean _viernes, Boolean _sabado, Boolean _domingo, String _nombre, String _apellido,
+		String _telefono, Perfil _tipoPerfil, Double _calificacion) {
+
+		idAviso = _idAviso
+		fechaPublicacion = _fechaPublicacion
+		horario = _horario
+		detalle = _detalle
+		activo = _activo
+		tipoServicio = _tipoServicio
+		Precio = _Precio
+		zona = _zona
+		lunes = _lunes
+		martes = _martes
+		miercoles = _miercoles
+		jueves = _jueves
+		viernes = _viernes
+		sabado = _sabado
+		domingo = _domingo
+		nombre = _nombre
+		apellido = _apellido
+		telefono = _telefono
+		tipoPerfil = _tipoPerfil
+		calificacion = _calificacion
+	}
 }
