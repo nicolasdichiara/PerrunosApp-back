@@ -48,7 +48,7 @@ class RepositorioAvisos extends RepositorioAbstract<Aviso> {
 		try {
 			entityManager.createQuery(
 				"SELECT NEW Repositorio.AvisoConUsuario(a.idAviso, a.fechaPublicacion, a.horario, a.detalle, a.activo, a.tipoServicio, a.Precio, a.zona, " +
-					"a.lunes, a.martes, a.miercoles, a.jueves, a.viernes, a.sabado, a.domingo, u.nombre, u.apellido, u.telefono, u.tipoPerfil, u.calificacion) " +
+					"a.lunes, a.martes, a.miercoles, a.jueves, a.viernes, a.sabado, a.domingo, u.idUsuario, u.nombre, u.apellido, u.telefono, u.tipoPerfil, u.calificacion, u.imagenPerfil) " +
 					"FROM Aviso a " + "JOIN a.usuarioPublicante u " + "WHERE a.activo = 1", AvisoConUsuario).resultList
 		} finally {
 			entityManager?.close
@@ -60,7 +60,7 @@ class RepositorioAvisos extends RepositorioAbstract<Aviso> {
 		try {
 			entityManager.createQuery(
 				"SELECT NEW Repositorio.AvisoConUsuario(a.idAviso, a.fechaPublicacion, a.horario, a.detalle, a.activo, a.tipoServicio, a.Precio, a.zona, " +
-					"a.lunes, a.martes, a.miercoles, a.jueves, a.viernes, a.sabado, a.domingo, u.nombre, u.apellido, u.telefono, u.tipoPerfil, u.calificacion) " +
+					"a.lunes, a.martes, a.miercoles, a.jueves, a.viernes, a.sabado, a.domingo, u.idUsuario, u.nombre, u.apellido, u.telefono, u.tipoPerfil, u.calificacion, u.imagenPerfil) " +
 					"FROM Aviso a " + "JOIN a.usuarioPublicante u " + "WHERE a.idAviso = :idAviso AND a.activo = 1", AvisoConUsuario)
 			.setParameter("idAviso", idAviso)
 			.singleResult
@@ -87,16 +87,18 @@ class AvisoConUsuario {
 	Boolean viernes
 	Boolean sabado
 	Boolean domingo
+	Long idUsuario
 	String nombre
 	String apellido
 	String telefono
 	Perfil tipoPerfil
 	Double calificacion
+	String imagenPerfil
 
 	new(Long _idAviso, LocalDate _fechaPublicacion, String _horario, String _detalle, Boolean _activo,
 		TipoServicio _tipoServicio, Double _Precio, Zona _zona, Boolean _lunes, Boolean _martes, Boolean _miercoles,
-		Boolean _jueves, Boolean _viernes, Boolean _sabado, Boolean _domingo, String _nombre, String _apellido,
-		String _telefono, Perfil _tipoPerfil, Double _calificacion) {
+		Boolean _jueves, Boolean _viernes, Boolean _sabado, Boolean _domingo, Long _idUsuario, String _nombre, String _apellido,
+		String _telefono, Perfil _tipoPerfil, Double _calificacion, String _imagenPerfil) {
 
 		idAviso = _idAviso
 		fechaPublicacion = _fechaPublicacion
@@ -113,10 +115,12 @@ class AvisoConUsuario {
 		viernes = _viernes
 		sabado = _sabado
 		domingo = _domingo
+		idUsuario = _idUsuario
 		nombre = _nombre
 		apellido = _apellido
 		telefono = _telefono
 		tipoPerfil = _tipoPerfil
 		calificacion = _calificacion
+		imagenPerfil = _imagenPerfil
 	}
 }
