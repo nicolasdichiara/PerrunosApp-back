@@ -92,18 +92,17 @@ class PerrunosRestAPI {
 	// /////////////////////////////////////////////////////////////////////////////////
 	// REGISTRO USUARIO                                                               //
 	// /////////////////////////////////////////////////////////////////////////////////
-	
 	@Get("/perfiles")
-	def getTodosLosPerfiles(){
+	def getTodosLosPerfiles() {
 		try {
-			val perfiles=repoPerfil.allInstances.filter[perfil|!perfil.nombrePerfil.equals("Administrador")].toList
+			val perfiles = repoPerfil.allInstances.filter[perfil|!perfil.nombrePerfil.equals("Administrador")].toList
 			println(perfiles)
 			return ok(perfiles.toJson)
 		} catch (UserException exception) {
 			return badRequest()
 		}
 	}
-	
+
 	@Post("/usuario/createDuenio")
 	def crearDuenio(@Body String body) {
 		try {
@@ -151,8 +150,8 @@ class PerrunosRestAPI {
 			return badRequest()
 		}
 	}
-	
-	@Post("/usuario/createUsuario")//TODO:ESTE ES EL POSTA
+
+	@Post("/usuario/createUsuario") // TODO:ESTE ES EL POSTA
 	def crearUsuario(@Body String body) {
 		try {
 			val tipoDePerfil = repoPerfil.searchByID(Long.parseLong(body.getPropertyValue("tipo")))
@@ -366,11 +365,10 @@ class PerrunosRestAPI {
 			return badRequest()
 		}
 	}
-	
+
 	// /////////////////////////////////////////////////////////////////////////////////
 	// ZONAS			                                                              //
 	// /////////////////////////////////////////////////////////////////////////////////
-	
 	@Get("/zonas")
 	def dameTodasLasZonas() {
 		try {
@@ -380,11 +378,10 @@ class PerrunosRestAPI {
 			return badRequest()
 		}
 	}
-	
+
 	// /////////////////////////////////////////////////////////////////////////////////
 	// ABMC AVISOS                                                                    //
 	// /////////////////////////////////////////////////////////////////////////////////
-	
 	@Get("/usuario/avisos/:idUser")
 	def avisosDelUsuario() {
 		try {
@@ -392,7 +389,7 @@ class PerrunosRestAPI {
 				avisos
 			val avisosFiltrados = avisosDelUsuario.filter[aviso|aviso.activo].toList
 			avisosFiltrados.forEach[aviso|aviso.fechaPublicacion = aviso.fechaPublicacion.plusDays(1)]
-			avisosFiltrados.forEach[aviso|aviso.usuarioPublicante=null]
+			avisosFiltrados.forEach[aviso|aviso.usuarioPublicante = null]
 			return ok(avisosFiltrados.toJson)
 		} catch (UserException exception) {
 			return badRequest()
@@ -430,7 +427,7 @@ class PerrunosRestAPI {
 				sabado = Boolean.parseBoolean(body.getPropertyValue("sabado"))
 				domingo = Boolean.parseBoolean(body.getPropertyValue("domingo"))
 				zona = zonaElegida
-				usuarioPublicante=usuario
+				usuarioPublicante = usuario
 			]
 			usuario.agregarAviso(nuevoAviso)
 			repoAviso.create(nuevoAviso)
@@ -487,12 +484,40 @@ class PerrunosRestAPI {
 		}
 	}
 
+	@Get("/usuario/avisosContactados/:idUser")
+	def getAvisosContactados() {
+		try {
+			val avisosDelUsuario = repoUsuario.usuarioConFetchDeAvisosContactados(
+				parserStringToLong.parsearDeStringALong(idUser)).avisosContactados
+			val avisosFiltrados = avisosDelUsuario.filter[aviso|aviso.activo].toList
+			avisosFiltrados.forEach[aviso|aviso.fechaPublicacion = aviso.fechaPublicacion.plusDays(1)]
+			avisosFiltrados.forEach[aviso|aviso.usuarioPublicante = null]
+			return ok(avisosFiltrados.toJson)
+		} catch (UserException exception) {
+			return badRequest()
+		}
+	}
+
+	@Post("/usuario/contactarAviso")
+	def contactarAviso(@Body String body) {
+		try {
+			var usuario=repoUsuario.usuarioConFetchDeAvisosContactados(Long.parseLong(body.getPropertyValue("idUser")))
+			val aviso=repoAviso.searchByID(Long.parseLong(body.getPropertyValue("idAviso")))
+			if(!usuario.avisosContactados.exists[avs|avs.idAviso==aviso.idAviso]){
+				usuario.avisosContactados.add(aviso)
+			}
+			repoUsuario.update(usuario)
+			return ok()
+		} catch (UserException exception) {
+			return badRequest()
+		}
+	}
+
 	// /////////////////////////////////////////////////////////////////////////////////
 	// ABMC SERVICIOS                                                                 //
 	// /////////////////////////////////////////////////////////////////////////////////
-	
 	@Get("/servicios/tiposDeServicio")
-	def getTiposDeServicios(){
+	def getTiposDeServicios() {
 		try {
 			val tiposDeServicios = repoTipoServicio.allInstances
 			return ok(tiposDeServicios.toJson)
@@ -500,9 +525,9 @@ class PerrunosRestAPI {
 			return badRequest()
 		}
 	}
-	
+
 	@Get("/servicios/tiposDeServicio/:id")
-	def getTiposDeServicios(){
+	def getTiposDeServicios() {
 		try {
 			val tipoDeServicio = repoTipoServicio.searchByID(Long.parseLong(id))
 			return ok(tipoDeServicio.toJson)
@@ -510,9 +535,9 @@ class PerrunosRestAPI {
 			return badRequest()
 		}
 	}
-	
+
 	@Get("/servicios/tiposDeServicioPorUsuario/:id")
-	def getTiposDeServiciosPorUsuario(){
+	def getTiposDeServiciosPorUsuario() {
 		try {
 			val usuario = repoUsuario.searchByID(Long.parseLong(id))
 			val tiposDeServicios = repoTipoServicio.searchByID(usuario.tipoPerfil.tipoServicio.idTipoServicio)
@@ -521,7 +546,7 @@ class PerrunosRestAPI {
 			return badRequest()
 		}
 	}
-	
+
 	@Post("/usuario/servicios/contratarPaseo")
 	def crearServicio(@Body String body) {
 		try {
@@ -534,7 +559,7 @@ class PerrunosRestAPI {
 				idPerro = idPerroValidado
 				activo = true
 				fechaRealizacion = avisoADarDeBaja.fechaPublicacion
-				//horario = avisoADarDeBaja.horario TODO: ESTO VA A FALLAR
+				// horario = avisoADarDeBaja.horario TODO: ESTO VA A FALLAR
 				pago = false
 				calificacionDuenio = null
 				calificacionPrestador = null

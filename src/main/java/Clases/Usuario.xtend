@@ -13,6 +13,7 @@ import javax.persistence.FetchType
 import java.util.List
 import javax.persistence.ManyToOne
 import javax.persistence.ManyToMany
+import javax.persistence.JoinTable
 
 @Entity
 @Observable
@@ -64,6 +65,10 @@ class Usuario {
 	
 	@OneToMany(fetch=FetchType.LAZY)
 	List<Aviso> avisos = newArrayList
+	
+	@OneToMany(fetch=FetchType.LAZY)
+	@JoinTable(name = "Usuario_AvisoContactado")
+	List<Aviso> avisosContactados = newArrayList
 	
 	@ManyToMany(fetch=FetchType.LAZY)
 	List<Servicio> servicios = newArrayList

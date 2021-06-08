@@ -90,6 +90,22 @@ class RepositorioUsuario extends RepositorioAbstract<Usuario> {
 			entityManager?.close
 		}
 	}
+	
+	def usuarioConFetchDeAvisosContactados(Long idUser) {
+		val entityManager = singletonDeEntityManager.getEntityManager
+		try {
+			entityManager
+			.createQuery(
+				"SELECT u " +
+				"FROM Usuario u " +
+				"LEFT JOIN fetch u.avisosContactados " +
+				"WHERE u.idUsuario = :idUser", Usuario)
+			.setParameter("idUser", idUser)
+			.singleResult
+		} finally {
+			entityManager?.close
+		}
+	}
 
 	def buscoUsuariosParaEseMail(String unEmail) {
 		val entityManager = singletonDeEntityManager.getEntityManager
