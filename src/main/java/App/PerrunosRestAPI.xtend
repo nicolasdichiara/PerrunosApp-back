@@ -34,6 +34,8 @@ import Clases.Promocion
 import Repositorio.RepositorioPromociones
 import Repositorio.RepositorioPerfil
 import Repositorio.RepositorioZonas
+import Repositorio.ServicioConUsuario
+import java.util.List
 
 @Controller //maneja las llamadas post, etc
 class PerrunosRestAPI {
@@ -560,7 +562,7 @@ class PerrunosRestAPI {
 		}
 	}
 
-	@Post("/usuario/servicios/contratarPaseo")//TODO FALLA
+	@Post("/usuario/servicios/contratarPaseo")
 	def crearServicio(@Body String body) {
 		try {
 			val tipo = repoTipoServicio.searchByID(Long.parseLong(body.getPropertyValue("tipo")))
@@ -570,12 +572,13 @@ class PerrunosRestAPI {
 			val nuevoServicio = new Servicio => [
 				activo = true
 				fechaRealizacion = LocalDate.now
-				pago = false
+//				pago = false
+				horario = LocalTime.now
 				calificacionDuenio = null
 				calificacionPrestador = null
 				tipoServicio = tipo
-				idDuenio = publicante.idUsuario.toString
-				idPrestador = contratante.idUsuario.toString
+				duenio = contratante
+				prestador = publicante
 				precio = aviso.precio
 			]
 			contratante.agregarServicio(nuevoServicio)
@@ -602,11 +605,16 @@ class PerrunosRestAPI {
 	}
 
 	// Ver Servicio Actual
-	@Get("/usuario/serviciosActualesDelUsuario/:idUsuario")
+	@Get("/usuario/serviciosActualesDelUsuario/:idUsuario") //TODO YA FUNCA
 	def serviciosActualesDelUsuario() {
 		try {
-			val serviciosDelUsuario = repoUsuario.usuarioConFetchDeServicios(
-				parserStringToLong.parsearDeStringALong(idUsuario)).servicios
+			val usuario=repoUsuario.usuarioConFetchDeServicios(Long.parseLong(idUsuario))
+			var List<ServicioConUsuario> serviciosDelUsuario
+			if(usuario.tipoPerfil.nombrePerfil=='Duenio'){
+				serviciosDelUsuario = repoServicio.serviciosActivosDelDuenioConUsuarios(usuario.idUsuario, 'serv.duenio')
+			} else {
+				serviciosDelUsuario = repoServicio.serviciosActivosDelDuenioConUsuarios(usuario.idUsuario, 'serv.prestador')
+			}
 			val serviciosFiltrados = serviciosDelUsuario.filter[servicio|servicio.activo].toList
 			serviciosFiltrados.forEach[servicio|servicio.fechaRealizacion = servicio.fechaRealizacion.plusDays(1)]
 			return ok(serviciosFiltrados.toJson)
@@ -632,7 +640,7 @@ class PerrunosRestAPI {
 	@Get("/usuario/traerUnServicio/:idServicio")
 	def dameUnServicio() {
 		try {
-			val servicio = repoServicio.searchByID(Long.parseLong(idServicio))
+			val servicio = repoServicio.serviciosPorIdConUsuarios(Long.parseLong(idServicio))
 			servicio.fechaRealizacion = servicio.fechaRealizacion.plusDays(1)
 			return ok(servicio.toJson)
 		} catch (UserException exception) {
@@ -650,7 +658,7 @@ class PerrunosRestAPI {
 				Long.parseLong(body.getPropertyValue("idServicio")))
 			servicioACalificar.calificacionDuenio = Double.parseDouble(body.getPropertyValue("calificacion"))
 			repoServicio.update(servicioACalificar)
-			val duenio = repoUsuario.searchByID(Long.parseLong(servicioACalificar.idDuenio))
+			val duenio = repoUsuario.searchByID(servicioACalificar.duenio.idUsuario)
 			duenio.actualizarCalificacion(servicioACalificar)
 			repoUsuario.update(duenio)
 			return ok()
@@ -666,7 +674,7 @@ class PerrunosRestAPI {
 				Long.parseLong(body.getPropertyValue("idServicio")))
 			servicioACalificar.calificacionPrestador = Double.parseDouble(body.getPropertyValue("calificacion"))
 			repoServicio.update(servicioACalificar)
-			val prestador = repoUsuario.searchByID(Long.parseLong(servicioACalificar.idPrestador))
+			val prestador = repoUsuario.searchByID(servicioACalificar.prestador.idUsuario)
 			prestador.actualizarCalificacion(servicioACalificar)
 			repoUsuario.update(prestador)
 			return ok()
@@ -727,33 +735,33 @@ class PerrunosRestAPI {
 	// /////////////////////////////////////////////////////////////////////////////////
 	// PAGO DEL SEVICIO                                                               //
 	// /////////////////////////////////////////////////////////////////////////////////
-	@Post("/servicios/pagarServicio")
-	def pagarServicio(@Body String body) {
-		try {
-			val servicioAPagar = repoServicio.searchByIDSinWhereDeActivo(
-				Long.parseLong(body.getPropertyValue("idServicio")))
-			val pagoServicioNuevo = new PagoServicio => [
-				collectionId = body.getPropertyValue("collection_id")
-				collectionStatus = body.getPropertyValue("collection_status")
-				paymentId = body.getPropertyValue("payment_id")
-				status = body.getPropertyValue("status")
-				externalReference = body.getPropertyValue("external_reference")
-				paymentType = body.getPropertyValue("payment_type")
-				merchantOrderId = body.getPropertyValue("merchant_order_id")
-				preferenceId = body.getPropertyValue("preference_id")
-				siteId = body.getPropertyValue("site_id")
-				processingMode = body.getPropertyValue("processing_mode")
-				merchantAccountId = body.getPropertyValue("merchant_account_id")
-			]
-			servicioAPagar.pago = true
-			servicioAPagar.pagarServicio(pagoServicioNuevo)
-			repoPagoServicio.create(pagoServicioNuevo)
-			repoServicio.update(servicioAPagar)
-			return ok()
-		} catch (UserException exception) {
-			return badRequest()
-		}
-	}
+//	@Post("/servicios/pagarServicio")
+//	def pagarServicio(@Body String body) {
+//		try {
+//			val servicioAPagar = repoServicio.searchByIDSinWhereDeActivo(
+//				Long.parseLong(body.getPropertyValue("idServicio")))
+//			val pagoServicioNuevo = new PagoServicio => [
+//				collectionId = body.getPropertyValue("collection_id")
+//				collectionStatus = body.getPropertyValue("collection_status")
+//				paymentId = body.getPropertyValue("payment_id")
+//				status = body.getPropertyValue("status")
+//				externalReference = body.getPropertyValue("external_reference")
+//				paymentType = body.getPropertyValue("payment_type")
+//				merchantOrderId = body.getPropertyValue("merchant_order_id")
+//				preferenceId = body.getPropertyValue("preference_id")
+//				siteId = body.getPropertyValue("site_id")
+//				processingMode = body.getPropertyValue("processing_mode")
+//				merchantAccountId = body.getPropertyValue("merchant_account_id")
+//			]
+//			servicioAPagar.pago = true
+//			servicioAPagar.pagarServicio(pagoServicioNuevo)
+//			repoPagoServicio.create(pagoServicioNuevo)
+//			repoServicio.update(servicioAPagar)
+//			return ok()
+//		} catch (UserException exception) {
+//			return badRequest()
+//		}
+//	}
 
 	// /////////////////////////////////////////////////////////////////////////////////
 	// ABMC PROMOCIONES                                                               //

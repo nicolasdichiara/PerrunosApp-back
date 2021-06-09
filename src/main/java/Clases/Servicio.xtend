@@ -19,20 +19,20 @@ class Servicio {
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
 	Long idServicio
-	@Column
-	String idPrestador
-	@Column
-	String idDuenio
-	@Column
-	Long idPerro
+	@ManyToOne
+	Usuario prestador
+	@ManyToOne
+	Usuario duenio
+//	@Column
+//	Long idPerro
 	@Column
 	Boolean activo
 	@Column
 	LocalDate fechaRealizacion
 	@Column
 	LocalTime horario
-	@Column
-	Boolean pago = false
+//	@Column
+//	Boolean pago = false
 	@Column
 	Double calificacionDuenio
 	@Column
@@ -49,16 +49,16 @@ class Servicio {
 	String longitudPrestador
 	@Column
 	Double Precio
-	@OneToOne(fetch=FetchType.EAGER)
-	PagoServicio pagoDelServicio
+//	@OneToOne(fetch=FetchType.EAGER)
+//	PagoServicio pagoDelServicio
 	
 	def finalizarServicio(){
 		activo = false
 	}
 	
-	def pagarServicio(PagoServicio unPago){
-		pago = true
-		pagoDelServicio=unPago
-	}
+//	def pagarServicio(PagoServicio unPago){
+//		pago = true
+//		pagoDelServicio=unPago
+//	}
 	
 }
