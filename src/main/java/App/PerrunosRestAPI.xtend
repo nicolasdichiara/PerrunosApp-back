@@ -512,6 +512,19 @@ class PerrunosRestAPI {
 			return badRequest()
 		}
 	}
+	
+	@Post("/usuario/eliminarAvisoContactado")
+	def quitarAvisoContactado(@Body String body) {
+		try {
+			var usuario=repoUsuario.usuarioConFetchDeAvisosContactados(Long.parseLong(body.getPropertyValue("idUser")))
+			val aviso=repoAviso.searchByID(Long.parseLong(body.getPropertyValue("idAviso")))
+			usuario.avisosContactados.remove(usuario.avisosContactados.findFirst[avs|avs.idAviso==aviso.idAviso])
+			repoUsuario.update(usuario)
+			return ok()
+		} catch (UserException exception) {
+			return badRequest()
+		}
+	}
 
 	// /////////////////////////////////////////////////////////////////////////////////
 	// ABMC SERVICIOS                                                                 //
@@ -547,32 +560,26 @@ class PerrunosRestAPI {
 		}
 	}
 
-	@Post("/usuario/servicios/contratarPaseo")
+	@Post("/usuario/servicios/contratarPaseo")//TODO FALLA
 	def crearServicio(@Body String body) {
 		try {
-			val avisoADarDeBaja = repoAviso.searchByID(Long.parseLong(body.getPropertyValue("idAviso")))
-			val contratante = repoUsuario.searchByID(Long.parseLong(body.getPropertyValue("idContratante")))
-			val idPerroValidado = repoPerro.validarIdPerro(body.getPropertyValue("idPerro"))
-			val precioServicio = Double.parseDouble(body.getPropertyValue("precio"))
-			val publicante = repoUsuario.searchByID(repoUsuario.idUsuarioDelAviso(avisoADarDeBaja.idAviso))
+			val tipo = repoTipoServicio.searchByID(Long.parseLong(body.getPropertyValue("tipo")))
+			val aviso = repoAviso.searchByID(Long.parseLong(body.getPropertyValue("idAviso")))
+			val contratante = repoUsuario.usuarioConFetchDeServicios(Long.parseLong(body.getPropertyValue("idContratante")))
+			val publicante = repoUsuario.usuarioConFetchDeServicios(repoUsuario.idUsuarioDelAviso(aviso.idAviso))
 			val nuevoServicio = new Servicio => [
-				idPerro = idPerroValidado
 				activo = true
-				fechaRealizacion = avisoADarDeBaja.fechaPublicacion
-				// horario = avisoADarDeBaja.horario TODO: ESTO VA A FALLAR
+				fechaRealizacion = LocalDate.now
 				pago = false
 				calificacionDuenio = null
 				calificacionPrestador = null
-				tipoServicio = ServicioPaseo.instance
-				idDuenio = publicante.idUsuario.toString // TODO:Cuando los paseadores puedan publicar esto hay que cambiarlo
+				tipoServicio = tipo
+				idDuenio = publicante.idUsuario.toString
 				idPrestador = contratante.idUsuario.toString
-				precio = precioServicio
+				precio = aviso.precio
 			]
-			avisoADarDeBaja.finalizarAviso
 			contratante.agregarServicio(nuevoServicio)
-			println(contratante.servicios)
 			publicante.agregarServicio(nuevoServicio)
-			repoAviso.update(avisoADarDeBaja)
 			repoServicio.create(nuevoServicio)
 			repoUsuario.update(contratante)
 			repoUsuario.update(publicante)
