@@ -67,6 +67,29 @@ class RepositorioServicio extends RepositorioAbstract<Servicio> {
 		}
 	}
 	
+	def serviciosFinalizadosDelDuenioConUsuarios(Long idUser, String tipoUsuario) {
+		val entityManager = singletonDeEntityManager.getEntityManager
+		try {
+			entityManager.createQuery(
+				"SELECT NEW Repositorio.ServicioConUsuario(
+					serv.idServicio, serv.activo, serv.fechaRealizacion, serv.horario, serv.calificacionDuenio, 
+					serv.calificacionPrestador, serv.tipoServicio, serv.latitudDuenio, serv.longitudDuenio, serv.latitudPrestador, serv.longitudPrestador,
+					serv.Precio, prest.idUsuario, prest.nombre, prest.apellido, prest.telefono, prest.imagenPerfil,
+					duenio.idUsuario, duenio.nombre, duenio.apellido, duenio.telefono, duenio.imagenPerfil) " + 
+				"FROM Servicio serv " + 
+					"JOIN serv.prestador prest  " +
+					"JOIN serv.duenio duenio  " +
+				"WHERE 
+					serv.activo = 0 AND 
+					" + tipoUsuario + ".idUsuario = :idUser", ServicioConUsuario)
+			.setParameter("idUser", idUser)
+			//.setParameter("tipoUsuario", tipoUsuario)
+			.resultList
+		} finally {
+			entityManager?.close
+		}
+	}
+	
 	def serviciosPorIdConUsuarios(Long idServicio) {
 		val entityManager = singletonDeEntityManager.getEntityManager
 		try {

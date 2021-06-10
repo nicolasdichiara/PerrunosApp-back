@@ -2,11 +2,9 @@ package App
 
 import Clases.Aviso
 import Clases.Duenio
-import Clases.PagoServicio
 import Clases.Paseador
 import Clases.Perro
 import Clases.Servicio
-import Clases.ServicioPaseo
 import Clases.Usuario
 import ParserStringToLong.ParserStringToLong
 import Repositorio.RepositorioAvisos
@@ -503,9 +501,10 @@ class PerrunosRestAPI {
 	@Post("/usuario/contactarAviso")
 	def contactarAviso(@Body String body) {
 		try {
-			var usuario=repoUsuario.usuarioConFetchDeAvisosContactados(Long.parseLong(body.getPropertyValue("idUser")))
-			val aviso=repoAviso.searchByID(Long.parseLong(body.getPropertyValue("idAviso")))
-			if(!usuario.avisosContactados.exists[avs|avs.idAviso==aviso.idAviso]){
+			var usuario = repoUsuario.usuarioConFetchDeAvisosContactados(
+				Long.parseLong(body.getPropertyValue("idUser")))
+			val aviso = repoAviso.searchByID(Long.parseLong(body.getPropertyValue("idAviso")))
+			if (!usuario.avisosContactados.exists[avs|avs.idAviso == aviso.idAviso]) {
 				usuario.avisosContactados.add(aviso)
 			}
 			repoUsuario.update(usuario)
@@ -514,13 +513,14 @@ class PerrunosRestAPI {
 			return badRequest()
 		}
 	}
-	
+
 	@Post("/usuario/eliminarAvisoContactado")
 	def quitarAvisoContactado(@Body String body) {
 		try {
-			var usuario=repoUsuario.usuarioConFetchDeAvisosContactados(Long.parseLong(body.getPropertyValue("idUser")))
-			val aviso=repoAviso.searchByID(Long.parseLong(body.getPropertyValue("idAviso")))
-			usuario.avisosContactados.remove(usuario.avisosContactados.findFirst[avs|avs.idAviso==aviso.idAviso])
+			var usuario = repoUsuario.usuarioConFetchDeAvisosContactados(
+				Long.parseLong(body.getPropertyValue("idUser")))
+			val aviso = repoAviso.searchByID(Long.parseLong(body.getPropertyValue("idAviso")))
+			usuario.avisosContactados.remove(usuario.avisosContactados.findFirst[avs|avs.idAviso == aviso.idAviso])
 			repoUsuario.update(usuario)
 			return ok()
 		} catch (UserException exception) {
@@ -567,7 +567,8 @@ class PerrunosRestAPI {
 		try {
 			val tipo = repoTipoServicio.searchByID(Long.parseLong(body.getPropertyValue("tipo")))
 			val aviso = repoAviso.searchByID(Long.parseLong(body.getPropertyValue("idAviso")))
-			val contratante = repoUsuario.usuarioConFetchDeServicios(Long.parseLong(body.getPropertyValue("idContratante")))
+			val contratante = repoUsuario.usuarioConFetchDeServicios(
+				Long.parseLong(body.getPropertyValue("idContratante")))
 			val publicante = repoUsuario.usuarioConFetchDeServicios(repoUsuario.idUsuarioDelAviso(aviso.idAviso))
 			val nuevoServicio = new Servicio => [
 				activo = true
@@ -605,15 +606,17 @@ class PerrunosRestAPI {
 	}
 
 	// Ver Servicio Actual
-	@Get("/usuario/serviciosActualesDelUsuario/:idUsuario") //TODO YA FUNCA
+	@Get("/usuario/serviciosActualesDelUsuario/:idUsuario") // TODO YA FUNCA
 	def serviciosActualesDelUsuario() {
 		try {
-			val usuario=repoUsuario.usuarioConFetchDeServicios(Long.parseLong(idUsuario))
+			val usuario = repoUsuario.usuarioConFetchDeServicios(Long.parseLong(idUsuario))
 			var List<ServicioConUsuario> serviciosDelUsuario
-			if(usuario.tipoPerfil.nombrePerfil=='Duenio'){
-				serviciosDelUsuario = repoServicio.serviciosActivosDelDuenioConUsuarios(usuario.idUsuario, 'serv.duenio')
+			if (usuario.tipoPerfil.nombrePerfil == 'Duenio') {
+				serviciosDelUsuario = repoServicio.
+					serviciosActivosDelDuenioConUsuarios(usuario.idUsuario, 'serv.duenio')
 			} else {
-				serviciosDelUsuario = repoServicio.serviciosActivosDelDuenioConUsuarios(usuario.idUsuario, 'serv.prestador')
+				serviciosDelUsuario = repoServicio.serviciosActivosDelDuenioConUsuarios(usuario.idUsuario,
+					'serv.prestador')
 			}
 			val serviciosFiltrados = serviciosDelUsuario.filter[servicio|servicio.activo].toList
 			serviciosFiltrados.forEach[servicio|servicio.fechaRealizacion = servicio.fechaRealizacion.plusDays(1)]
@@ -626,15 +629,18 @@ class PerrunosRestAPI {
 	// Historial De Servicios
 	@Get("/usuario/historialDeServicios/:idUsuario")
 	def historialDeServicios() {
-		try {
-			val serviciosDelUsuario = repoUsuario.usuarioConFetchDeServicios(
-				parserStringToLong.parsearDeStringALong(idUsuario)).servicios
+		val usuario = repoUsuario.usuarioConFetchDeServicios(Long.parseLong(idUsuario))
+			var List<ServicioConUsuario> serviciosDelUsuario
+			if (usuario.tipoPerfil.nombrePerfil == 'Duenio') {
+				serviciosDelUsuario = repoServicio.
+					serviciosFinalizadosDelDuenioConUsuarios(usuario.idUsuario, 'serv.duenio')
+			} else {
+				serviciosDelUsuario = repoServicio.serviciosFinalizadosDelDuenioConUsuarios(usuario.idUsuario,
+					'serv.prestador')
+			}
 			val serviciosFiltrados = serviciosDelUsuario.filter[servicio|!servicio.activo].toList
 			serviciosFiltrados.forEach[servicio|servicio.fechaRealizacion = servicio.fechaRealizacion.plusDays(1)]
 			return ok(serviciosFiltrados.toJson)
-		} catch (UserException exception) {
-			return badRequest()
-		}
 	}
 
 	@Get("/usuario/traerUnServicio/:idServicio")
@@ -658,7 +664,7 @@ class PerrunosRestAPI {
 				Long.parseLong(body.getPropertyValue("idServicio")))
 			servicioACalificar.calificacionDuenio = Double.parseDouble(body.getPropertyValue("calificacion"))
 			repoServicio.update(servicioACalificar)
-			val duenio = repoUsuario.searchByID(servicioACalificar.duenio.idUsuario)
+			val duenio = repoUsuario.usuarioConFetchDeServicios(servicioACalificar.duenio.idUsuario)
 			duenio.actualizarCalificacion(servicioACalificar)
 			repoUsuario.update(duenio)
 			return ok()
@@ -674,7 +680,7 @@ class PerrunosRestAPI {
 				Long.parseLong(body.getPropertyValue("idServicio")))
 			servicioACalificar.calificacionPrestador = Double.parseDouble(body.getPropertyValue("calificacion"))
 			repoServicio.update(servicioACalificar)
-			val prestador = repoUsuario.searchByID(servicioACalificar.prestador.idUsuario)
+			val prestador = repoUsuario.usuarioConFetchDeServicios(servicioACalificar.prestador.idUsuario)
 			prestador.actualizarCalificacion(servicioACalificar)
 			repoUsuario.update(prestador)
 			return ok()
@@ -762,7 +768,6 @@ class PerrunosRestAPI {
 //			return badRequest()
 //		}
 //	}
-
 	// /////////////////////////////////////////////////////////////////////////////////
 	// ABMC PROMOCIONES                                                               //
 	// /////////////////////////////////////////////////////////////////////////////////
