@@ -441,6 +441,7 @@ class PerrunosRestAPI {
 	@Post("/usuario/avisos/modificarAviso/:idAviso")
 	def modificarAviso(@Body String body) {
 		try {
+			println("AVISO: " + repoAviso.searchByID(Long.parseLong(idAviso)))
 			val avisoAEditar = repoAviso.searchByID(Long.parseLong(idAviso))
 			val zonaElegida = repoZonas.searchByID(Long.parseLong(body.getPropertyValue("zona")))
 			avisoAEditar.horario = body.getPropertyValue("horario")
