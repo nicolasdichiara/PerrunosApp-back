@@ -42,66 +42,45 @@ class RepositorioUsuario extends RepositorioAbstract<Usuario> {
 //		} finally {
 //		}
 //	}
-
 	def usuarioConFetchDePerros(Long idUser) {
 		val entityManager = singletonDeEntityManager.getEntityManager
 		try {
-			entityManager
-			.createQuery(
-				"SELECT u " +
-				"FROM Usuario u " +
-				"LEFT JOIN fetch u.perros " +
-				"WHERE u.idUsuario = :idUser", Usuario)
-			.setParameter("idUser", idUser)
-			.singleResult
+			entityManager.createQuery(
+				"SELECT u " + "FROM Usuario u " + "LEFT JOIN fetch u.perros " + "WHERE u.idUsuario = :idUser", Usuario).
+				setParameter("idUser", idUser).singleResult
 		} finally {
 			entityManager?.close
 		}
 	}
-	
+
 	def usuarioConFetchDeServicios(Long idUser) {
 		val entityManager = singletonDeEntityManager.getEntityManager
 		try {
-			entityManager
-			.createQuery(
-				"SELECT u " +
-				"FROM Usuario u " +
-				"LEFT JOIN fetch u.servicios " +
-				"WHERE u.idUsuario = :idUser", Usuario)
-			.setParameter("idUser", idUser)
-			.singleResult
+			entityManager.createQuery(
+				"SELECT u " + "FROM Usuario u " + "LEFT JOIN fetch u.servicios " + "WHERE u.idUsuario = :idUser",
+				Usuario).setParameter("idUser", idUser).singleResult
 		} finally {
 			entityManager?.close
 		}
 	}
-	
+
 	def usuarioConFetchDeAvisos(Long idUser) {
 		val entityManager = singletonDeEntityManager.getEntityManager
 		try {
-			entityManager
-			.createQuery(
-				"SELECT u " +
-				"FROM Usuario u " +
-				"LEFT JOIN fetch u.avisos " +
-				"WHERE u.idUsuario = :idUser", Usuario)
-			.setParameter("idUser", idUser)
-			.singleResult
+			entityManager.createQuery(
+				"SELECT u " + "FROM Usuario u " + "LEFT JOIN fetch u.avisos " + "WHERE u.idUsuario = :idUser", Usuario).
+				setParameter("idUser", idUser).singleResult
 		} finally {
 			entityManager?.close
 		}
 	}
-	
+
 	def usuarioConFetchDeAvisosContactados(Long idUser) {
 		val entityManager = singletonDeEntityManager.getEntityManager
 		try {
-			entityManager
-			.createQuery(
-				"SELECT u " +
-				"FROM Usuario u " +
-				"LEFT JOIN fetch u.avisosContactados " +
-				"WHERE u.idUsuario = :idUser", Usuario)
-			.setParameter("idUser", idUser)
-			.singleResult
+			entityManager.createQuery(
+				"SELECT u " + "FROM Usuario u " + "LEFT JOIN fetch u.avisosContactados " +
+					"WHERE u.idUsuario = :idUser", Usuario).setParameter("idUser", idUser).singleResult
 		} finally {
 			entityManager?.close
 		}
@@ -146,4 +125,27 @@ class RepositorioUsuario extends RepositorioAbstract<Usuario> {
 		usuariosFetcheados.findFirst[usuario|usuario.tieneAviso(idAviso)].idUsuario
 	}
 
+	def avisosContactadosDelUsuario(Long idUsuario) {
+		val entityManager = singletonDeEntityManager.getEntityManager
+		try {
+			entityManager.createQuery("SELECT NEW Repositorio.AvisoConUsuario(
+					a.idAviso, a.fechaPublicacion, a.horario, a.detalle, a.activo, a.tipoServicio, a.Precio, a.zona, 
+					a.lunes, a.martes, a.miercoles, a.jueves, a.viernes, a.sabado, a.domingo, u.idUsuario, u.nombre, 
+					u.apellido, u.telefono, u.tipoPerfil, u.calificacion, u.imagenPerfil) " + "FROM Usuario u " + "JOIN u.avisosContactados a 
+				 WHERE u.idUsuario = :idUsuario", AvisoConUsuario).setParameter("idUsuario", idUsuario).resultList
+		} finally {
+			entityManager?.close
+		}
+	}
+
+	def searchByMail(String unMail) {
+		val entityManager = singletonDeEntityManager.getEntityManager
+		try {
+			entityManager.createQuery("SELECT u
+			 FROM Usuario u
+			 WHERE email = :unMail", Usuario).setParameter("unMail", unMail).singleResult
+		} finally {
+			entityManager?.close
+		}
+	}
 }

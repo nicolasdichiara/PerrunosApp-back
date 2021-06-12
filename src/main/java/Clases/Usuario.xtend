@@ -79,6 +79,13 @@ class Usuario {
 	@Column(length=1000)
 	String imagenPerfil
 	
+	@OneToMany(fetch=FetchType.EAGER)
+	List<Reporte> reportes = newArrayList
+	
+	def agregarReporte(Reporte unReporte){
+		reportes.add(unReporte)
+	}
+	
 	def agregarPerro(Perro unPerro){
 		if("Duenio"==Duenio.instance.nombrePerfil){
 			perros.add(unPerro)

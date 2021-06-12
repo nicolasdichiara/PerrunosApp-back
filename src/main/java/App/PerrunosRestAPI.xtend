@@ -34,6 +34,8 @@ import Repositorio.RepositorioPerfil
 import Repositorio.RepositorioZonas
 import Repositorio.ServicioConUsuario
 import java.util.List
+import Clases.Reporte
+import Repositorio.RepositorioReporte
 
 @Controller //maneja las llamadas post, etc
 class PerrunosRestAPI {
@@ -49,6 +51,7 @@ class PerrunosRestAPI {
 	RepositorioPromociones repoPromociones = new RepositorioPromociones
 	RepositorioPerfil repoPerfil = new RepositorioPerfil
 	RepositorioZonas repoZonas = new RepositorioZonas
+	RepositorioReporte repoReporte = new RepositorioReporte
 
 	static ParserStringToLong parserStringToLong = ParserStringToLong.instance // los ID en hibernate son de tipo long o inter y los pasamos a tipo string
 
@@ -57,7 +60,7 @@ class PerrunosRestAPI {
 
 	// /////////////////////////////////////////////////////////////////////////////////
 	// LOGIN                                                                          //
-	// /////////////////////////////////////////////////////////////////////////////////
+	// ///////////////////////////////////////////////////////////////////////////////// TODO: LOGIN
 	@Post("/usuario/login") // te permite enviar un body de json sin que se vea en la direccion esto te lo envia el front, envia informa y espera respuesta
 	def login(@Body String body) {
 		try {
@@ -65,7 +68,9 @@ class PerrunosRestAPI {
 			try {
 				val usuarioLogeado = this.repoUsuario.verificarLogin(usuarioLogeadoBody.usuario,
 					usuarioLogeadoBody.password)
-				usuarioLogeado.fechaAlta = usuarioLogeado.fechaAlta.plusDays(1)
+				if (usuarioLogeado !== null) {
+					usuarioLogeado.fechaAlta = usuarioLogeado.fechaAlta.plusDays(1)
+				}
 				// usuarioLogeado.fechaNacimiento.plusDays(1)
 				return ok(UsuarioSerializer.toJson(usuarioLogeado))
 			} catch (UserException exception) {
@@ -91,7 +96,7 @@ class PerrunosRestAPI {
 
 	// /////////////////////////////////////////////////////////////////////////////////
 	// REGISTRO USUARIO                                                               //
-	// /////////////////////////////////////////////////////////////////////////////////
+	// ///////////////////////////////////////////////////////////////////////////////// TODO: REGISTRO USUARIO
 	@Get("/perfiles")
 	def getTodosLosPerfiles() {
 		try {
@@ -151,7 +156,7 @@ class PerrunosRestAPI {
 		}
 	}
 
-	@Post("/usuario/createUsuario") // TODO:ESTE ES EL POSTA
+	@Post("/usuario/createUsuario") 
 	def crearUsuario(@Body String body) {
 		try {
 			val tipoDePerfil = repoPerfil.searchByID(Long.parseLong(body.getPropertyValue("tipo")))
@@ -179,7 +184,7 @@ class PerrunosRestAPI {
 
 	// /////////////////////////////////////////////////////////////////////////////////
 	// ABM PERFIL                                                                     //
-	// /////////////////////////////////////////////////////////////////////////////////
+	// ///////////////////////////////////////////////////////////////////////////////// TODO: ABM PERFIL
 	@Post("/usuario/perfil/completarPerfil/:id")
 	def completarPerfil(@Body String body) {
 		try {
@@ -189,7 +194,7 @@ class PerrunosRestAPI {
 			usuario.dni = Integer.parseInt(body.getPropertyValue("dni"))
 			usuario.telefono = body.getPropertyValue("telefono")
 			usuario.direccion = body.getPropertyValue("direccion")
-			usuario.imagenPerfil = body.getPropertyValue("imagen")
+			// usuario.imagenPerfil = body.getPropertyValue("imagen")
 			repoUsuario.update(usuario)
 			return ok()
 		} catch (UserException exception) {
@@ -233,7 +238,7 @@ class PerrunosRestAPI {
 
 	// /////////////////////////////////////////////////////////////////////////////////
 	// ABMC PERROS                                                                    //
-	// /////////////////////////////////////////////////////////////////////////////////
+	// ///////////////////////////////////////////////////////////////////////////////// TODO: ABMC PERROS
 	@Post("/perros/crearPerro/:idUser")
 	def crearPerro(@Body String body) {
 		try {
@@ -355,7 +360,7 @@ class PerrunosRestAPI {
 
 	// /////////////////////////////////////////////////////////////////////////////////
 	// GET RAZAS                                                                      //
-	// /////////////////////////////////////////////////////////////////////////////////
+	// ///////////////////////////////////////////////////////////////////////////////// TODO: RAZAS
 	@Get("/razas")
 	def dameTodasLasRazas() {
 		try {
@@ -368,7 +373,7 @@ class PerrunosRestAPI {
 
 	// /////////////////////////////////////////////////////////////////////////////////
 	// ZONAS			                                                              //
-	// /////////////////////////////////////////////////////////////////////////////////
+	// ///////////////////////////////////////////////////////////////////////////////// TODO: ZONAS
 	@Get("/zonas")
 	def dameTodasLasZonas() {
 		try {
@@ -381,7 +386,7 @@ class PerrunosRestAPI {
 
 	// /////////////////////////////////////////////////////////////////////////////////
 	// ABMC AVISOS                                                                    //
-	// /////////////////////////////////////////////////////////////////////////////////
+	// ///////////////////////////////////////////////////////////////////////////////// TODO: ABMC AVISOS
 	@Get("/usuario/avisos/:idUser")
 	def avisosDelUsuario() {
 		try {
@@ -488,12 +493,10 @@ class PerrunosRestAPI {
 	@Get("/usuario/avisosContactados/:idUser")
 	def getAvisosContactados() {
 		try {
-			val avisosDelUsuario = repoUsuario.usuarioConFetchDeAvisosContactados(
-				parserStringToLong.parsearDeStringALong(idUser)).avisosContactados
-			val avisosFiltrados = avisosDelUsuario.filter[aviso|aviso.activo].toList
-			avisosFiltrados.forEach[aviso|aviso.fechaPublicacion = aviso.fechaPublicacion.plusDays(1)]
-			avisosFiltrados.forEach[aviso|aviso.usuarioPublicante = null]
-			return ok(avisosFiltrados.toJson)
+			val avisosDelUsuario = repoUsuario.avisosContactadosDelUsuario(Long.parseLong(idUser))
+			//val avisosFiltrados = avisosDelUsuario.filter[aviso|aviso.activo].toList
+			avisosDelUsuario.forEach[aviso|aviso.fechaPublicacion = aviso.fechaPublicacion.plusDays(1)]
+			return ok(avisosDelUsuario.toJson)
 		} catch (UserException exception) {
 			return badRequest()
 		}
@@ -531,7 +534,7 @@ class PerrunosRestAPI {
 
 	// /////////////////////////////////////////////////////////////////////////////////
 	// ABMC SERVICIOS                                                                 //
-	// /////////////////////////////////////////////////////////////////////////////////
+	// ///////////////////////////////////////////////////////////////////////////////// TODO: ABMC SERVICIOS
 	@Get("/servicios/tiposDeServicio")
 	def getTiposDeServicios() {
 		try {
@@ -631,17 +634,17 @@ class PerrunosRestAPI {
 	@Get("/usuario/historialDeServicios/:idUsuario")
 	def historialDeServicios() {
 		val usuario = repoUsuario.usuarioConFetchDeServicios(Long.parseLong(idUsuario))
-			var List<ServicioConUsuario> serviciosDelUsuario
-			if (usuario.tipoPerfil.nombrePerfil == 'Duenio') {
-				serviciosDelUsuario = repoServicio.
-					serviciosFinalizadosDelDuenioConUsuarios(usuario.idUsuario, 'serv.duenio')
-			} else {
-				serviciosDelUsuario = repoServicio.serviciosFinalizadosDelDuenioConUsuarios(usuario.idUsuario,
-					'serv.prestador')
-			}
-			val serviciosFiltrados = serviciosDelUsuario.filter[servicio|!servicio.activo].toList
-			serviciosFiltrados.forEach[servicio|servicio.fechaRealizacion = servicio.fechaRealizacion.plusDays(1)]
-			return ok(serviciosFiltrados.toJson)
+		var List<ServicioConUsuario> serviciosDelUsuario
+		if (usuario.tipoPerfil.nombrePerfil == 'Duenio') {
+			serviciosDelUsuario = repoServicio.
+				serviciosFinalizadosDelDuenioConUsuarios(usuario.idUsuario, 'serv.duenio')
+		} else {
+			serviciosDelUsuario = repoServicio.serviciosFinalizadosDelDuenioConUsuarios(usuario.idUsuario,
+				'serv.prestador')
+		}
+		val serviciosFiltrados = serviciosDelUsuario.filter[servicio|!servicio.activo].toList
+		serviciosFiltrados.forEach[servicio|servicio.fechaRealizacion = servicio.fechaRealizacion.plusDays(1)]
+		return ok(serviciosFiltrados.toJson)
 	}
 
 	@Get("/usuario/traerUnServicio/:idServicio")
@@ -657,7 +660,7 @@ class PerrunosRestAPI {
 
 	// /////////////////////////////////////////////////////////////////////////////////
 	// CALIFICAR SERVICIO                                                             //
-	// /////////////////////////////////////////////////////////////////////////////////
+	// ///////////////////////////////////////////////////////////////////////////////// TODO: CALIFICAR SERVICIO
 	@Post("/servicios/calificarAlDuenio")
 	def calificarServicioDuenio(@Body String body) {
 		try {
@@ -692,7 +695,7 @@ class PerrunosRestAPI {
 
 	// /////////////////////////////////////////////////////////////////////////////////
 	// GEOLOCALIZACION                                                                //
-	// /////////////////////////////////////////////////////////////////////////////////
+	// ///////////////////////////////////////////////////////////////////////////////// TODO: GEOLOCALIZACION
 	@Post("/servicios/geolocalizacionDuenio")
 	def establecerUbicacionDuenio(@Body String body) {
 		try {
@@ -769,9 +772,32 @@ class PerrunosRestAPI {
 //			return badRequest()
 //		}
 //	}
+
+	// /////////////////////////////////////////////////////////////////////////////////
+	// REPORTAR		                                                                  //
+	// ///////////////////////////////////////////////////////////////////////////////// TODO: REPORTAR
+	
+	@Post("/usuario/crearReporte/:idUsuario")
+	def crearReporte(@Body String body){
+		try {
+			val usuarioReporte = repoUsuario.searchByID(Long.parseLong(idUsuario))
+			val usuarioReportadoDelFront = repoUsuario.searchByMail(body.getPropertyValue("usuario"))
+			val reporte = new Reporte => [
+				usuarioReportado=usuarioReportadoDelFront
+				detalle = body.getPropertyValue("detalle")
+			]
+			usuarioReporte.agregarReporte(reporte)
+			repoReporte.create(reporte)
+			repoUsuario.update(usuarioReporte)
+			return ok()
+		} catch (UserException exception) {
+			return badRequest()
+		}
+	}
+
 	// /////////////////////////////////////////////////////////////////////////////////
 	// ABMC PROMOCIONES                                                               //
-	// /////////////////////////////////////////////////////////////////////////////////
+	// ///////////////////////////////////////////////////////////////////////////////// TODO: ABMC PROMOCIONES
 	@Post("/promociones/crearPromocion")
 	def crearPromocion(@Body String body) {
 		try {
