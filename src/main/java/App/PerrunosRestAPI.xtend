@@ -66,10 +66,13 @@ class PerrunosRestAPI {
 		try {
 			val usuarioLogeadoBody = body.fromJson(UsuarioLogeadoRequest) // fromJson deserealiza de json a tipo objeto y trae el usaurio y contrasenia
 			try {
-				val usuarioLogeado = this.repoUsuario.verificarLogin(usuarioLogeadoBody.usuario,
+				var usuarioLogeado = this.repoUsuario.verificarLogin(usuarioLogeadoBody.usuario,
 					usuarioLogeadoBody.password)
 				if (usuarioLogeado !== null) {
 					usuarioLogeado.fechaAlta = usuarioLogeado.fechaAlta.plusDays(1)
+				}
+				if (!usuarioLogeado.activo){
+					usuarioLogeado = null
 				}
 				// usuarioLogeado.fechaNacimiento.plusDays(1)
 				return ok(UsuarioSerializer.toJson(usuarioLogeado))
