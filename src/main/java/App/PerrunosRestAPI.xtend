@@ -260,6 +260,8 @@ class PerrunosRestAPI {
 				raza = razaPerro
 				poseeLibretaSanitaria = Boolean.parseBoolean(body.getPropertyValue("poseeLibretaSanitaria"))
 				vacunaDeLaRabia = Boolean.parseBoolean(body.getPropertyValue("vacunaDeLaRabia"))
+				vacunaSextuple = Boolean.parseBoolean(body.getPropertyValue("vacunaSextuple"))
+				sexo = body.getPropertyValue("sexo")
 				activo = true
 			]
 			usuario.agregarPerro(nuevoPerro)
@@ -292,7 +294,9 @@ class PerrunosRestAPI {
 			perro.paseoConOtrosPerros = Boolean.parseBoolean(body.getPropertyValue("paseoConOtrosPerros"))
 			perro.descripcion = body.getPropertyValue("descripcion")
 			perro.cuidadosEspeciales = body.getPropertyValue("cuidadosEspeciales")
-
+			perro.vacunaSextuple = Boolean.parseBoolean(body.getPropertyValue("vacunaSextuple"))
+			perro.sexo = body.getPropertyValue("sexo")
+			
 			repoPerro.update(perro)
 
 			return ok()

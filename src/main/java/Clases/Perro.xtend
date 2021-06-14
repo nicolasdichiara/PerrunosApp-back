@@ -49,6 +49,10 @@ class Perro {
 	Boolean paseoConOtrosPerros
 	@Column
 	Boolean activo
+	@Column
+	Boolean vacunaSextuple
+	@Column
+	String sexo
 	
 	def deshabilitarPerro(){
 		activo = false
