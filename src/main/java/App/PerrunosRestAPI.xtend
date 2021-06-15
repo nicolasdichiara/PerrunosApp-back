@@ -70,9 +70,9 @@ class PerrunosRestAPI {
 					usuarioLogeadoBody.password)
 				if (usuarioLogeado !== null) {
 					usuarioLogeado.fechaAlta = usuarioLogeado.fechaAlta.plusDays(1)
-				}
-				if (!usuarioLogeado.activo){
-					usuarioLogeado = null
+					if(!usuarioLogeado.activo){
+						usuarioLogeado = null
+					}
 				}
 				// usuarioLogeado.fechaNacimiento.plusDays(1)
 				return ok(UsuarioSerializer.toJson(usuarioLogeado))
