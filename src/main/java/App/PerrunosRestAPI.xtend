@@ -173,6 +173,7 @@ class PerrunosRestAPI {
 					activo = true
 					tipoPerfil = tipoDePerfil
 					calificacion = 5.0
+					telefono = body.getPropertyValue("telefono")
 				]
 				println(nuevoUsuario.tipoPerfil)
 				repoUsuario.create(nuevoUsuario)
