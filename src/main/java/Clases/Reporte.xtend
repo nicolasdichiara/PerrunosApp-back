@@ -16,7 +16,7 @@ class Reporte {
 	@GeneratedValue(strategy=GenerationType.AUTO)
 	Long idReporte
 	
-	@OneToOne(fetch=FetchType.EAGER)
+	@OneToOne(fetch=FetchType.LAZY)
 	Usuario usuarioReportado
 	
 	@Column

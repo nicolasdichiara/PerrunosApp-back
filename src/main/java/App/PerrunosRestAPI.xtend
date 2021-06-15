@@ -802,6 +802,26 @@ class PerrunosRestAPI {
 			return badRequest()
 		}
 	}
+	
+	@Get("/reportes")
+	def getTodosLosReportes() {
+		try {
+			val reportes = repoReporte.todosLosReportesConUsuarioReportado
+			return ok(reportes.toJson)
+		} catch (UserException exception) {
+			return badRequest()
+		}
+	}
+	
+	@Get("/reporte/:id")
+	def getReporteById() {
+		try {
+			val reporte = repoReporte.searchByIDConUsuarioReportado(Long.parseLong(id))
+			return ok(reporte.toJson)
+		} catch (UserException exception) {
+			return badRequest()
+		}
+	}
 
 	// /////////////////////////////////////////////////////////////////////////////////
 	// ABMC PROMOCIONES                                                               //
