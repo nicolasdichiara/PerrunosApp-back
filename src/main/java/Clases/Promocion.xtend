@@ -21,5 +21,9 @@ class Promocion {
 	LocalDate fechaVigencia
 	@Column
 	Boolean activa
+	@Column
+	String detalle
+	@Column 
+	Integer cantidadPaseos
 	
 }

@@ -845,7 +845,19 @@ class PerrunosRestAPI {
 	def getTodasLasPromociones() {
 		try {
 			val promociones = repoPromociones.allInstances
+			//val promocionesFiltradas = promociones.filter([promocion|promocion.activa])
 			return ok(promociones.toJson)
+		} catch (UserException exception) {
+			return badRequest()
+		}
+	}
+	
+	@Get("/promociones/getPromocionesActivas")
+	def getPromocionesActivas() {
+		try {
+			val promociones = repoPromociones.allInstances
+			val promocionesFiltradas = promociones.filter([promocion|promocion.activa])
+			return ok(promocionesFiltradas.toJson)
 		} catch (UserException exception) {
 			return badRequest()
 		}
