@@ -830,9 +830,11 @@ class PerrunosRestAPI {
 	def crearPromocion(@Body String body) {
 		try {
 			val nuevaPromo = new Promocion => [
+				detalle = body.getPropertyValue("detalle")
 				imagenPromo = body.getPropertyValue("imagenPromo")
 				fechaVigencia = body.getPropertyAsDate("fechaVigencia")
-				activa = Boolean.parseBoolean(body.getPropertyValue("activa"))
+				activa = true
+				cantidadPaseos = Integer.parseInt(body.getPropertyValue("cantidadPaseos"))
 			]
 			repoPromociones.create(nuevaPromo)
 			return ok()
