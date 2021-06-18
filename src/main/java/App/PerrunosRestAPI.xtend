@@ -847,7 +847,7 @@ class PerrunosRestAPI {
 	def getTodasLasPromociones() {
 		try {
 			val promociones = repoPromociones.allInstances
-			//val promocionesFiltradas = promociones.filter([promocion|promocion.activa])
+			promociones.forEach[promo|promo.fechaVigencia = promo.fechaVigencia.plusDays(1)]
 			return ok(promociones.toJson)
 		} catch (UserException exception) {
 			return badRequest()
@@ -859,6 +859,7 @@ class PerrunosRestAPI {
 		try {
 			val promociones = repoPromociones.allInstances
 			val promocionesFiltradas = promociones.filter([promocion|promocion.activa])
+			promocionesFiltradas.forEach[promo|promo.fechaVigencia = promo.fechaVigencia.plusDays(1)]
 			return ok(promocionesFiltradas.toJson)
 		} catch (UserException exception) {
 			return badRequest()
@@ -869,6 +870,7 @@ class PerrunosRestAPI {
 	def getPromocion() {
 		try {
 			val promocion = repoPromociones.searchByID(Long.parseLong(id))
+			promocion.fechaVigencia = promocion.fechaVigencia.plusDays(1)
 			return ok(promocion.toJson)
 		} catch (UserException exception) {
 			return badRequest()
@@ -878,10 +880,11 @@ class PerrunosRestAPI {
 	@Post("/promociones/updatePromocion")
 	def modificarPromocion(@Body String body) {
 		try {
-			val promocion = repoPromociones.searchByID(Long.parseLong(body.getPropertyValue("id")))
+			val promocion = repoPromociones.searchByID(Long.parseLong(body.getPropertyValue("idPromocion")))
+			promocion.detalle = body.getPropertyValue("detalle")
 			promocion.imagenPromo = body.getPropertyValue("imagenPromo")
 			promocion.fechaVigencia = body.getPropertyAsDate("fechaVigencia")
-			promocion.activa = Boolean.parseBoolean(body.getPropertyValue("activa"))
+			promocion.cantidadPaseos = Integer.parseInt(body.getPropertyValue("cantidadPaseos"))
 			repoPromociones.update(promocion)
 			return ok(promocion.toJson)
 		} catch (UserException exception) {
