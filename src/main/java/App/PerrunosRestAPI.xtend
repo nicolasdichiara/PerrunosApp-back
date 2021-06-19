@@ -891,6 +891,30 @@ class PerrunosRestAPI {
 			return badRequest()
 		}
 	}
+	
+	@Delete("/promociones/desactivarPromocion/:id")
+	def desactivarPromocion(){
+		try {
+			val promocion = repoPromociones.searchByID(Long.parseLong(id))
+			promocion.activa = false
+			repoPromociones.update(promocion)
+			return ok()
+		} catch (UserException exception) {
+			return badRequest()
+		}
+	}
+	
+	@Delete("/promociones/activarPromocion/:id")
+	def activarPromocion(){
+		try {
+			val promocion = repoPromociones.searchByID(Long.parseLong(id))
+			promocion.activa = true
+			repoPromociones.update(promocion)
+			return ok()
+		} catch (UserException exception) {
+			return badRequest()
+		}
+	}
 
 }
 
