@@ -66,7 +66,7 @@ class Usuario {
 	@OneToMany(fetch=FetchType.LAZY)
 	List<Aviso> avisos = newArrayList
 	
-	@OneToMany(fetch=FetchType.LAZY)
+	@ManyToMany(fetch=FetchType.LAZY)
 	@JoinTable(name = "Usuario_AvisoContactado")
 	List<Aviso> avisosContactados = newArrayList
 	

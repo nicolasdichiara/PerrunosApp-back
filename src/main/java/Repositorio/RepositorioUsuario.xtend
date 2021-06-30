@@ -129,9 +129,11 @@ class RepositorioUsuario extends RepositorioAbstract<Usuario> {
 		val entityManager = singletonDeEntityManager.getEntityManager
 		try {
 			entityManager.createQuery("SELECT NEW Repositorio.AvisoConUsuario(
-					a.idAviso, a.fechaPublicacion, a.horario, a.detalle, a.activo, a.tipoServicio, a.Precio, a.zona, 
-					a.lunes, a.martes, a.miercoles, a.jueves, a.viernes, a.sabado, a.domingo, u.idUsuario, u.nombre, 
-					u.apellido, u.telefono, u.tipoPerfil, u.calificacion, u.imagenPerfil) " + "FROM Usuario u " + "JOIN u.avisosContactados a 
+						a.idAviso, a.fechaPublicacion, a.horario, a.detalle, a.activo, a.tipoServicio, a.Precio, a.zona, 
+						a.lunes, a.martes, a.miercoles, a.jueves, a.viernes, a.sabado, a.domingo, u2.idUsuario, u2.nombre, 
+						u2.apellido, u2.telefono, u2.tipoPerfil, u2.calificacion, u2.imagenPerfil) " + "FROM Usuario u 
+					JOIN u.avisosContactados a 
+					JOIN a.usuarioPublicante u2
 				 WHERE u.idUsuario = :idUsuario", AvisoConUsuario).setParameter("idUsuario", idUsuario).resultList
 		} finally {
 			entityManager?.close
