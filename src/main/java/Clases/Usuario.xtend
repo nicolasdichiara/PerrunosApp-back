@@ -82,6 +82,9 @@ class Usuario {
 	@OneToMany(fetch=FetchType.EAGER)
 	List<Reporte> reportes = newArrayList
 	
+	@Column
+	String token
+	
 	def agregarReporte(Reporte unReporte){
 		reportes.add(unReporte)
 	}

@@ -915,6 +915,35 @@ class PerrunosRestAPI {
 			return badRequest()
 		}
 	}
+	
+	// /////////////////////////////////////////////////////////////////////////////////
+	// TOKEN PASEADORES                                                               //
+	// ///////////////////////////////////////////////////////////////////////////////// TODO: TOKEN PASEADORES
+	
+	@Get("/usuarios/getToken/:id")
+	def getToken() {
+		try {
+			val usuario = repoUsuario.searchByID(Long.parseLong(id))
+			val token = new TokenRequest => [
+				token = usuario.token
+			]
+			return ok(token.toJson)
+		} catch (UserException exception) {
+			return badRequest()
+		}
+	}
+	
+	@Post("/usuarios/setToken/:id")
+	def setToken(@Body String body) {
+		try {
+			val usuario = repoUsuario.searchByID(Long.parseLong(id))
+			usuario.token = body.getPropertyValue("token")
+			repoUsuario.update(usuario)
+			return ok()
+		} catch (UserException exception) {
+			return badRequest()
+		}
+	}
 
 }
 
@@ -922,4 +951,9 @@ class PerrunosRestAPI {
 class UsuarioLogeadoRequest {
 	String usuario
 	String password
+}
+
+@Accessors
+class TokenRequest {
+	String token
 }
