@@ -51,8 +51,8 @@ class RepositorioServicio extends RepositorioAbstract<Servicio> {
 				"SELECT NEW Repositorio.ServicioConUsuario(
 					serv.idServicio, serv.activo, serv.fechaRealizacion, serv.horario, serv.calificacionDuenio, 
 					serv.calificacionPrestador, serv.tipoServicio, serv.latitudDuenio, serv.longitudDuenio, serv.latitudPrestador, serv.longitudPrestador,
-					serv.Precio, prest.idUsuario, prest.nombre, prest.apellido, prest.telefono, prest.imagenPerfil,
-					duenio.idUsuario, duenio.nombre, duenio.apellido, duenio.telefono, duenio.imagenPerfil) " + 
+					serv.Precio, prest.idUsuario, prest.nombre, prest.apellido, prest.telefono, prest.imagenPerfil, prest.email,
+					duenio.idUsuario, duenio.nombre, duenio.apellido, duenio.telefono, duenio.imagenPerfil, duenio.email) " + 
 				"FROM Servicio serv " + 
 					"JOIN serv.prestador prest  " +
 					"JOIN serv.duenio duenio  " +
@@ -74,8 +74,8 @@ class RepositorioServicio extends RepositorioAbstract<Servicio> {
 				"SELECT NEW Repositorio.ServicioConUsuario(
 					serv.idServicio, serv.activo, serv.fechaRealizacion, serv.horario, serv.calificacionDuenio, 
 					serv.calificacionPrestador, serv.tipoServicio, serv.latitudDuenio, serv.longitudDuenio, serv.latitudPrestador, serv.longitudPrestador,
-					serv.Precio, prest.idUsuario, prest.nombre, prest.apellido, prest.telefono, prest.imagenPerfil,
-					duenio.idUsuario, duenio.nombre, duenio.apellido, duenio.telefono, duenio.imagenPerfil) " + 
+					serv.Precio, prest.idUsuario, prest.nombre, prest.apellido, prest.telefono, prest.imagenPerfil, prest.email,
+					duenio.idUsuario, duenio.nombre, duenio.apellido, duenio.telefono, duenio.imagenPerfil, duenio.email) " + 
 				"FROM Servicio serv " + 
 					"JOIN serv.prestador prest  " +
 					"JOIN serv.duenio duenio  " +
@@ -97,8 +97,8 @@ class RepositorioServicio extends RepositorioAbstract<Servicio> {
 				"SELECT NEW Repositorio.ServicioConUsuario(
 					serv.idServicio, serv.activo, serv.fechaRealizacion, serv.horario, serv.calificacionDuenio, 
 					serv.calificacionPrestador, serv.tipoServicio, serv.latitudDuenio, serv.longitudDuenio, serv.latitudPrestador, serv.longitudPrestador,
-					serv.Precio, prest.idUsuario, prest.nombre, prest.apellido, prest.telefono, prest.imagenPerfil,
-					duenio.idUsuario, duenio.nombre, duenio.apellido, duenio.telefono, duenio.imagenPerfil) " + 
+					serv.Precio, prest.idUsuario, prest.nombre, prest.apellido, prest.telefono, prest.imagenPerfil, prest.email,
+					duenio.idUsuario, duenio.nombre, duenio.apellido, duenio.telefono, duenio.imagenPerfil, duenio.email) " + 
 				"FROM Servicio serv " + 
 					"JOIN serv.prestador prest  " +
 					"JOIN serv.duenio duenio  " +
@@ -133,18 +133,20 @@ class ServicioConUsuario {
 	String apellidoPrestador
 	String telefonoPrestador
 	String imagenPerfilPrestador
+	String emailPrestador
 	Long idDuenio
 	String nombreDuenio
 	String apellidoDuenio
 	String telefonoDuenio
 	String imagenPerfilDuenio
+	String emailDuenio
 
 	new(Long _idServicio, Boolean _activo, LocalDate _fechaRealizacion,
 		LocalTime _horario, Double _calificacionDuenio, Double _calificacionPrestador, TipoServicio _tipoServicio,
 		String _latitudDuenio, String _longitudDuenio, String _latitudPrestador, String _longitudPrestador,
 		Double _Precio, Long _idPrestador, String _nombrePrestador, String _apellidoPrestador, String _telefonoPrestador,
-		String _imagenPerfilPrestador, Long _idDuenio, String _nombreDuenio, String _apellidoDuenio, String _telefonoDuenio,
-		String _imagenPerfilDuenio) {
+		String _imagenPerfilPrestador, String _emailPrestador, Long _idDuenio, String _nombreDuenio, String _apellidoDuenio, String _telefonoDuenio,
+		String _imagenPerfilDuenio, String _emailDuenio) {
 
 		idServicio = _idServicio
 		activo = _activo
@@ -163,10 +165,12 @@ class ServicioConUsuario {
 		apellidoPrestador = _apellidoPrestador
 		telefonoPrestador = _telefonoPrestador
 		imagenPerfilPrestador = _imagenPerfilPrestador
+		emailPrestador = _emailPrestador
 		idDuenio = _idDuenio
 		nombreDuenio = _nombreDuenio
 		apellidoDuenio = _apellidoDuenio
 		telefonoDuenio = _telefonoDuenio
 		imagenPerfilDuenio = _imagenPerfilDuenio
+		emailDuenio = _emailDuenio
 	}
 }
