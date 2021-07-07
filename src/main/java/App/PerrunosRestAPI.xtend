@@ -858,7 +858,7 @@ class PerrunosRestAPI {
 	def getPromocionesActivas() {
 		try {
 			val promociones = repoPromociones.allInstances
-			val promocionesFiltradas = promociones.filter([promocion|promocion.activa])
+			val promocionesFiltradas = promociones.filter([promocion|promocion.activa]).toList
 			promocionesFiltradas.forEach[promo|promo.fechaVigencia = promo.fechaVigencia.plusDays(1)]
 			return ok(promocionesFiltradas.toJson)
 		} catch (UserException exception) {
