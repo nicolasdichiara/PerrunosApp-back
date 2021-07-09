@@ -85,6 +85,9 @@ class Usuario {
 	@Column
 	String token
 	
+	@Column
+	String cbu
+	
 	def agregarReporte(Reporte unReporte){
 		reportes.add(unReporte)
 	}

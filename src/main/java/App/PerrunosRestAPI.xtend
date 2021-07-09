@@ -36,6 +36,7 @@ import Repositorio.ServicioConUsuario
 import java.util.List
 import Clases.Reporte
 import Repositorio.RepositorioReporte
+import Clases.PagoServicio
 
 @Controller //maneja las llamadas post, etc
 class PerrunosRestAPI {
@@ -174,6 +175,7 @@ class PerrunosRestAPI {
 					tipoPerfil = tipoDePerfil
 					calificacion = 5.0
 					telefono = body.getPropertyValue("telefono")
+					cbu = body.getPropertyValue("cbu")
 				]
 				println(nuevoUsuario.tipoPerfil)
 				repoUsuario.create(nuevoUsuario)
@@ -198,6 +200,7 @@ class PerrunosRestAPI {
 			usuario.dni = Integer.parseInt(body.getPropertyValue("dni"))
 			usuario.telefono = body.getPropertyValue("telefono")
 			usuario.direccion = body.getPropertyValue("direccion")
+			usuario.cbu = body.getPropertyValue("cbu")
 			// usuario.imagenPerfil = body.getPropertyValue("imagen")
 			repoUsuario.update(usuario)
 			return ok()
@@ -752,34 +755,26 @@ class PerrunosRestAPI {
 
 	// /////////////////////////////////////////////////////////////////////////////////
 	// PAGO DEL SEVICIO                                                               //
-	// /////////////////////////////////////////////////////////////////////////////////
-//	@Post("/servicios/pagarServicio")
-//	def pagarServicio(@Body String body) {
-//		try {
-//			val servicioAPagar = repoServicio.searchByIDSinWhereDeActivo(
-//				Long.parseLong(body.getPropertyValue("idServicio")))
-//			val pagoServicioNuevo = new PagoServicio => [
-//				collectionId = body.getPropertyValue("collection_id")
-//				collectionStatus = body.getPropertyValue("collection_status")
-//				paymentId = body.getPropertyValue("payment_id")
-//				status = body.getPropertyValue("status")
-//				externalReference = body.getPropertyValue("external_reference")
-//				paymentType = body.getPropertyValue("payment_type")
-//				merchantOrderId = body.getPropertyValue("merchant_order_id")
-//				preferenceId = body.getPropertyValue("preference_id")
-//				siteId = body.getPropertyValue("site_id")
-//				processingMode = body.getPropertyValue("processing_mode")
-//				merchantAccountId = body.getPropertyValue("merchant_account_id")
-//			]
-//			servicioAPagar.pago = true
-//			servicioAPagar.pagarServicio(pagoServicioNuevo)
-//			repoPagoServicio.create(pagoServicioNuevo)
-//			repoServicio.update(servicioAPagar)
-//			return ok()
-//		} catch (UserException exception) {
-//			return badRequest()
-//		}
-//	}
+	// /////////////////////////////////////////////////////////////////////////////////TODO:PAGO DEL SEVICIO
+	@Post("/servicios/pagarServicio")
+	def pagarServicio(@Body String body) {
+		try {
+			val servicioAPagar = repoServicio.searchByIDSinWhereDeActivo(
+				Long.parseLong(body.getPropertyValue("idServicio")))
+			val pagoServicioNuevo = new PagoServicio => [
+				fechaPago = LocalDate.now
+				medioPago = body.getPropertyValue("medioPago")
+				linkRecibo = body.getPropertyValue("linkRecibo")
+			]
+			servicioAPagar.pago = true
+			servicioAPagar.pagarServicio(pagoServicioNuevo)
+			repoPagoServicio.create(pagoServicioNuevo)
+			repoServicio.update(servicioAPagar)
+			return ok()
+		} catch (UserException exception) {
+			return badRequest()
+		}
+	}
 
 	// /////////////////////////////////////////////////////////////////////////////////
 	// REPORTAR		                                                                  //

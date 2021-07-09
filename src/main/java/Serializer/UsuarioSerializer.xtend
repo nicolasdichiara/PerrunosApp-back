@@ -52,6 +52,7 @@ class UsuarioSerializer extends StdSerializer<Usuario> {
 		} else {
 			gen.writeStringField("imagenPerfil","https://i.postimg.cc/bJMGBhMg/asd.png")
 		}
+		gen.writeStringField("cbu", value.cbu)
 		
 		gen.writeEndObject();
 	}
