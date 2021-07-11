@@ -755,7 +755,7 @@ class PerrunosRestAPI {
 
 	// /////////////////////////////////////////////////////////////////////////////////
 	// PAGO DEL SEVICIO                                                               //
-	// /////////////////////////////////////////////////////////////////////////////////TODO:PAGO DEL SEVICIO
+	// /////////////////////////////////////////////////////////////////////////////////TODO: PAGO DEL SEVICIO
 	@Post("/servicios/pagarServicio")
 	def pagarServicio(@Body String body) {
 		try {
@@ -771,6 +771,16 @@ class PerrunosRestAPI {
 			repoPagoServicio.create(pagoServicioNuevo)
 			repoServicio.update(servicioAPagar)
 			return ok()
+		} catch (UserException exception) {
+			return badRequest()
+		}
+	}
+	
+	@Get("/servicios/pagoDelServicio/:idServicio")
+	def traerPagoDelServicio(){
+		try {
+			val servicio = repoServicio.searchByIDSinWhereDeActivo(Long.parseLong(idServicio))
+			return ok(servicio.pagoDelServicio.toJson)
 		} catch (UserException exception) {
 			return badRequest()
 		}
