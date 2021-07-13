@@ -11,7 +11,7 @@
 		<class>Usuario</class>
 		<properties>
 			<property name="javax.persistence.jdbc.driver" value="com.mysql.cj.jdbc.Driver" />
-			<property name="javax.persistence.jdbc.url" value="jdbc:mysql://23.99.177.71:3306/perrunosapp?useUnicode=true&amp;useJDBCCompliantTimezoneShift=true&amp;useLegacyDatetimeCode=false&amp;serverTimezone=UTC" />
+			<property name="javax.persistence.jdbc.url" value="jdbc:mysql://23.99.177.71:3306/perrunosapp?useUnicode=true&amp;useJDBCCompliantTimezoneShift=true&amp;useLegacyDatetimeCode=false" />
 			<property name="javax.persistence.jdbc.user" value="phpmyadmin" />
 			<property name="javax.persistence.jdbc.password" value="Admin.2020!!!$" />
 			<!-- propiedades de hibernate -->

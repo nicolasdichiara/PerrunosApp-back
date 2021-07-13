@@ -70,7 +70,7 @@ class PerrunosRestAPI {
 				var usuarioLogeado = this.repoUsuario.verificarLogin(usuarioLogeadoBody.usuario,
 					usuarioLogeadoBody.password)
 				if (usuarioLogeado !== null) {
-					usuarioLogeado.fechaAlta = usuarioLogeado.fechaAlta.plusDays(1)
+					usuarioLogeado.fechaAlta = usuarioLogeado.fechaAlta.plusDays(0)
 					if(!usuarioLogeado.activo){
 						usuarioLogeado = null
 					}
@@ -89,7 +89,7 @@ class PerrunosRestAPI {
 	def dameUsuario() {
 		try {
 			val usuario = repoUsuario.searchByID(Long.parseLong(id))
-			usuario.fechaAlta.plusDays(1)
+			usuario.fechaAlta.plusDays(0)
 			// usuario.fechaAlta = usuario.fechaNacimiento.plusDays(1)
 			return ok(UsuarioSerializer.toJson(usuario))
 
@@ -328,7 +328,7 @@ class PerrunosRestAPI {
 	def dameElPerro() {
 		try {
 			val perro = repoPerro.searchByID(parserStringToLong.parsearDeStringALong(id))
-			perro.fechaNacimiento = perro.fechaNacimiento.plusDays(1)
+			perro.fechaNacimiento = perro.fechaNacimiento.plusDays(0)
 			return ok(perro.toJson)
 		} catch (UserException exception) {
 			return badRequest()
@@ -404,7 +404,7 @@ class PerrunosRestAPI {
 			val avisosDelUsuario = repoUsuario.usuarioConFetchDeAvisos(parserStringToLong.parsearDeStringALong(idUser)).
 				avisos
 			val avisosFiltrados = avisosDelUsuario.filter[aviso|aviso.activo].toList
-			avisosFiltrados.forEach[aviso|aviso.fechaPublicacion = aviso.fechaPublicacion.plusDays(1)]
+			avisosFiltrados.forEach[aviso|aviso.fechaPublicacion = aviso.fechaPublicacion.plusDays(0)]
 			avisosFiltrados.forEach[aviso|aviso.usuarioPublicante = null]
 			return ok(avisosFiltrados.toJson)
 		} catch (UserException exception) {
@@ -416,7 +416,7 @@ class PerrunosRestAPI {
 	def dameUnAviso() {
 		try {
 			val aviso = repoAviso.avisoPorIdConUsuario(Long.parseLong(idAviso))
-			aviso.fechaPublicacion = aviso.fechaPublicacion.plusDays(1)
+			aviso.fechaPublicacion = aviso.fechaPublicacion.plusDays(0)
 			return ok(aviso.toJson)
 		} catch (UserException exception) {
 			return badRequest()
@@ -494,7 +494,7 @@ class PerrunosRestAPI {
 	def dameTodosLosAvisos() {
 		try {
 			val avisos = repoAviso.avisosActivosConUsuario
-			avisos.forEach[aviso|aviso.fechaPublicacion = aviso.fechaPublicacion.plusDays(1)]
+			avisos.forEach[aviso|aviso.fechaPublicacion = aviso.fechaPublicacion.plusDays(0)]
 			return ok(avisos.toJson)
 		} catch (UserException exception) {
 			return badRequest()
@@ -506,7 +506,7 @@ class PerrunosRestAPI {
 		try {
 			val avisosDelUsuario = repoUsuario.avisosContactadosDelUsuario(Long.parseLong(idUser))
 			//val avisosFiltrados = avisosDelUsuario.filter[aviso|aviso.activo].toList
-			avisosDelUsuario.forEach[aviso|aviso.fechaPublicacion = aviso.fechaPublicacion.plusDays(1)]
+			avisosDelUsuario.forEach[aviso|aviso.fechaPublicacion = aviso.fechaPublicacion.plusDays(0)]
 			return ok(avisosDelUsuario.toJson)
 		} catch (UserException exception) {
 			return badRequest()
@@ -634,7 +634,7 @@ class PerrunosRestAPI {
 					'serv.prestador')
 			}
 			val serviciosFiltrados = serviciosDelUsuario.filter[servicio|servicio.activo].toList
-			serviciosFiltrados.forEach[servicio|servicio.fechaRealizacion = servicio.fechaRealizacion.plusDays(1)]
+			serviciosFiltrados.forEach[servicio|servicio.fechaRealizacion = servicio.fechaRealizacion.plusDays(0)]
 			return ok(serviciosFiltrados.toJson)
 		} catch (UserException exception) {
 			return badRequest()
@@ -654,7 +654,7 @@ class PerrunosRestAPI {
 				'serv.prestador')
 		}
 		val serviciosFiltrados = serviciosDelUsuario.filter[servicio|!servicio.activo].toList
-		serviciosFiltrados.forEach[servicio|servicio.fechaRealizacion = servicio.fechaRealizacion.plusDays(1)]
+		serviciosFiltrados.forEach[servicio|servicio.fechaRealizacion = servicio.fechaRealizacion.plusDays(0)]
 		return ok(serviciosFiltrados.toJson)
 	}
 
@@ -662,7 +662,7 @@ class PerrunosRestAPI {
 	def dameUnServicio() {
 		try {
 			val servicio = repoServicio.serviciosPorIdConUsuarios(Long.parseLong(idServicio))
-			servicio.fechaRealizacion = servicio.fechaRealizacion.plusDays(1)
+			servicio.fechaRealizacion = servicio.fechaRealizacion.plusDays(0)
 			return ok(servicio.toJson)
 		} catch (UserException exception) {
 			return badRequest()
@@ -852,7 +852,7 @@ class PerrunosRestAPI {
 	def getTodasLasPromociones() {
 		try {
 			val promociones = repoPromociones.allInstances
-			promociones.forEach[promo|promo.fechaVigencia = promo.fechaVigencia.plusDays(1)]
+			promociones.forEach[promo|promo.fechaVigencia = promo.fechaVigencia.plusDays(0)]
 			return ok(promociones.toJson)
 		} catch (UserException exception) {
 			return badRequest()
@@ -864,7 +864,7 @@ class PerrunosRestAPI {
 		try {
 			val promociones = repoPromociones.allInstances
 			val promocionesFiltradas = promociones.filter([promocion|promocion.activa]).toList
-			promocionesFiltradas.forEach[promo|promo.fechaVigencia = promo.fechaVigencia.plusDays(1)]
+			promocionesFiltradas.forEach[promo|promo.fechaVigencia = promo.fechaVigencia.plusDays(0)]
 			return ok(promocionesFiltradas.toJson)
 		} catch (UserException exception) {
 			return badRequest()
@@ -875,7 +875,7 @@ class PerrunosRestAPI {
 	def getPromocion() {
 		try {
 			val promocion = repoPromociones.searchByID(Long.parseLong(id))
-			promocion.fechaVigencia = promocion.fechaVigencia.plusDays(1)
+			promocion.fechaVigencia = promocion.fechaVigencia.plusDays(0)
 			return ok(promocion.toJson)
 		} catch (UserException exception) {
 			return badRequest()
